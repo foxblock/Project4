@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Project4" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\W32\Project4_Debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="build\" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DX86CPU" />
+					<Add option="-DBUILDING_DLL" />
+					<Add option="-DCORE_DEBUG" />
+					<Add directory="$(#mingw.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-lmingw32" />
+					<Add option="-lSDL_image" />
+					<Add option="-lSDL_ttf" />
+					<Add option="-lSDLmain" />
+					<Add option="-lSDL" />
+					<Add directory="$(#mingw.lib)" />
+					<Add directory="bin\W32" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\W32\Project4" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="build\" />
+				<Option object_output="obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-DX86CPU" />
+					<Add directory="$(#mingw.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lSDLmain" />
+					<Add option="-lSDL" />
+					<Add option="-lSDL_image" />
+					<Add option="-lSDL_ttf" />
+					<Add option="-lmingw32" />
+					<Add directory="$(#mingw.lib)" />
+					<Add directory="bin\W32" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DSDL_INCLUDE_SUBDIR" />
+			<Add directory="..\sparrow3d\" />
+		</Compiler>
+		<Linker>
+			<Add directory="..\sparrow3d\" />
+		</Linker>
+		<Unit filename="..\sparrow3d\sparrow3d.h" />
+		<Unit filename="..\sparrow3d\sparrowCore.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowCore.h" />
+		<Unit filename="..\sparrow3d\sparrowDefines.h" />
+		<Unit filename="..\sparrow3d\sparrowFont.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowFont.h" />
+		<Unit filename="..\sparrow3d\sparrowMath.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowMath.h" />
+		<Unit filename="..\sparrow3d\sparrowMesh.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowMesh.h" />
+		<Unit filename="..\sparrow3d\sparrowPrimitives.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowPrimitives.h" />
+		<Unit filename="..\sparrow3d\sparrowPrimitivesAsm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowRenderer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowRenderer.h" />
+		<Unit filename="..\sparrow3d\sparrowSprite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowSprite.h" />
+		<Unit filename="..\sparrow3d\testsparrow.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\sparrow3d\testsprite.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src\Application.cpp" />
+		<Unit filename="src\Application.h" />
+		<Unit filename="src\StateBase.cpp" />
+		<Unit filename="src\StateBase.h" />
+		<Unit filename="src\StateLevel.cpp" />
+		<Unit filename="src\StateLevel.h" />
+		<Unit filename="src\UnitBase.cpp" />
+		<Unit filename="src\UnitBase.h" />
+		<Unit filename="src\UnitSpike.cpp" />
+		<Unit filename="src\UnitSpike.h" />
+		<Unit filename="src\gameDefines.h" />
+		<Unit filename="src\main.cpp" />
+		<Extensions>
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
