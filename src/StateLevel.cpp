@@ -1,16 +1,24 @@
 #include "StateLevel.h"
 
+#include <cmath>
+
+#include "gameDefines.h"
+#include "UtilityFunctions.h"
+
 #include "UnitSpike.h"
+#include "UnitLaser.h"
+
+#define UNIT_TYPE_COUNT 2
+#define PLAYER_SAFE_RADIUS 200
 
 StateLevel::StateLevel() : StateBase()
 {
-	units.push_back( new UnitSpike( this ) );
-	units.push_back( new UnitSpike( this ) );
-	units.push_back( new UnitSpike( this ) );
-	units.push_back( new UnitSpike( this ) );
-	units.push_back( new UnitSpike( this ) );
-
 	player = new UnitSpike( this );
+	player->x = 300;
+	player->y = 300;
+
+	debugText = spFontLoad( "fonts/lato.ttf", 24 );
+	spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
 }
 
 StateLevel::~StateLevel()
@@ -26,6 +34,10 @@ StateLevel::~StateLevel()
 
 int StateLevel::update( Uint32 delta )
 {
+#ifdef _DEBUG
+	debugString = Utility::numToStr(spGetFPS()) + " fps | ";
+#endif
+
 	handleInput();
 
 	player->update( delta );
@@ -63,6 +75,36 @@ int StateLevel::update( Uint32 delta )
 		}
 	}
 
+	if (spawnTimer.getStatus() == -1)
+	{
+		spawnTimer.start( 1000 );
+
+		int type = rand() % UNIT_TYPE_COUNT;
+		UnitBase* newUnit = NULL;
+		switch (type)
+		{
+		case 0:
+			newUnit = new UnitSpike( this );
+			break;
+		case 1:
+			newUnit = new UnitLaser( this );
+			break;
+		}
+		units.push_back( newUnit );
+
+		units.back()->x = rand() % APP_SCREEN_WIDTH;
+		float temp = 0;
+		do
+		{
+			units.back()->y = rand() % APP_SCREEN_HEIGHT;
+			temp = sqrt( pow(units.back()->x - player->x,2) + pow(units.back()->y - player->y,2) );
+		} while ( temp < PLAYER_SAFE_RADIUS );
+	}
+
+#ifdef _DEBUG
+	debugString += Utility::numToStr(units.size()) + " units | ";
+#endif
+
 	if ( player->toBeRemoved )
 		return 1;
 
@@ -75,6 +117,15 @@ void StateLevel::render( SDL_Surface *target )
 		( *I )->render( target );
 
 	player->render( target );
+
+	#ifdef _DEBUG
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
+	{
+		if ((*I)->debugString[0] != 0)
+			debugString += (*I)->debugString + " | ";
+	}
+	spFontDraw(5,5,-1,debugString.c_str(),debugText);
+	#endif
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
@@ -89,6 +140,15 @@ void StateLevel::handleInput()
 	{
 		player->y -= spGetInput()->axis[1];
 	}
+
+	if (player->x < 0)
+		player->x = 0;
+	else if (player->x > APP_SCREEN_WIDTH)
+		player->x = APP_SCREEN_WIDTH;
+	if (player->y < 0)
+		player->y = 0;
+	else if (player->y > APP_SCREEN_HEIGHT)
+		player->y = APP_SCREEN_HEIGHT;
 }
 
 bool StateLevel::checkForCollision( UnitBase *unitA, UnitBase *unitB )

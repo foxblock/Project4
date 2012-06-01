@@ -2,14 +2,17 @@
 
 UnitBase::UnitBase( StateLevel* newParent )
 {
-	x = rand() % 600;
-	y = rand() % 600;
+	x = 0;
+	y = 0;
 	w = 1;
 	h = 1;
 	parent = newParent;
 	toBeRemoved = false;
 	deadlyOnTouch = false;
 	invincible = false;
+	#ifdef _DEBUG
+	debugString = "";
+	#endif
 }
 
 UnitBase::~UnitBase()

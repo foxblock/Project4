@@ -10,6 +10,8 @@ Application::Application()
 	spSelectRenderTarget( spGetWindowSurface() );
 	spSetHorizontalOrigin( SP_CENTER );
 	spSetVerticalOrigin( SP_CENTER );
+	spSetZSet( 0 );
+	spSetZTest( 0 );
 
 	errorString = "";
 	activeState = new STARTING_STATE();
@@ -28,7 +30,7 @@ Application::~Application()
 
 bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) )
 {
-	if ( spLoop( spDraw, spCalc, 10, NULL, NULL ) != ERROR_CODE )
+	if ( spLoop( spDraw, spCalc, 0, NULL, NULL ) != ERROR_CODE )
 		return true;
 	return false;
 }
@@ -68,7 +70,7 @@ int Application::update( Uint32 delta )
 
 void Application::render()
 {
-	spResetZBuffer();
+	//spResetZBuffer();
 	spClearTarget( SDL_MapRGB( screen->format, 0, 200, 200 ) );
 
 	if ( prevState ) // Transition

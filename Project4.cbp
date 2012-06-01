@@ -16,7 +16,7 @@
 					<Add option="-g" />
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
-					<Add option="-DCORE_DEBUG" />
+					<Add option="-D_DEBUG" />
 					<Add directory="$(#mingw.include)" />
 				</Compiler>
 				<Linker>
@@ -38,21 +38,23 @@
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-DX86CPU" />
+					<Add option="-DBUILDING_DLL" />
 					<Add directory="$(#mingw.include)" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lSDLmain" />
-					<Add option="-lSDL" />
+					<Add option="-lmingw32" />
 					<Add option="-lSDL_image" />
 					<Add option="-lSDL_ttf" />
-					<Add option="-lmingw32" />
+					<Add option="-lSDLmain" />
+					<Add option="-lSDL" />
 					<Add directory="$(#mingw.lib)" />
 					<Add directory="bin\W32" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-ffinite-math-only" />
 			<Add option="-DSDL_INCLUDE_SUBDIR" />
 			<Add directory="..\sparrow3d\" />
 		</Compiler>
@@ -108,10 +110,15 @@
 		<Unit filename="src\StateBase.h" />
 		<Unit filename="src\StateLevel.cpp" />
 		<Unit filename="src\StateLevel.h" />
+		<Unit filename="src\Timer.cpp" />
+		<Unit filename="src\Timer.h" />
 		<Unit filename="src\UnitBase.cpp" />
 		<Unit filename="src\UnitBase.h" />
+		<Unit filename="src\UnitLaser.cpp" />
+		<Unit filename="src\UnitLaser.h" />
 		<Unit filename="src\UnitSpike.cpp" />
 		<Unit filename="src\UnitSpike.h" />
+		<Unit filename="src\UtilityFunctions.h" />
 		<Unit filename="src\gameDefines.h" />
 		<Unit filename="src\main.cpp" />
 		<Extensions>

@@ -5,6 +5,9 @@
 
 #include "StateBase.h"
 #include "UnitBase.h"
+#include "Timer.h"
+
+class UnitLaser;
 
 class StateLevel : public StateBase
 {
@@ -17,9 +20,16 @@ public:
 
 	std::vector<UnitBase *> units;
 	UnitBase *player;
+
+#ifdef _DEBUG
+	std::string debugString;
+#endif
 protected:
 	void handleInput();
 	bool checkForCollision( UnitBase *unitA, UnitBase *unitB );
+
+	Timer spawnTimer;
+	spFontPointer debugText;
 private:
 
 };

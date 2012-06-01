@@ -4,6 +4,7 @@
 #include "gameDefines.h"
 
 #include SPARROW_PATH
+#include <string>
 
 class StateLevel;
 
@@ -27,6 +28,10 @@ public:
 	bool toBeRemoved;
 	bool deadlyOnTouch;
 	bool invincible;
+
+	#ifdef _DEBUG
+	std::string debugString;
+	#endif
 protected:
 	int w;
 	int h;
