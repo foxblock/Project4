@@ -106,6 +106,15 @@
 		</Unit>
 		<Unit filename="src\Application.cpp" />
 		<Unit filename="src\Application.h" />
+		<Unit filename="src\ProjectileLaser.cpp" />
+		<Unit filename="src\ProjectileLaser.h" />
+		<Unit filename="src\ShapeBase.h" />
+		<Unit filename="src\ShapeRay.cpp" />
+		<Unit filename="src\ShapeRay.h" />
+		<Unit filename="src\ShapeRect.cpp" />
+		<Unit filename="src\ShapeRect.h" />
+		<Unit filename="src\SimpleDirection.cpp" />
+		<Unit filename="src\SimpleDirection.h" />
 		<Unit filename="src\StateBase.cpp" />
 		<Unit filename="src\StateBase.h" />
 		<Unit filename="src\StateLevel.cpp" />
@@ -119,6 +128,7 @@
 		<Unit filename="src\UnitSpike.cpp" />
 		<Unit filename="src\UnitSpike.h" />
 		<Unit filename="src\UtilityFunctions.h" />
+		<Unit filename="src\Vector2d.h" />
 		<Unit filename="src\gameDefines.h" />
 		<Unit filename="src\main.cpp" />
 		<Extensions>

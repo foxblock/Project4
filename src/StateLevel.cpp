@@ -13,11 +13,12 @@
 
 StateLevel::StateLevel() : StateBase()
 {
-	player = new UnitSpike( this );
-	player->x = 300;
-	player->y = 300;
+	player = new PLAYER_CLASS( this );
+	*( player->x ) = 300;
+	*( player->y ) = 300;
+	player->invincible = true;
 
-	debugText = spFontLoad( "fonts/lato.ttf", 24 );
+	debugText = spFontLoad( "fonts/lato.ttf", 12 );
 	spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
 }
 
@@ -26,6 +27,9 @@ StateLevel::~StateLevel()
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 		delete *I;
 	units.clear();
+	for ( std::vector<UnitBase *>::iterator I = queue.begin(); I != queue.end(); ++I )
+		delete *I;
+	queue.clear();
 	delete player;
 }
 
@@ -35,53 +39,54 @@ StateLevel::~StateLevel()
 int StateLevel::update( Uint32 delta )
 {
 #ifdef _DEBUG
-	debugString = Utility::numToStr(spGetFPS()) + " fps | ";
+	debugString = Utility::numToStr( spGetFPS() ) + " fps\n";
 #endif
 
 	handleInput();
 
 	player->update( delta );
 
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
+	{
+		( *I )->ai( player );
+		( *I )->update( delta );
+		for ( std::vector<UnitBase *>::iterator K = I + 1; K != units.end(); ++K )
+		{
+			if ( ( *I )->checkCollision( *K ) )
+			{
+				( *I )->collisionResponse( *K );
+				( *K )->collisionResponse( *I );
+			}
+		}
+		if ( ( *I )->checkCollision( player ) )
+		{
+			( *I )->collisionResponse( player );
+			player->collisionResponse( *I );
+		}
+	}
+
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
 	{
 		if ( ( *I )->toBeRemoved )
 		{
+			delete *I;
 			units.erase( I );
 		}
 		else
-		{
-			( *I )->ai( player );
-			( *I )->update( delta );
-			for ( std::vector<UnitBase *>::iterator K = units.begin(); K != units.end(); ++K )
-			{
-				if ( *I == *K )
-					continue;
-
-				if ( checkForCollision( *I, *K ) )
-				{
-					( *I )->toBeRemoved = ( *K )->deadlyOnTouch && !( *I )->invincible;
-					( *K )->toBeRemoved = ( *I )->deadlyOnTouch && !( *K )->invincible;
-				}
-				if ( ( *I )->toBeRemoved )
-					break;
-			}
-			if ( checkForCollision( *I, player ) )
-			{
-				( *I )->toBeRemoved = player->deadlyOnTouch && !( *I )->invincible;
-				player->toBeRemoved = ( *I )->deadlyOnTouch && !player->invincible;
-			}
-
 			++I;
-		}
 	}
 
-	if (spawnTimer.getStatus() == -1)
+	units.insert(units.end(),queue.begin(), queue.end());
+	queue.clear();
+
+	if ( spawnTimer.getStatus() == -1 )
 	{
 		spawnTimer.start( 1000 );
 
 		int type = rand() % UNIT_TYPE_COUNT;
-		UnitBase* newUnit = NULL;
-		switch (type)
+		UnitBase *newUnit = NULL;
+
+		switch ( type )
 		{
 		case 0:
 			newUnit = new UnitSpike( this );
@@ -92,17 +97,18 @@ int StateLevel::update( Uint32 delta )
 		}
 		units.push_back( newUnit );
 
-		units.back()->x = rand() % APP_SCREEN_WIDTH;
+		*units.back()->x = rand() % APP_SCREEN_WIDTH;
 		float temp = 0;
 		do
 		{
-			units.back()->y = rand() % APP_SCREEN_HEIGHT;
-			temp = sqrt( pow(units.back()->x - player->x,2) + pow(units.back()->y - player->y,2) );
-		} while ( temp < PLAYER_SAFE_RADIUS );
+			*units.back()->y = rand() % APP_SCREEN_HEIGHT;
+			temp = sqrt( pow( *units.back()->x - *player->x, 2 ) + pow( *units.back()->y - * player->y, 2 ) );
+		}
+		while ( temp < PLAYER_SAFE_RADIUS );
 	}
 
 #ifdef _DEBUG
-	debugString += Utility::numToStr(units.size()) + " units | ";
+	debugString += Utility::numToStr( units.size() ) + " units\n";
 #endif
 
 	if ( player->toBeRemoved )
@@ -118,14 +124,19 @@ void StateLevel::render( SDL_Surface *target )
 
 	player->render( target );
 
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 	{
-		if ((*I)->debugString[0] != 0)
-			debugString += (*I)->debugString + " | ";
+		if ( ( *I )->debugString[0] != 0 )
+			debugString += ( *I )->debugString + "\n";
 	}
-	spFontDraw(5,5,-1,debugString.c_str(),debugText);
-	#endif
+	spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
+#endif
+}
+
+void StateLevel::addUnit(UnitBase *newUnit)
+{
+	queue.push_back(newUnit);
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
@@ -134,31 +145,21 @@ void StateLevel::handleInput()
 {
 	if ( spGetInput()->axis[0] != 0 )
 	{
-		player->x += spGetInput()->axis[0];
+		*player->x += spGetInput()->axis[0];
 	}
 	if ( spGetInput()->axis[1] != 0 )
 	{
-		player->y -= spGetInput()->axis[1];
+		*player->y -= spGetInput()->axis[1];
 	}
 
-	if (player->x < 0)
-		player->x = 0;
-	else if (player->x > APP_SCREEN_WIDTH)
-		player->x = APP_SCREEN_WIDTH;
-	if (player->y < 0)
-		player->y = 0;
-	else if (player->y > APP_SCREEN_HEIGHT)
-		player->y = APP_SCREEN_HEIGHT;
-}
-
-bool StateLevel::checkForCollision( UnitBase *unitA, UnitBase *unitB )
-{
-	if ( ( ( unitA->x - unitA->getWidth() / 2.0f < unitB->x + unitB->getWidth() / 2.0f ) &&
-			( unitB->x - unitB->getWidth() / 2.0f < unitA->x + unitA->getWidth() / 2.0f ) ) &&
-			( ( unitA->y - unitA->getHeight() / 2.0f < unitB->y + unitB->getHeight() / 2.0f ) &&
-			  ( unitB->y - unitB->getHeight() / 2.0f < unitA->y + unitA->getHeight() / 2.0f ) ) )
-		return true;
-	return false;
+	if ( *player->x < 0 )
+		*player->x = 0;
+	else if ( *player->x > APP_SCREEN_WIDTH )
+		*player->x = APP_SCREEN_WIDTH;
+	if ( *player->y < 0 )
+		*player->y = 0;
+	else if ( *player->y > APP_SCREEN_HEIGHT )
+		*player->y = APP_SCREEN_HEIGHT;
 }
 
 ///--- PRIVATE -----------------------------------------------------------------

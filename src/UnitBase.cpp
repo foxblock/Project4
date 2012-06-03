@@ -1,15 +1,17 @@
 #include "UnitBase.h"
 
-UnitBase::UnitBase( StateLevel* newParent )
+#include "ShapeBase.h"
+
+UnitBase::UnitBase( StateLevel* newParent, ShapeBase *newShape )
 {
-	x = 0;
-	y = 0;
-	w = 1;
-	h = 1;
 	parent = newParent;
 	toBeRemoved = false;
 	deadlyOnTouch = false;
 	invincible = false;
+	shape = newShape;
+	x = NULL;
+	y = NULL;
+	activeSprite = NULL;
 	#ifdef _DEBUG
 	debugString = "";
 	#endif
@@ -25,13 +27,28 @@ UnitBase::~UnitBase()
 
 int UnitBase::update( Uint32 delta )
 {
-	spUpdateSprite( activeSprite, delta );
+	if ( activeSprite )
+		spUpdateSprite( activeSprite, delta );
 	return 0;
 }
 
 void UnitBase::render( SDL_Surface *target )
 {
-	spDrawSprite( x, y, -1, activeSprite );
+	if ( activeSprite )
+		spDrawSprite( *x, *y, -1, activeSprite );
+}
+
+bool UnitBase::checkCollision( UnitBase const * const other ) const
+{
+	if ( shape->checkCollision( other->shape ) )
+		return true;
+	return false;
+}
+
+void UnitBase::collisionResponse( UnitBase * const other )
+{
+	if (deadlyOnTouch && !other->invincible )
+		other->toBeRemoved = true;
 }
 
 void UnitBase::ai( UnitBase* player )

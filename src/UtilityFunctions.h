@@ -4,6 +4,8 @@
 #include <sstream>
 #include <string>
 
+#define FLOAT_ACCURACY 1e-6
+
 namespace Utility
 {
 	template <class T>

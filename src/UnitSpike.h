@@ -2,6 +2,7 @@
 #define _UNITSPIKE_H
 
 #include "UnitBase.h"
+#include "ShapeRect.h"
 
 class UnitSpike : public UnitBase
 {
@@ -10,6 +11,8 @@ public:
 	virtual ~UnitSpike();
 
 	void ai( UnitBase* player );
+
+	ShapeRect shape;
 protected:
 
 private:

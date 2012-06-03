@@ -23,6 +23,7 @@
 #define ERROR_CODE -67
 
 #define STARTING_STATE StateLevel
+#define PLAYER_CLASS UnitSpike
 
 #endif // _GAME_DEFINES_H
 

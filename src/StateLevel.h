@@ -7,7 +7,7 @@
 #include "UnitBase.h"
 #include "Timer.h"
 
-class UnitLaser;
+class PLAYER_CLASS;
 
 class StateLevel : public StateBase
 {
@@ -18,16 +18,18 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
-	std::vector<UnitBase *> units;
-	UnitBase *player;
+	void addUnit(UnitBase *newUnit);
+
+	PLAYER_CLASS *player;
 
 #ifdef _DEBUG
 	std::string debugString;
 #endif
 protected:
 	void handleInput();
-	bool checkForCollision( UnitBase *unitA, UnitBase *unitB );
 
+	std::vector<UnitBase *> units;
+	std::vector<UnitBase *> queue;
 	Timer spawnTimer;
 	spFontPointer debugText;
 private:
