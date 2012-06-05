@@ -15,6 +15,8 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
+	bool checkCollision( UnitBase const * const other ) const;
+
 	void ai( UnitBase* player );
 
 	ShapeRect shape;

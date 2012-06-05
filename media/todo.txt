@@ -1,0 +1,38 @@
+---
+- Polish enemy behaviour
+  - redo spike movement
+  - laser charge time, attack radius and tracking behaviour
+- Polish player movement
+  - acceleration, deceleration
+- Change units to use SimpleFlags instead of boolean values
+---
+- Create player character
+- Add more enemies
+- Create abstract event system
+---
+- Spawning system
+  - create a class/definition of a wave
+  - create different wave data
+  - create event system checking wave spawning criteria
+---
+- Scoring system
+  - assign points to each unit
+  - create combo and multiplier calculation
+---
+- Highscore
+  - show highscore after death
+  - enable player to enter name
+  - keep list of top scores and compare with new score
+  - save score to disk
+  - encrypt save file
+---
+- Menus, navigation
+- Help screen
+- Pause
+- Change to fit different resolutions
+- Draw menu elements (buttons, icons, etc.)
+---
+- Change render pipeline for final graphics style
+  - change units to be drawn with sparrow shapes
+  - expose pixel matrix
+  - create style class for pixel manipulation

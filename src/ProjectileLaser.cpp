@@ -5,7 +5,7 @@ ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :
 {
 	x = &(shape.target.x);
 	y = &(shape.target.y);
-	//deadlyOnTouch = true;
+	deadlyOnTouch = true;
 	invincible = true;
 	life.start( duration );
 }

@@ -8,7 +8,7 @@
 
 #define EYE_DISTANCE 15.0f
 #define ROTATION_SPEED 0.025f
-#define ROTATION_THESHOLD 0.01f
+#define ROTATION_THESHOLD 0.05f
 
 UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -28,6 +28,8 @@ UnitLaser::~UnitLaser()
 {
 	spDeleteSprite( idle );
 	SDL_FreeSurface( image );
+	if ( projectile )
+		projectile->toBeRemoved = true;
 }
 
 
@@ -56,6 +58,13 @@ void UnitLaser::render( SDL_Surface *target )
 	spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) * EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 255, 0, 0 ) );
 }
 
+bool UnitLaser::checkCollision( UnitBase const * const other ) const
+{
+	if ( other != projectile && shape.checkCollision( other->shape ) )
+		return true;
+	return false;
+}
+
 void UnitLaser::ai( UnitBase *player )
 {
 	float diffX = *player->x - *x;
@@ -73,7 +82,7 @@ void UnitLaser::ai( UnitBase *player )
 
 	if ( fabs( newRot - rotation ) < ROTATION_THESHOLD )
 	{
-		rotation = newRot;
+		//rotation = newRot;
 		if ( !projectile )
 		{
 			projectile = new ProjectileLaser( parent, 500 );
@@ -81,8 +90,7 @@ void UnitLaser::ai( UnitBase *player )
 			parent->addUnit( projectile );
 		}
 	}
-	else
-		rotation += ( newRot - rotation ) / ( 2 * M_PI ) * ROTATION_SPEED;
+	rotation += ( newRot - rotation ) / ( 2 * M_PI ) * ROTATION_SPEED;
 
 	if ( rotation < -M_PI )
 		rotation += 2 * M_PI;

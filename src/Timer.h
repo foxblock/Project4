@@ -8,7 +8,7 @@ public:
 	virtual ~Timer();
 
 	// pass a value >0 for a countdown and <= for stopwatch
-	void start( int milliseconds );
+	void start( int milliseconds=0 );
 	void pause();
 	void stop();
 

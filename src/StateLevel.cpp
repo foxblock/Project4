@@ -20,6 +20,18 @@ StateLevel::StateLevel() : StateBase()
 
 	debugText = spFontLoad( "fonts/lato.ttf", 12 );
 	spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
+//
+//	spawnTimer.start();
+//	spawnTimer.pause();
+//
+//	ProjectileLaser* temp = new ProjectileLaser(this,1000);
+//	units.push_back(temp);
+//	temp->shape.pos = Vector2d<float>(0,0);
+//	temp->shape.target = Vector2d<float>(600,600);
+//	temp = new ProjectileLaser(this,1000);
+//	units.push_back(temp);
+//	temp->shape.pos = Vector2d<float>(0,600);
+//	temp->shape.target = Vector2d<float>(600,0);
 }
 
 StateLevel::~StateLevel()
@@ -42,13 +54,16 @@ int StateLevel::update( Uint32 delta )
 	debugString = Utility::numToStr( spGetFPS() ) + " fps\n";
 #endif
 
-	handleInput();
+	if (player)
+		handleInput();
 
-	player->update( delta );
+	if (player)
+		player->update( delta );
 
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 	{
-		( *I )->ai( player );
+		if (player)
+			( *I )->ai( player );
 		( *I )->update( delta );
 		for ( std::vector<UnitBase *>::iterator K = I + 1; K != units.end(); ++K )
 		{
@@ -58,7 +73,7 @@ int StateLevel::update( Uint32 delta )
 				( *K )->collisionResponse( *I );
 			}
 		}
-		if ( ( *I )->checkCollision( player ) )
+		if ( player && ( *I )->checkCollision( player ) )
 		{
 			( *I )->collisionResponse( player );
 			player->collisionResponse( *I );
@@ -102,7 +117,8 @@ int StateLevel::update( Uint32 delta )
 		do
 		{
 			*units.back()->y = rand() % APP_SCREEN_HEIGHT;
-			temp = sqrt( pow( *units.back()->x - *player->x, 2 ) + pow( *units.back()->y - * player->y, 2 ) );
+			if (player)
+				temp = sqrt( pow( *units.back()->x - *player->x, 2 ) + pow( *units.back()->y - * player->y, 2 ) );
 		}
 		while ( temp < PLAYER_SAFE_RADIUS );
 	}
@@ -111,7 +127,7 @@ int StateLevel::update( Uint32 delta )
 	debugString += Utility::numToStr( units.size() ) + " units\n";
 #endif
 
-	if ( player->toBeRemoved )
+	if ( player && player->toBeRemoved )
 		return 1;
 
 	return 0;
@@ -122,7 +138,8 @@ void StateLevel::render( SDL_Surface *target )
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 		( *I )->render( target );
 
-	player->render( target );
+	if (player)
+		player->render( target );
 
 #ifdef _DEBUG
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
