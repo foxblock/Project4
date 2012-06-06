@@ -36,12 +36,12 @@ void UnitSpike::ai( UnitBase *player )
 		*x -= (*x - *player->x) / dist * SPIKE_ATTACK_SPEED;
 		*y -= (*y - *player->y) / dist * SPIKE_ATTACK_SPEED;
 		activeSprite = attack;
-		deadlyOnTouch = true;
+		props.addFlag(ufDeadlyOnTouch);
 	}
 	else
 	{
 		activeSprite = idle;
-		deadlyOnTouch = false;
+		props.removeFlag(ufDeadlyOnTouch);
 	}
 }
 

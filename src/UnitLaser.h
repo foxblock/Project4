@@ -28,6 +28,8 @@ private:
 	ProjectileLaser* projectile;
 
 	float rotation;
+	bool hasCharged;
+	Timer charge;
 };
 
 

@@ -31,7 +31,9 @@ protected:
 	std::vector<UnitBase *> units;
 	std::vector<UnitBase *> queue;
 	Timer spawnTimer;
+#ifdef _DEBUG
 	spFontPointer debugText;
+#endif
 private:
 
 };

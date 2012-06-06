@@ -11,12 +11,14 @@
 #define UNIT_TYPE_COUNT 2
 #define PLAYER_SAFE_RADIUS 200
 
+#define PLAYER_VELOCITY 2.0f
+
 StateLevel::StateLevel() : StateBase()
 {
 	player = new PLAYER_CLASS( this );
 	*( player->x ) = 300;
 	*( player->y ) = 300;
-	player->invincible = true;
+	//player->props.addFlag(UnitBase::ufInvincible);
 
 	debugText = spFontLoad( "fonts/lato.ttf", 12 );
 	spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
@@ -160,13 +162,29 @@ void StateLevel::addUnit(UnitBase *newUnit)
 
 void StateLevel::handleInput()
 {
-	if ( spGetInput()->axis[0] != 0 )
+	if ( spGetInput()->axis[0] < 0 )
 	{
-		*player->x += spGetInput()->axis[0];
+		player->vel.x = -PLAYER_VELOCITY;
 	}
-	if ( spGetInput()->axis[1] != 0 )
+	else if ( spGetInput()->axis[0] > 0 )
 	{
-		*player->y -= spGetInput()->axis[1];
+		player->vel.x = PLAYER_VELOCITY;
+	}
+	else
+	{
+		player->vel.x = 0;
+	}
+	if ( spGetInput()->axis[1] < 0 )
+	{
+		player->vel.y = PLAYER_VELOCITY;
+	}
+	else if ( spGetInput()->axis[1] > 0 )
+	{
+		player->vel.y = -PLAYER_VELOCITY;
+	}
+	else
+	{
+		player->vel.y = 0;
 	}
 
 	if ( *player->x < 0 )

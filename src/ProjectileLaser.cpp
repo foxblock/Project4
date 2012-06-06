@@ -5,8 +5,8 @@ ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :
 {
 	x = &(shape.target.x);
 	y = &(shape.target.y);
-	deadlyOnTouch = true;
-	invincible = true;
+	props.addFlag(ufDeadlyOnTouch);
+	props.addFlag(ufInvincible);
 	life.start( duration );
 }
 

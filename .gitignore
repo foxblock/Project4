@@ -3,3 +3,4 @@ obj/*
 *.cscope_file_list
 *.depend
 *.layout
+media/index.html

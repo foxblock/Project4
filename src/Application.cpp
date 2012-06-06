@@ -55,7 +55,7 @@ int Application::update( Uint32 delta )
 			return -1;
 		case 0: // keep using current state
 			break;
-		case 1:
+		case 1: // StateLevel
 			prevState = activeState;
 			activeState = new StateLevel();
 			break;

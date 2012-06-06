@@ -2,6 +2,8 @@
 #define _UNITBASE_H
 
 #include "gameDefines.h"
+#include "Vector2d.h"
+#include "SimpleFlags.h"
 
 #include SPARROW_PATH
 #include <string>
@@ -24,11 +26,19 @@ public:
 	virtual void ai( UnitBase* player );
 
 	bool toBeRemoved;
-	bool deadlyOnTouch;
-	bool invincible;
+
+	SimpleFlags props;
+
+	enum UnitFlags {
+		ufUNKNOWN=0,
+		ufDeadlyOnTouch=1,
+		ufInvincible=2,
+		ufEOL=4
+	};
 
 	float *x;
 	float *y;
+	Vector2d<float> vel;
 	ShapeBase *shape;
 
 	#ifdef _DEBUG

@@ -5,10 +5,8 @@
 UnitBase::UnitBase( StateLevel* newParent, ShapeBase *newShape )
 {
 	parent = newParent;
-	toBeRemoved = false;
-	deadlyOnTouch = false;
-	invincible = false;
 	shape = newShape;
+	toBeRemoved = false;
 	x = NULL;
 	y = NULL;
 	activeSprite = NULL;
@@ -29,6 +27,8 @@ int UnitBase::update( Uint32 delta )
 {
 	if ( activeSprite )
 		spUpdateSprite( activeSprite, delta );
+	*x += vel.x;
+	*y += vel.y;
 	return 0;
 }
 
@@ -47,7 +47,7 @@ bool UnitBase::checkCollision( UnitBase const * const other ) const
 
 void UnitBase::collisionResponse( UnitBase * const other )
 {
-	if (deadlyOnTouch && !other->invincible )
+	if (props.hasFlag(ufDeadlyOnTouch) && !other->props.hasFlag(ufInvincible) )
 		other->toBeRemoved = true;
 }
 

@@ -54,7 +54,7 @@ bool ShapeRay::checkCollision( ShapeRay const *const other ) const
 			   ( otherDir.x * dir.y - otherDir.y * dir.x );
 	float m1 = ( ( other->pos.x - pos.x ) + m2 * otherDir.x ) / dir.x;
 
-	printf( "%f %f | %f %f\n", pos.x + dir.x * m1, pos.y + dir.y * m1, other->pos.x + otherDir.x * m2, other->pos.y + otherDir.y * m2 );
+	//printf( "%f %f | %f %f\n", pos.x + dir.x * m1, pos.y + dir.y * m1, other->pos.x + otherDir.x * m2, other->pos.y + otherDir.y * m2 );
 
 	if ( infiniteLength || fabs(m1) * dir.length() < length() )
 	{
