@@ -115,6 +115,7 @@
 		<Unit filename="src\ShapeRect.h" />
 		<Unit filename="src\SimpleDirection.cpp" />
 		<Unit filename="src\SimpleDirection.h" />
+		<Unit filename="src\SimpleFlags.h" />
 		<Unit filename="src\StateBase.cpp" />
 		<Unit filename="src\StateBase.h" />
 		<Unit filename="src\StateLevel.cpp" />

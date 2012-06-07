@@ -30,7 +30,7 @@ Application::~Application()
 
 bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) )
 {
-	if ( spLoop( spDraw, spCalc, 0, NULL, NULL ) != ERROR_CODE )
+	if ( spLoop( spDraw, spCalc, 2, NULL, NULL ) != ERROR_CODE )
 		return true;
 	return false;
 }

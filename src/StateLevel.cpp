@@ -11,7 +11,7 @@
 #define UNIT_TYPE_COUNT 2
 #define PLAYER_SAFE_RADIUS 200
 
-#define PLAYER_VELOCITY 2.0f
+#define PLAYER_VELOCITY 1.0f
 
 StateLevel::StateLevel() : StateBase()
 {
@@ -20,8 +20,10 @@ StateLevel::StateLevel() : StateBase()
 	*( player->y ) = 300;
 	//player->props.addFlag(UnitBase::ufInvincible);
 
+#ifdef _DEBUG
 	debugText = spFontLoad( "fonts/lato.ttf", 12 );
 	spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
+#endif
 //
 //	spawnTimer.start();
 //	spawnTimer.pause();
