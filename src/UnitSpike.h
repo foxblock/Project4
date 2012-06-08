@@ -10,7 +10,7 @@ public:
 	UnitSpike( StateLevel *newParent );
 	virtual ~UnitSpike();
 
-	void ai( UnitBase* player );
+	void ai( Uint32 delta, UnitBase* player );
 
 	ShapeRect shape;
 protected:

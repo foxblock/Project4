@@ -4,6 +4,10 @@
 
 Application::Application()
 {
+#ifdef _DEBUG
+	SDL_putenv("SDL_VIDEO_WINDOW_POS=500,200");
+#endif
+
 	spInitCore();
 
 	screen = spCreateWindow( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT, APP_FULLSCREEN, APP_RESIZE );

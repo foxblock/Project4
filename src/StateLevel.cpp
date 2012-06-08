@@ -11,7 +11,8 @@
 #define UNIT_TYPE_COUNT 2
 #define PLAYER_SAFE_RADIUS 200
 
-#define PLAYER_VELOCITY 1.0f
+// Pixels per millisecond
+#define PLAYER_VELOCITY 0.3f
 
 StateLevel::StateLevel() : StateBase()
 {
@@ -22,7 +23,8 @@ StateLevel::StateLevel() : StateBase()
 
 #ifdef _DEBUG
 	debugText = spFontLoad( "fonts/lato.ttf", 12 );
-	spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
+	if ( debugText )
+		spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
 #endif
 //
 //	spawnTimer.start();
@@ -59,7 +61,7 @@ int StateLevel::update( Uint32 delta )
 #endif
 
 	if (player)
-		handleInput();
+		handleInput( delta );
 
 	if (player)
 		player->update( delta );
@@ -67,7 +69,7 @@ int StateLevel::update( Uint32 delta )
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 	{
 		if (player)
-			( *I )->ai( player );
+			( *I )->ai( delta, player );
 		( *I )->update( delta );
 		for ( std::vector<UnitBase *>::iterator K = I + 1; K != units.end(); ++K )
 		{
@@ -151,7 +153,8 @@ void StateLevel::render( SDL_Surface *target )
 		if ( ( *I )->debugString[0] != 0 )
 			debugString += ( *I )->debugString + "\n";
 	}
-	spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
+	if ( debugText )
+		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
 #endif
 }
 
@@ -162,15 +165,15 @@ void StateLevel::addUnit(UnitBase *newUnit)
 
 ///--- PROTECTED ---------------------------------------------------------------
 
-void StateLevel::handleInput()
+void StateLevel::handleInput( Uint32 delta )
 {
 	if ( spGetInput()->axis[0] < 0 )
 	{
-		player->vel.x = -PLAYER_VELOCITY;
+		player->vel.x = -PLAYER_VELOCITY * delta;
 	}
 	else if ( spGetInput()->axis[0] > 0 )
 	{
-		player->vel.x = PLAYER_VELOCITY;
+		player->vel.x = PLAYER_VELOCITY * delta;
 	}
 	else
 	{
@@ -178,11 +181,11 @@ void StateLevel::handleInput()
 	}
 	if ( spGetInput()->axis[1] < 0 )
 	{
-		player->vel.y = PLAYER_VELOCITY;
+		player->vel.y = PLAYER_VELOCITY * delta;
 	}
 	else if ( spGetInput()->axis[1] > 0 )
 	{
-		player->vel.y = -PLAYER_VELOCITY;
+		player->vel.y = -PLAYER_VELOCITY * delta;
 	}
 	else
 	{

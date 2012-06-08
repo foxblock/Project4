@@ -2,8 +2,9 @@
 
 #include <cmath>
 
-#define SPIKE_ATTACK_SPEED 0.25
-#define SPIKE_ATTACK_RADIUS 200
+// Pixels per millisecond
+#define SPIKE_ATTACK_SPEED 0.1f
+#define SPIKE_ATTACK_RADIUS 200.0f
 
 UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -28,13 +29,13 @@ UnitSpike::~UnitSpike()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-void UnitSpike::ai( UnitBase *player )
+void UnitSpike::ai( Uint32 delta, UnitBase *player )
 {
 	float dist = sqrt( pow( *x - *player->x, 2 ) + pow( *y - *player->y, 2 ) );
 	if ( dist < SPIKE_ATTACK_RADIUS )
 	{
-		*x -= (*x - *player->x) / dist * SPIKE_ATTACK_SPEED;
-		*y -= (*y - *player->y) / dist * SPIKE_ATTACK_SPEED;
+		*x -= (*x - *player->x) / dist * SPIKE_ATTACK_SPEED * delta;
+		*y -= (*y - *player->y) / dist * SPIKE_ATTACK_SPEED * delta;
 		activeSprite = attack;
 		props.addFlag(ufDeadlyOnTouch);
 	}

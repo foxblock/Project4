@@ -26,7 +26,7 @@ public:
 	std::string debugString;
 #endif
 protected:
-	void handleInput();
+	void handleInput( Uint32 delta );
 
 	std::vector<UnitBase *> units;
 	std::vector<UnitBase *> queue;

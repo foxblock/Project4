@@ -51,7 +51,7 @@ void UnitBase::collisionResponse( UnitBase * const other )
 		other->toBeRemoved = true;
 }
 
-void UnitBase::ai( UnitBase* player )
+void UnitBase::ai( Uint32 delta, UnitBase* player )
 {
 	//
 }

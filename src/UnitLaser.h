@@ -17,7 +17,7 @@ public:
 
 	bool checkCollision( UnitBase const * const other ) const;
 
-	void ai( UnitBase* player );
+	void ai( Uint32 delta, UnitBase* player );
 
 	ShapeRect shape;
 protected:

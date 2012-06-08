@@ -7,9 +7,11 @@
 #include "StateLevel.h"
 
 #define EYE_DISTANCE 15.0f
-#define ROTATION_SPEED 0.025f
+// Radians per millisecond
+#define ROTATION_SPEED 0.01f
 #define ROTATION_THESHOLD 0.05f
 #define CHARGE_TIME 500
+#define LASER_ATTACK_RADIUS 300.0f
 
 UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -65,9 +67,14 @@ void UnitLaser::render( SDL_Surface *target )
 	UnitBase::render( target );
 
 	if ( hasCharged )
-		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) * EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 255, 0, 0 ) );
+	{
+		float factor = (float)charge.getTime() / (float)CHARGE_TIME;
+		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) *
+					EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 255.0f * (1 - factor), 0, 255.0f * factor ) );
+	}
 	else
-		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) * EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 0, 0, 255 ) );
+		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) *
+					EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 0, 0, 255 ) );
 }
 
 bool UnitLaser::checkCollision( UnitBase const *const other ) const
@@ -77,12 +84,12 @@ bool UnitLaser::checkCollision( UnitBase const *const other ) const
 	return false;
 }
 
-void UnitLaser::ai( UnitBase *player )
+void UnitLaser::ai( Uint32 delta, UnitBase *player )
 {
-	if ( !hasCharged )
+	float diffX = *player->x - *x;
+	float diffY = *y - *player->y;
+	if ( !hasCharged && (sqrt(pow(diffX,2) + pow(diffY,2)) < LASER_ATTACK_RADIUS || projectile))
 	{
-		float diffX = *player->x - *x;
-		float diffY = *y - *player->y;
 		float newRot = 0;
 		if ( diffY > 0 )
 			newRot = ( -M_PI_2 + atan( diffX / diffY ) );
@@ -100,7 +107,7 @@ void UnitLaser::ai( UnitBase *player )
 			charge.start( CHARGE_TIME );
 			hasCharged = true;
 		}
-		rotation += ( newRot - rotation ) / ( 2 * M_PI ) * ROTATION_SPEED;
+		rotation += ( newRot - rotation ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
 
 		if ( rotation < -M_PI )
 			rotation += 2 * M_PI;

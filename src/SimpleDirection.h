@@ -33,15 +33,15 @@ public:
     virtual ~SimpleDirection() {}
 
     // Returns the opposite direction of this->value
-    virtual SimpleDirection opposite() const
+    SimpleDirection opposite() const
     {
         return SimpleDirection(getOpposite(value));
     }
 
     // Returns an integer describing the direction
-    virtual int xDirection() const; // -1 - left, 0 - none, 1 - right
-    virtual int yDirection() const; // -1 - up, 0 - none 1 - down
-    virtual Vector2d<int> vectorDirection() const;
+    int xDirection() const; // -1 - left, 0 - none, 1 - right
+    int yDirection() const; // -1 - up, 0 - none 1 - down
+    Vector2d<int> vectorDirection() const;
 
     // Comparison operators
     bool operator==(const SimpleDirection& dir) const
@@ -83,9 +83,9 @@ public:
     int value; // the actual value
 protected:
     // Checks whether the passed value is valid and returns it, returns diNONE otherwise
-    virtual int checkIntValue(const int &newValue) const;
+    int checkIntValue(const int &newValue) const;
     // Returns the opposite direction of the one passed
-    virtual int getOpposite(const int &someValue) const;
+    int getOpposite(const int &someValue) const;
 };
 
 #endif

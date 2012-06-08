@@ -23,7 +23,7 @@ public:
 	virtual bool checkCollision( UnitBase const * const other ) const;
 	virtual void collisionResponse( UnitBase * const other );
 
-	virtual void ai( UnitBase* player );
+	virtual void ai( Uint32 delta, UnitBase* player );
 
 	bool toBeRemoved;
 
