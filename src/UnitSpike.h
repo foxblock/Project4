@@ -2,7 +2,7 @@
 #define _UNITSPIKE_H
 
 #include "UnitBase.h"
-#include "ShapeRect.h"
+#include "ShapeCircle.h"
 
 class UnitSpike : public UnitBase
 {
@@ -12,7 +12,7 @@ public:
 
 	void ai( Uint32 delta, UnitBase* player );
 
-	ShapeRect shape;
+	ShapeCircle shape;
 protected:
 
 private:

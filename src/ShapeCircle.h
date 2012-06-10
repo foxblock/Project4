@@ -1,20 +1,16 @@
-#ifndef _SHAPERAY_H
-#define _SHAPERAY_H
-
-#include "Vector2d.h"
+#ifndef _SHAPE_CIRCLE_H
+#define _SHAPE_CIRCLE_H
 
 #include "ShapeBase.h"
 
 class ShapeRect;
-class ShapeCircle;
+class ShapeRay;
 
-class ShapeRay : public ShapeBase
+class ShapeCircle : public ShapeBase
 {
 public:
-	ShapeRay();
-	virtual ~ShapeRay();
-
-	float length() const { return (target - pos).length(); }
+	ShapeCircle();
+	virtual ~ShapeCircle();
 
 	bool checkCollision( ShapeBase const * const other ) const;
 	bool checkCollision( ShapeRect const * const other ) const;
@@ -23,8 +19,8 @@ public:
 
 	void render( SDL_Surface* target, Uint32 colour );
 
-	Vector2d<float> target;
-	bool infiniteLength;
+	float radius;
+
 protected:
 
 private:
@@ -32,5 +28,5 @@ private:
 };
 
 
-#endif // _SHAPERAY_H
+#endif // _SHAPE_CIRCLE_H
 

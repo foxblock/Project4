@@ -4,6 +4,9 @@
 
 #include "UtilityFunctions.h"
 #include "ShapeRect.h"
+#include "ShapeCircle.h"
+#include "gameDefines.h"
+#include SPARROW_PATH
 
 ShapeRay::ShapeRay() :
 	ShapeBase(),
@@ -44,7 +47,7 @@ bool ShapeRay::checkCollision( ShapeRay const *const other ) const
 	Vector2d<float> dir = ( target - pos ).unit();
 	Vector2d<float> otherDir = ( other->target - other->pos ).unit();
 
-	if ( fabs(dir.x - otherDir.x - dir.y + otherDir.y) < FLOAT_ACCURACY )
+	if ( fabs( dir.x - otherDir.x - dir.y + otherDir.y ) < FLOAT_ACCURACY )
 		return false;
 
 	if ( infiniteLength && other->infiniteLength )
@@ -54,15 +57,34 @@ bool ShapeRay::checkCollision( ShapeRay const *const other ) const
 			   ( otherDir.x * dir.y - otherDir.y * dir.x );
 	float m1 = ( ( other->pos.x - pos.x ) + m2 * otherDir.x ) / dir.x;
 
-	//printf( "%f %f | %f %f\n", pos.x + dir.x * m1, pos.y + dir.y * m1, other->pos.x + otherDir.x * m2, other->pos.y + otherDir.y * m2 );
-
-	if ( infiniteLength || fabs(m1) * dir.length() < length() )
+	if ( infiniteLength || ( m1 >= 0 && fabs( m1 ) * dir.length() < length() ) )
 	{
-		if ( other->infiniteLength || fabs(m2) * otherDir.length() < other->length() )
+		if ( other->infiniteLength || ( m2 >= 0 && fabs( m2 ) * otherDir.length() < other->length() ) )
 			return true;
 	}
 
 	return false;
+}
+
+bool ShapeRay::checkCollision( ShapeCircle const *const other ) const
+{
+	ShapeRay temp;
+	temp.pos = other->pos;
+	Vector2d<float> dir = ( target - pos ).unit();
+	dir = Vector2d<float>( -dir.y, dir.x );
+	temp.target = temp.pos + dir * other->radius;
+	if ( checkCollision( &temp ) )
+		return true;
+	else
+	{
+		temp.target = temp.pos - dir * other->radius;
+		return checkCollision( &temp );
+	}
+}
+
+void ShapeRay::render( SDL_Surface *target, Uint32 colour )
+{
+	spLine( pos.x, pos.y, -1, this->target.x, this->target.y, -1, colour );
 }
 
 ///--- PROTECTED ---------------------------------------------------------------

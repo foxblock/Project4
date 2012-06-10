@@ -5,12 +5,12 @@
 
 Application myApp;
 
-int update( Uint32 delta )
+int _loopupdate( Uint32 delta )
 {
 	return myApp.update(delta);
 }
 
-void render()
+void _looprender()
 {
 	myApp.render();
 }
@@ -18,7 +18,7 @@ void render()
 
 int main( int argc, char **argv )
 {
-	if ( !myApp.showModal(render,update) )
+	if ( !myApp.showModal(_looprender,_loopupdate) )
 	{
 		printf( "Application terminated with error: %s\n", myApp.getLastError().c_str() );
 	}

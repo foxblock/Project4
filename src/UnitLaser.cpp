@@ -11,7 +11,8 @@
 #define ROTATION_SPEED 0.01f
 #define ROTATION_THESHOLD 0.05f
 #define CHARGE_TIME 500
-#define LASER_ATTACK_RADIUS 300.0f
+// Actual value: 300
+#define LASER_ATTACK_RADIUS_SQR 90000.0f
 
 UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -41,6 +42,16 @@ UnitLaser::~UnitLaser()
 
 int UnitLaser::update( Uint32 delta )
 {
+
+	if ( !projectile && charge.getStatus() == -1 && hasCharged )
+	{
+		if ( parent )
+		{
+			projectile = new ProjectileLaser( parent, 500 );
+			parent->addUnit( projectile );
+		}
+		hasCharged = false;
+	}
 	if ( projectile )
 	{
 		if ( projectile->toBeRemoved )
@@ -51,13 +62,6 @@ int UnitLaser::update( Uint32 delta )
 			projectile->shape.pos = shape.pos + angle * EYE_DISTANCE;
 			projectile->shape.target = shape.pos + angle * 1000;
 		}
-	}
-	if ( !projectile && charge.getStatus() == -1 && hasCharged )
-	{
-		projectile = new ProjectileLaser( parent, 500 );
-		projectile->shape.pos = shape.pos + Vector2d<float>( cos( rotation ), sin( rotation ) ) * EYE_DISTANCE;
-		parent->addUnit( projectile );
-		hasCharged = false;
 	}
 	return UnitBase::update( delta );
 }
@@ -88,7 +92,7 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 {
 	float diffX = *player->x - *x;
 	float diffY = *y - *player->y;
-	if ( !hasCharged && (sqrt(pow(diffX,2) + pow(diffY,2)) < LASER_ATTACK_RADIUS || projectile))
+	if ( !hasCharged && (Utility::sqr(diffX) + Utility::sqr(diffY) < LASER_ATTACK_RADIUS_SQR || projectile))
 	{
 		float newRot = 0;
 		if ( diffY > 0 )
@@ -101,7 +105,7 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 		else if ( newRot > M_PI_2 && rotation < -M_PI_2 )
 			newRot -= 2 * M_PI;
 
-		if ( fabs( newRot - rotation ) < ROTATION_THESHOLD )
+		if ( !projectile && fabs( newRot - rotation ) < ROTATION_THESHOLD )
 		{
 			//rotation = newRot;
 			charge.start( CHARGE_TIME );

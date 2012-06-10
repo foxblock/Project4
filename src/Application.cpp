@@ -1,6 +1,9 @@
 #include "Application.h"
 
 #include "StateLevel.h"
+#include "StateCollision.h"
+
+#define STARTING_STATE StateCollision
 
 Application::Application()
 {
@@ -62,6 +65,10 @@ int Application::update( Uint32 delta )
 		case 1: // StateLevel
 			prevState = activeState;
 			activeState = new StateLevel();
+			break;
+		case 2: // StateCollision
+			prevState = activeState;
+			activeState = new StateCollision();
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );

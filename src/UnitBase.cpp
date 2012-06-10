@@ -36,6 +36,9 @@ void UnitBase::render( SDL_Surface *target )
 {
 	if ( activeSprite )
 		spDrawSprite( *x, *y, -1, activeSprite );
+#ifdef _DEBUG
+	shape->render( target, SDL_MapRGB(target->format, 228, 0, 228 ) );
+#endif
 }
 
 bool UnitBase::checkCollision( UnitBase const * const other ) const

@@ -7,6 +7,7 @@
 #include "ShapeBase.h"
 
 class ShapeRay;
+class ShapeCircle;
 
 class ShapeRect : public ShapeBase
 {
@@ -26,19 +27,42 @@ public:
 		switch ( corner )
 		{
 		case diTOPLEFT:
-			return Vector2d<float>(pos.x - size.x / 2.0f, pos.y - size.y / 2.0f );
+			return pos - size / 2.0f;
 		case diTOPRIGHT:
 			return Vector2d<float>(pos.x + size.x / 2.0f, pos.y - size.y / 2.0f );
 		case diBOTTOMLEFT:
 			return Vector2d<float>(pos.x - size.x / 2.0f, pos.y + size.y / 2.0f );
 		case diBOTTOMRIGHT:
-			return Vector2d<float>(pos.x + size.x / 2.0f, pos.y + size.y / 2.0f );
+			return pos + size / 2.0f;
+		case diMIDDLE:
+			return pos;
+		default:
+			return Vector2d<float>(0,0);
+		}
+	}
+	float getSide( Directions side ) const
+	{
+		switch ( side )
+		{
+		case diLEFT:
+			return pos.x - size.x / 2.0f;
+		case diRIGHT:
+			return pos.x + size.x / 2.0f;
+		case diTOP:
+			return pos.y - size.y / 2.0f;
+		case diBOTTOM:
+			return pos.y - size.y / 2.0f;
+		default:
+			return 0;
 		}
 	}
 
 	bool checkCollision( ShapeBase const * const other ) const;
 	bool checkCollision( ShapeRect const * const other ) const;
 	bool checkCollision( ShapeRay const * const other ) const;
+	bool checkCollision( ShapeCircle const * const other ) const;
+
+	void render( SDL_Surface* screen, Uint32 colour );
 
 	Vector2d<float> size;
 protected:

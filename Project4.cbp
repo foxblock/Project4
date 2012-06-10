@@ -109,6 +109,8 @@
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
 		<Unit filename="src\ShapeBase.h" />
+		<Unit filename="src\ShapeCircle.cpp" />
+		<Unit filename="src\ShapeCircle.h" />
 		<Unit filename="src\ShapeRay.cpp" />
 		<Unit filename="src\ShapeRay.h" />
 		<Unit filename="src\ShapeRect.cpp" />
@@ -118,6 +120,8 @@
 		<Unit filename="src\SimpleFlags.h" />
 		<Unit filename="src\StateBase.cpp" />
 		<Unit filename="src\StateBase.h" />
+		<Unit filename="src\StateCollision.cpp" />
+		<Unit filename="src\StateCollision.h" />
 		<Unit filename="src\StateLevel.cpp" />
 		<Unit filename="src\StateLevel.h" />
 		<Unit filename="src\Timer.cpp" />

@@ -3,9 +3,11 @@
 
 #include "Vector2d.h"
 #include <cstdio>
+#include "SDL/SDL.h"
 
 class ShapeRect;
 class ShapeRay;
+class ShapeCircle;
 
 class ShapeBase
 {
@@ -16,6 +18,9 @@ public:
 	virtual bool checkCollision( ShapeBase const * const other ) const = 0;
 	virtual bool checkCollision( ShapeRect const * const other ) const = 0;
 	virtual bool checkCollision( ShapeRay const * const other ) const = 0;
+	virtual bool checkCollision( ShapeCircle const * const other ) const = 0;
+
+	virtual void render( SDL_Surface* target, Uint32 colour ) = 0;
 
 	Vector2d<float> pos;
 protected:

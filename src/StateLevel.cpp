@@ -9,8 +9,8 @@
 #include "UnitLaser.h"
 
 #define UNIT_TYPE_COUNT 2
-#define PLAYER_SAFE_RADIUS 200
-
+// Actual value: 200
+#define PLAYER_SAFE_RADIUS_SQR 40000.0f
 // Pixels per millisecond
 #define PLAYER_VELOCITY 0.3f
 
@@ -19,7 +19,7 @@ StateLevel::StateLevel() : StateBase()
 	player = new PLAYER_CLASS( this );
 	*( player->x ) = 300;
 	*( player->y ) = 300;
-	//player->props.addFlag(UnitBase::ufInvincible);
+	player->props.addFlag(UnitBase::ufInvincible);
 
 #ifdef _DEBUG
 	debugText = spFontLoad( "fonts/lato.ttf", 12 );
@@ -124,9 +124,9 @@ int StateLevel::update( Uint32 delta )
 		{
 			*units.back()->y = rand() % APP_SCREEN_HEIGHT;
 			if (player)
-				temp = sqrt( pow( *units.back()->x - *player->x, 2 ) + pow( *units.back()->y - * player->y, 2 ) );
+				temp = Utility::sqr( *units.back()->x - *player->x ) + Utility::sqr( *units.back()->y - * player->y );
 		}
-		while ( temp < PLAYER_SAFE_RADIUS );
+		while ( temp < PLAYER_SAFE_RADIUS_SQR );
 	}
 
 #ifdef _DEBUG

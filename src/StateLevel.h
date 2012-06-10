@@ -7,6 +7,8 @@
 #include "UnitBase.h"
 #include "Timer.h"
 
+#define PLAYER_CLASS UnitSpike
+
 class PLAYER_CLASS;
 
 class StateLevel : public StateBase
