@@ -22,7 +22,8 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	activeSprite = idle;
 
 	rotation = 0;
-	shape.size = Vector2d<float>( 55, 55 );
+	//shape.size = Vector2d<float>( 55, 55 );
+	shape.radius = 32;
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 	projectile = NULL;
