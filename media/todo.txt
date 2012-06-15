@@ -1,16 +1,14 @@
 ---
-
 DONE - Go over existing code
-- Polish enemy behaviour
-  - redo spike movement
+DONE - Polish enemy behaviour
+DONE   - redo spike movement
 DONE  - laser charge time, attack radius and tracking behaviour
-DONE- Polish player movement
-  - acceleration, deceleration
+DONE - Polish player movement
+DONE   - acceleration, deceleration
 DONE - Change units to use SimpleFlags instead of boolean values
-- Add circle shape/collision class
-
+DONE - Add circle shape/collision class
 ---
-- Create player character
+DONE - Create player character
 - Add more enemies
 - Create abstract event system
 ---

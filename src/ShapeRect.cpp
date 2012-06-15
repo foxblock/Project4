@@ -3,8 +3,8 @@
 #include "ShapeRay.h"
 #include "ShapeCircle.h"
 #include "UtilityFunctions.h"
-#include "gameDefines.h"
-#include SPARROW_PATH
+
+#include "../sparrow3d/sparrowPrimitives.h"
 
 ShapeRect::ShapeRect() :
 	ShapeBase(),

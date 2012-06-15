@@ -1,7 +1,6 @@
-#include "gameDefines.h"
-#include SPARROW_PATH
-
 #include "Application.h"
+
+#include "../sparrow3d/sparrow3d.h"
 
 Application myApp;
 

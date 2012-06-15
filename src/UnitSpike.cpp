@@ -4,8 +4,13 @@
 #include "UtilityFunctions.h"
 
 // Pixels per millisecond
-#define SPIKE_ATTACK_SPEED 0.1f
-#define SPIKE_ATTACK_RADIUS 200.0f
+#define SPIKE_ATTACK_ACCEL 0.003f
+#define SPIKE_CHARGE_SPEED 0.75f
+#define SPIKE_ATTACK_RADIUS_SQR 40000.0f
+#define SPIKE_CHARGE_RADIUS_SQR 5625.0f
+#define SPIKE_WAIT_TIME 500
+#define SPIKE_CHARGE_TIME 500
+#define SPIKE_MOVEMENT_SPEED 0.5f
 
 UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -17,8 +22,10 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	activeSprite = idle;
 	shape.radius = 20;
 	//shape.size = Vector2d<float>(36,36);
-	x = &(shape.pos.x);
-	y = &(shape.pos.y);
+	x = &( shape.pos.x );
+	y = &( shape.pos.y );
+	chargeState = 0;
+	maxMovementSpeed = SPIKE_MOVEMENT_SPEED;
 }
 
 UnitSpike::~UnitSpike()
@@ -33,19 +40,55 @@ UnitSpike::~UnitSpike()
 
 void UnitSpike::ai( Uint32 delta, UnitBase *player )
 {
-	float dist = sqrt( Utility::sqr( *x - *player->x ) + Utility::sqr( *y - *player->y ) );
-	if ( dist < SPIKE_ATTACK_RADIUS )
+	Vector2d<float> diff( *player->x - *x, *player->y - *y );
+	float dist = diff.lengthSquared();
+	if ( chargeTimer.getStatus() == -1 && chargeState == 1 )
 	{
-
-		*x -= (*x - *player->x) / dist * SPIKE_ATTACK_SPEED * delta;
-		*y -= (*y - *player->y) / dist * SPIKE_ATTACK_SPEED * delta;
+		maxMovementSpeed = PHYSICS_DEFAULT_MAXIMUM;
+		vel = diff.unit() * SPIKE_CHARGE_SPEED;
+		friction = 0;
 		activeSprite = attack;
-		props.addFlag(ufDeadlyOnTouch);
+		props.addFlag( ufDeadlyOnTouch );
+		chargeState = 2;
+		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
-	else
+	if ( chargeTimer.getStatus() == -1 && chargeState == 2 )
 	{
+		maxMovementSpeed = SPIKE_MOVEMENT_SPEED;
+		chargeState = 0;
 		activeSprite = idle;
-		props.removeFlag(ufDeadlyOnTouch);
+		props.removeFlag( ufDeadlyOnTouch );
+		friction = PHYSICS_DEFAULT_FRICTION;
+	}
+	if ( chargeState == 0 )
+	{
+		if ( dist < SPIKE_CHARGE_RADIUS_SQR )
+		{
+			chargeTimer.start( SPIKE_WAIT_TIME );
+			chargeState = 1;
+			vel = Vector2d<float>(0,0);
+			accel = Vector2d<float>(0,0);
+		}
+		else if ( dist < SPIKE_ATTACK_RADIUS_SQR )
+		{
+			accel = diff.unit() * SPIKE_ATTACK_ACCEL * delta;
+		}
+		else
+		{
+			vel = Vector2d<float>(0,0);
+			accel = Vector2d<float>(0,0);
+		}
+	}
+}
+
+void UnitSpike::render( SDL_Surface *target )
+{
+	UnitBase::render( target );
+	if ( chargeState == 1 )
+	{
+		spEllipse( *x, *y, -1, 20 * (SPIKE_WAIT_TIME - chargeTimer.getTime()) / SPIKE_WAIT_TIME,
+					20 * (SPIKE_WAIT_TIME - chargeTimer.getTime()) / SPIKE_WAIT_TIME,
+					SDL_MapRGB( target->format, 255, 0, 0));
 	}
 }
 

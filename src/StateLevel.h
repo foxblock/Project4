@@ -6,8 +6,10 @@
 #include "StateBase.h"
 #include "UnitBase.h"
 #include "Timer.h"
+#include "ShapeRect.h"
+#include "ShapeCircle.h"
 
-#define PLAYER_CLASS UnitSpike
+#define PLAYER_CLASS UnitPlayer
 
 class PLAYER_CLASS;
 
@@ -28,14 +30,21 @@ public:
 	std::string debugString;
 #endif
 protected:
-	void handleInput( Uint32 delta );
+	void spawnUnits( Uint32 delta );
 
 	std::vector<UnitBase *> units;
 	std::vector<UnitBase *> queue;
 	Timer spawnTimer;
+	ShapeRect corner[4];
+	ShapeCircle center;
+
+	spFontPointer killText;
+	int kills;
+
 #ifdef _DEBUG
 	spFontPointer debugText;
 #endif
+
 private:
 
 };

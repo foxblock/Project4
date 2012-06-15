@@ -1,6 +1,7 @@
 #include "UnitBase.h"
 
 #include "ShapeBase.h"
+#include "UtilityFunctions.h"
 
 UnitBase::UnitBase( StateLevel* newParent, ShapeBase *newShape )
 {
@@ -10,6 +11,9 @@ UnitBase::UnitBase( StateLevel* newParent, ShapeBase *newShape )
 	x = NULL;
 	y = NULL;
 	activeSprite = NULL;
+	maxMovementSpeed = PHYSICS_DEFAULT_MAXIMUM;
+	friction = PHYSICS_DEFAULT_FRICTION;
+
 	#ifdef _DEBUG
 	debugString = "";
 	#endif
@@ -27,8 +31,19 @@ int UnitBase::update( Uint32 delta )
 {
 	if ( activeSprite )
 		spUpdateSprite( activeSprite, delta );
-	*x += vel.x;
-	*y += vel.y;
+
+	vel += accel * delta;
+	if ( vel.lengthSquared() > Utility::sqr(friction) * delta )
+		vel -= vel.unit() * friction;
+	else
+		vel = Vector2d<float>(0,0);
+	if ( vel.length() > maxMovementSpeed )
+		vel = vel.unit() * maxMovementSpeed;
+	*x += vel.x * delta;
+	*y += vel.y * delta;
+#ifdef _DEBUG
+	debugString = "V: " + Utility::vecToStr( vel ) + " \n A: " + Utility::vecToStr( accel );
+#endif
 	return 0;
 }
 

@@ -1,9 +1,6 @@
 #ifndef _APPLICATION_H
 #define _APPLICATION_H
 
-#include "gameDefines.h"
-
-#include SPARROW_PATH
 #include <string>
 
 #include "StateBase.h"

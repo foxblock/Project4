@@ -1,11 +1,11 @@
 #include "ShapeCircle.h"
 
-#include <cmath>
 #include "ShapeRect.h"
 #include "ShapeRay.h"
 #include "UtilityFunctions.h"
-#include "gameDefines.h"
-#include SPARROW_PATH
+
+#include <cmath>
+#include "../sparrow3d/sparrowPrimitives.h"
 
 ShapeCircle::ShapeCircle() :
 	ShapeBase(),

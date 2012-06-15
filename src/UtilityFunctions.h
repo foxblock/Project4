@@ -4,7 +4,10 @@
 #include <sstream>
 #include <string>
 
-#define FLOAT_ACCURACY 1e-6
+#define FLOAT_ACCURACY 1e-10
+#define VEC_DELIMIT_CHAR ((std::string)",")
+
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 namespace Utility
 {
@@ -27,6 +30,13 @@ T strToNum( std::string str )
 	ss >> out;
 	return out;
 };
+
+template <class T>
+std::string vecToStr( Vector2d<T> vec )
+{
+	std::string result = numToStr(vec.x) + VEC_DELIMIT_CHAR + numToStr(vec.y);
+	return result;
+}
 
 template <class T>
 int sign( T number )

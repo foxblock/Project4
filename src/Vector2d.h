@@ -16,9 +16,10 @@ public:
 
 	~Vector2d() {;}
 
-	T dot( const Vector2d<T> &v ) const {return ( this->x * v.x + y * v.y );}
+	T dot( const Vector2d<T> &v ) const {return ( x * v.x + y * v.y );}
 	T length() const {return sqrt( lengthSquared() );}
-	T lengthSquared() const {return ( this->x * this->x + y * y );}
+	T lengthSquared() const {return ( x * x + y * y );}
+	float angle() const {return atan( y / x );}
 
 	Vector2d<T> unit()
 	{
