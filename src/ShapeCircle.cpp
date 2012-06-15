@@ -5,7 +5,7 @@
 #include "UtilityFunctions.h"
 
 #include <cmath>
-#include "../sparrow3d/sparrowPrimitives.h"
+#include "sparrowPrimitives.h"
 
 ShapeCircle::ShapeCircle() :
 	ShapeBase(),

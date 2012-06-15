@@ -17,6 +17,7 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	//shape.size = Vector2d<float>(36,36);
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
+	maxVel = PLAYER_MAX_VELOCITY;
 }
 
 UnitPlayer::~UnitPlayer()
@@ -30,35 +31,8 @@ UnitPlayer::~UnitPlayer()
 
 int UnitPlayer::update( Uint32 delta )
 {
-	if ( spGetInput()->axis[0] < 0 )
-	{
-		accel.x = -PLAYER_ACCEL;
-	}
-	else if ( spGetInput()->axis[0] > 0 )
-	{
-		accel.x = PLAYER_ACCEL;
-	}
-	else
-	{
-		accel.x = 0;
-	}
-	if ( spGetInput()->axis[1] < 0 )
-	{
-		accel.y = PLAYER_ACCEL;
-	}
-	else if ( spGetInput()->axis[1] > 0 )
-	{
-		accel.y = -PLAYER_ACCEL;
-	}
-	else
-	{
-		accel.y = 0;
-	}
-
-	if ( fabs( vel.x ) > PLAYER_MAX_VELOCITY )
-		vel.x = PLAYER_MAX_VELOCITY * Utility::sign( vel.x );
-	if ( fabs( vel.y ) > PLAYER_MAX_VELOCITY )
-		vel.y = PLAYER_MAX_VELOCITY * Utility::sign( vel.y );
+	Vector2d<float> dir(spGetInput()->axis[0],-spGetInput()->axis[1]);
+	accel = dir.unit() * PLAYER_ACCEL;
 
 	if ( *x < 0 )
 		*x = 0;

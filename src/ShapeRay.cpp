@@ -5,7 +5,7 @@
 #include "ShapeCircle.h"
 
 #include <cmath>
-#include "../sparrow3d/sparrowPrimitives.h"
+#include "sparrowPrimitives.h"
 
 ShapeRay::ShapeRay() :
 	ShapeBase(),
