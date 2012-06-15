@@ -1,7 +1,7 @@
 #ifndef _GAME_DEFINES_H
 #define _GAME_DEFINES_H
 
-#define SPARROW_PATH "../sparrow3d/sparrow3d.h"
+#define SPARROW_PATH "../../sparrow3d/sparrow3d.h"
 
 #define APP_RESIZE 0
 #define APP_FULLSCREEN 0
