@@ -4,6 +4,8 @@
 #include "SDL/SDL.h"
 #include <string>
 
+#define MAX_DELTA 5
+
 class StateBase
 {
 public:

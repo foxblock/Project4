@@ -1,12 +1,15 @@
 #ifndef _UNITBASE_H
 #define _UNITBASE_H
 
-#include "gameDefines.h"
 #include "Vector2d.h"
 #include "SimpleFlags.h"
 
-#include SPARROW_PATH
+#include "../../sparrow3d/sparrowSprite.h"
 #include <string>
+
+// Pixels per millisecond
+#define PHYSICS_DEFAULT_FRICTION 0.02f
+#define PHYSICS_DEFAULT_MAXIMUM 0.75f
 
 class ShapeBase;
 class StateLevel;
@@ -39,16 +42,19 @@ public:
 	float *x;
 	float *y;
 	Vector2d<float> vel;
+	Vector2d<float> accel;
 	ShapeBase *shape;
 
 	#ifdef _DEBUG
 	std::string debugString;
 	#endif
 protected:
-
 	spSpritePointer activeSprite;
 
 	StateLevel *parent;
+
+	float maxMovementSpeed;
+	float friction;
 private:
 
 };

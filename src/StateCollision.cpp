@@ -1,26 +1,27 @@
 #include "StateCollision.h"
 
+#include "gameDefines.h"
 #include "UnitSpike.h"
 #include "UnitLaser.h"
 #include "ProjectileLaser.h"
 
-#define PLAYER_VELOCITY 0.3f
+#define PLAYER_VELOCITY 0.1f
 
 StateCollision::StateCollision()
 {
 	unit1 = new UnitSpike( NULL );
-	*unit1->x = 400;
-	*unit1->y = 100;
+	*unit1->x = APP_SCREEN_WIDTH / 2;
+	*unit1->y = APP_SCREEN_HEIGHT / 4;
 	unit2 = new UnitLaser( NULL );
-	*unit2->x = 100;
-	*unit2->y = 400;
+	*unit2->x = APP_SCREEN_WIDTH / 4;
+	*unit2->y = APP_SCREEN_HEIGHT /2;
 	unit3 = new ProjectileLaser( NULL, -1 );
-	*unit3->x = 500;
-	*unit3->y = 300;
+	*unit3->x = APP_SCREEN_WIDTH;
+	*unit3->y = APP_SCREEN_HEIGHT / 2;
 	unit4 = new ProjectileLaser( NULL, -1 );
-	*unit4->x = 100;
-	*unit4->y = 300;
-	unit4->shape.pos.x = 600;
+	*unit4->x = 0;
+	*unit4->y = APP_SCREEN_HEIGHT / 2;
+	unit4->shape.pos.x = APP_SCREEN_WIDTH;
 	player = unit1;
 
 	font = spFontLoad( "fonts/lato.ttf", 12 );
@@ -40,6 +41,7 @@ StateCollision::~StateCollision()
 
 int StateCollision::update( Uint32 delta )
 {
+	delta = std::min((int)delta, MAX_DELTA);
 	debugString.clear();
 
 	handleInput( delta );

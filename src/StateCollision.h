@@ -2,8 +2,8 @@
 #define _STATE_COLLISION_H
 
 #include "StateBase.h"
-#include "gameDefines.h"
-#include SPARROW_PATH
+
+#include "../../sparrow3d/sparrowFont.h"
 
 class UnitSpike;
 class UnitLaser;

@@ -1,12 +1,11 @@
 #include "ShapeRay.h"
 
-#include <cmath>
-
 #include "UtilityFunctions.h"
 #include "ShapeRect.h"
 #include "ShapeCircle.h"
-#include "gameDefines.h"
-#include SPARROW_PATH
+
+#include <cmath>
+#include "../../sparrow3d/sparrowPrimitives.h"
 
 ShapeRay::ShapeRay() :
 	ShapeBase(),
