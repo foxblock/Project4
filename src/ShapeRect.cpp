@@ -4,7 +4,7 @@
 #include "ShapeCircle.h"
 #include "UtilityFunctions.h"
 
-#include "../../sparrow3d/sparrowPrimitives.h"
+#include "sparrowPrimitives.h"
 
 ShapeRect::ShapeRect() :
 	ShapeBase(),

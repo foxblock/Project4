@@ -4,7 +4,7 @@
 #include "Vector2d.h"
 #include "SimpleFlags.h"
 
-#include "../../sparrow3d/sparrowSprite.h"
+#include "sparrowSprite.h"
 #include <string>
 
 // Pixels per millisecond
@@ -53,7 +53,7 @@ protected:
 
 	StateLevel *parent;
 
-	float maxMovementSpeed;
+	float maxVel;
 	float friction;
 private:
 

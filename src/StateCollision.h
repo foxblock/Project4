@@ -3,7 +3,7 @@
 
 #include "StateBase.h"
 
-#include "../../sparrow3d/sparrowFont.h"
+#include "sparrowFont.h"
 
 class UnitSpike;
 class UnitLaser;

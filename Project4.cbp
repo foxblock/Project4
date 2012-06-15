@@ -130,6 +130,8 @@
 		<Unit filename="src\UnitBase.h" />
 		<Unit filename="src\UnitLaser.cpp" />
 		<Unit filename="src\UnitLaser.h" />
+		<Unit filename="src\UnitPlayer.cpp" />
+		<Unit filename="src\UnitPlayer.h" />
 		<Unit filename="src\UnitSpike.cpp" />
 		<Unit filename="src\UnitSpike.h" />
 		<Unit filename="src\UtilityFunctions.h" />

@@ -1,8 +1,8 @@
 #include "Application.h"
 
+#include "sparrow3d.h"
 
 #include "gameDefines.h"
-#include "../../sparrow3d/sparrow3d.h";
 #include "StateLevel.h"
 #include "StateCollision.h"
 

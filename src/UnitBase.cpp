@@ -3,6 +3,11 @@
 #include "ShapeBase.h"
 #include "UtilityFunctions.h"
 
+#ifdef _DEBUG
+#define DEBUG_VELOCITY_LINE 200.0f
+#define DEBUG_ACCELERATION_LINE 20000.0f
+#endif
+
 UnitBase::UnitBase( StateLevel* newParent, ShapeBase *newShape )
 {
 	parent = newParent;
@@ -11,7 +16,7 @@ UnitBase::UnitBase( StateLevel* newParent, ShapeBase *newShape )
 	x = NULL;
 	y = NULL;
 	activeSprite = NULL;
-	maxMovementSpeed = PHYSICS_DEFAULT_MAXIMUM;
+	maxVel = PHYSICS_DEFAULT_MAXIMUM;
 	friction = PHYSICS_DEFAULT_FRICTION;
 
 	#ifdef _DEBUG
@@ -33,12 +38,12 @@ int UnitBase::update( Uint32 delta )
 		spUpdateSprite( activeSprite, delta );
 
 	vel += accel * delta;
-	if ( vel.lengthSquared() > Utility::sqr(friction) * delta )
+	if ( vel.lengthSquared() > Utility::sqr(friction) )
 		vel -= vel.unit() * friction;
 	else
 		vel = Vector2d<float>(0,0);
-	if ( vel.length() > maxMovementSpeed )
-		vel = vel.unit() * maxMovementSpeed;
+	if ( vel.length() > maxVel )
+		vel = vel.unit() * maxVel;
 	*x += vel.x * delta;
 	*y += vel.y * delta;
 #ifdef _DEBUG
@@ -53,6 +58,10 @@ void UnitBase::render( SDL_Surface *target )
 		spDrawSprite( *x, *y, -1, activeSprite );
 #ifdef _DEBUG
 	shape->render( target, SDL_MapRGB(target->format, 228, 0, 228 ) );
+	spLine(*x,*y,-1,*x + vel.x * DEBUG_VELOCITY_LINE, *y + vel.y * DEBUG_VELOCITY_LINE, -1,
+			SDL_MapRGB( target->format, 0, 255, 0 ));
+	spLine(*x,*y,-1,*x + accel.x * DEBUG_ACCELERATION_LINE, *y + accel.y * DEBUG_ACCELERATION_LINE, -1,
+			SDL_MapRGB( target->format, 0, 0, 255 ));
 #endif
 }
 
