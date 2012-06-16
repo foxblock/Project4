@@ -14,7 +14,6 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	spNewSubSpriteWithTiling( idle, image, 0, 0, 32, 32, 1000 );
 	activeSprite = idle;
 	shape.radius = 16;
-	//shape.size = Vector2d<float>(36,36);
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 	maxVel = PLAYER_MAX_VELOCITY;

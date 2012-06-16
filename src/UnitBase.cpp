@@ -16,8 +16,8 @@ UnitBase::UnitBase( StateLevel* newParent, ShapeBase *newShape )
 	x = NULL;
 	y = NULL;
 	activeSprite = NULL;
-	maxVel = PHYSICS_DEFAULT_MAXIMUM;
-	friction = PHYSICS_DEFAULT_FRICTION;
+	maxVel = UNIT_DEFAULT_MAX_VEL;
+	friction = UNIT_DEFAULT_FRICTION;
 
 	#ifdef _DEBUG
 	debugString = "";
@@ -46,9 +46,6 @@ int UnitBase::update( Uint32 delta )
 		vel = vel.unit() * maxVel;
 	*x += vel.x * delta;
 	*y += vel.y * delta;
-#ifdef _DEBUG
-	debugString = "V: " + Utility::vecToStr( vel ) + " \n A: " + Utility::vecToStr( accel );
-#endif
 	return 0;
 }
 
@@ -57,11 +54,11 @@ void UnitBase::render( SDL_Surface *target )
 	if ( activeSprite )
 		spDrawSprite( *x, *y, -1, activeSprite );
 #ifdef _DEBUG
-	shape->render( target, SDL_MapRGB(target->format, 228, 0, 228 ) );
+	shape->render( target, spGetRGB( 228, 0, 228 ) );
 	spLine(*x,*y,-1,*x + vel.x * DEBUG_VELOCITY_LINE, *y + vel.y * DEBUG_VELOCITY_LINE, -1,
-			SDL_MapRGB( target->format, 0, 255, 0 ));
+			spGetRGB( 0, 255, 0 ));
 	spLine(*x,*y,-1,*x + accel.x * DEBUG_ACCELERATION_LINE, *y + accel.y * DEBUG_ACCELERATION_LINE, -1,
-			SDL_MapRGB( target->format, 0, 0, 255 ));
+			spGetRGB( 0, 0, 255 ));
 #endif
 }
 

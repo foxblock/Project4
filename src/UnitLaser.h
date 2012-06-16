@@ -27,7 +27,7 @@ private:
 	SDL_Surface* image;
 	ProjectileLaser* projectile;
 
-	float rotation;
+	float angle;
 	bool hasCharged;
 	Timer charge;
 };

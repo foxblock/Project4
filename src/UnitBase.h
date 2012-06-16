@@ -8,8 +8,8 @@
 #include <string>
 
 // Pixels per millisecond
-#define PHYSICS_DEFAULT_FRICTION 0.02f
-#define PHYSICS_DEFAULT_MAXIMUM 0.75f
+#define UNIT_DEFAULT_FRICTION 0.02f
+#define UNIT_DEFAULT_MAX_VEL 0.75f
 
 class ShapeBase;
 class StateLevel;

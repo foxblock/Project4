@@ -85,7 +85,7 @@ int Application::update( Uint32 delta )
 void Application::render()
 {
 	//spResetZBuffer();
-	spClearTarget( SDL_MapRGB( screen->format, 0, 200, 200 ) );
+	spClearTarget( spGetRGB( 100, 200, 200 ) );
 
 	if ( prevState ) // Transition
 	{

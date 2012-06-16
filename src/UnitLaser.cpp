@@ -21,7 +21,7 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	spNewSubSpriteWithTiling( idle, image, 0, 0, 64, 64, 1000 );
 	activeSprite = idle;
 
-	rotation = 0;
+	angle = 0;
 	//shape.size = Vector2d<float>( 55, 55 );
 	shape.radius = 32;
 	x = &( shape.pos.x );
@@ -59,9 +59,9 @@ int UnitLaser::update( Uint32 delta )
 			projectile = NULL;
 		else
 		{
-			Vector2d<float> angle( cos( rotation ), sin( rotation ) );
-			projectile->shape.pos = shape.pos + angle * EYE_DISTANCE;
-			projectile->shape.target = shape.pos + angle * 1000;
+			Vector2d<float> rot( cos( angle ), sin( angle ) );
+			projectile->shape.pos = shape.pos + rot * EYE_DISTANCE;
+			projectile->shape.target = shape.pos + rot * 1000;
 		}
 	}
 	return UnitBase::update( delta );
@@ -74,12 +74,12 @@ void UnitLaser::render( SDL_Surface *target )
 	if ( hasCharged )
 	{
 		float factor = (float)charge.getTime() / (float)CHARGE_TIME;
-		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) *
-					EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 255.0f * (1 - factor), 0, 255.0f * factor ) );
+		spEllipse( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) *
+					EYE_DISTANCE, -1, 4, 4, spGetRGB( 255.0f * (1.0f - factor), 0, 255.0f * factor ) );
 	}
 	else
-		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) *
-					EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 0, 0, 255 ) );
+		spEllipse( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) *
+					EYE_DISTANCE, -1, 4, 4, spGetRGB( 0, 0, 255 ) );
 }
 
 bool UnitLaser::checkCollision( UnitBase const *const other ) const
@@ -95,33 +95,29 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 	float diffY = *y - *player->y;
 	if ( !hasCharged && (Utility::sqr(diffX) + Utility::sqr(diffY) < LASER_ATTACK_RADIUS_SQR || projectile))
 	{
-		float newRot = 0;
+		float newAngle = 0;
 		if ( diffY > 0 )
-			newRot = ( -M_PI_2 + atan( diffX / diffY ) );
+			newAngle = ( -M_PI_2 + atan( diffX / diffY ) );
 		else if ( diffY < 0 )
-			newRot = ( M_PI_2 + atan( diffX / diffY ) );
+			newAngle = ( M_PI_2 + atan( diffX / diffY ) );
 
-		if ( newRot < -M_PI_2 && rotation > M_PI_2 )
-			newRot += 2 * M_PI;
-		else if ( newRot > M_PI_2 && rotation < -M_PI_2 )
-			newRot -= 2 * M_PI;
+		if ( newAngle < -M_PI_2 && angle > M_PI_2 )
+			newAngle += 2 * M_PI;
+		else if ( newAngle > M_PI_2 && angle < -M_PI_2 )
+			newAngle -= 2 * M_PI;
 
-		if ( !projectile && fabs( newRot - rotation ) < ROTATION_THESHOLD )
+		if ( !projectile && fabs( newAngle - angle ) < ROTATION_THESHOLD )
 		{
-			//rotation = newRot;
 			charge.start( CHARGE_TIME );
 			hasCharged = true;
 		}
-		rotation += ( newRot - rotation ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
+		angle += ( newAngle - angle ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
 
-		if ( rotation < -M_PI )
-			rotation += 2 * M_PI;
-		else if ( rotation > M_PI )
-			rotation -= 2 * M_PI;
+		if ( angle < -M_PI )
+			angle += 2 * M_PI;
+		else if ( angle > M_PI )
+			angle -= 2 * M_PI;
 	}
-#ifdef _DEBUG
-	debugString = Utility::numToStr( rotation );
-#endif
 }
 
 ///--- PROTECTED ---------------------------------------------------------------

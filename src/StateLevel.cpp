@@ -30,11 +30,11 @@ StateLevel::StateLevel() : StateBase()
 #ifdef _DEBUG
 	debugText = spFontLoad( "fonts/lato.ttf", 12 );
 	if ( debugText )
-		spFontAddRange( debugText, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
+		spFontAddRange( debugText, ' ', '~', spGetRGB( 255, 0, 0 ) );
 #endif
 	killText = spFontLoad( "fonts/lato.ttf", 32 );
 	if ( killText )
-		spFontAddRange( killText, '0', '9', SDL_MapRGB( spGetWindowSurface()->format, 0, 0, 0 ) );
+		spFontAddRange( killText, '0', '9', spGetRGB( 0, 0, 0 ) );
 	kills = 0;
 
 	corner[0].pos = Vector2d<float>(LEVEL_CORNER_WIDTH / 2,LEVEL_CORNER_HEIGHT / 2);
@@ -156,8 +156,8 @@ void StateLevel::render( SDL_Surface *target )
 	if ( debugText )
 		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
 	for ( int I = 0; I < ARRAY_SIZE(corner); ++I )
-		corner[I].render( target, SDL_MapRGB(target->format, 228, 0, 228 ) );
-	center.render( target, SDL_MapRGB(target->format, 228, 0, 228 ) );
+		corner[I].render( target, spGetRGB( 228, 0, 228 ) );
+	center.render( target, spGetRGB( 228, 0, 228 ) );
 #endif
 }
 

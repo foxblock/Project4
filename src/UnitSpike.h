@@ -23,7 +23,7 @@ private:
 	spSpritePointer attack;
 	SDL_Surface *image;
 	Timer chargeTimer;
-	int chargeState;
+	int chargeState; // 0 - idle/chasing, 1 - waiting for charge, 2 - charging
 };
 
 

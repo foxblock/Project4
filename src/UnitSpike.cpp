@@ -6,11 +6,11 @@
 // Pixels per millisecond
 #define SPIKE_ATTACK_ACCEL 0.008f
 #define SPIKE_CHARGE_SPEED 0.75f
+#define SPIKE_MOVEMENT_SPEED 0.5f
 #define SPIKE_ATTACK_RADIUS_SQR 40000.0f
 #define SPIKE_CHARGE_RADIUS_SQR 5625.0f
 #define SPIKE_WAIT_TIME 500
 #define SPIKE_CHARGE_TIME 500
-#define SPIKE_MOVEMENT_SPEED 0.5f
 
 UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -21,7 +21,6 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	spNewSubSpriteWithTiling( attack, image, 64, 0, 64, 64, 1000 );
 	activeSprite = idle;
 	shape.radius = 20;
-	//shape.size = Vector2d<float>(36,36);
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 	chargeState = 0;
@@ -44,7 +43,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 	float dist = diff.lengthSquared();
 	if ( chargeTimer.getStatus() == -1 && chargeState == 1 )
 	{
-		maxVel = PHYSICS_DEFAULT_MAXIMUM;
+		maxVel = UNIT_DEFAULT_MAX_VEL;
 		vel = diff.unit() * SPIKE_CHARGE_SPEED;
 		friction = 0;
 		activeSprite = attack;
@@ -58,7 +57,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		chargeState = 0;
 		activeSprite = idle;
 		props.removeFlag( ufDeadlyOnTouch );
-		friction = PHYSICS_DEFAULT_FRICTION;
+		friction = UNIT_DEFAULT_FRICTION;
 	}
 	if ( chargeState == 0 )
 	{
@@ -66,8 +65,8 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		{
 			chargeTimer.start( SPIKE_WAIT_TIME );
 			chargeState = 1;
-			vel = Vector2d<float>(0,0);
-			accel = Vector2d<float>(0,0);
+			vel = Vector2d<float>( 0, 0 );
+			accel = Vector2d<float>( 0, 0 );
 		}
 		else if ( dist < SPIKE_ATTACK_RADIUS_SQR )
 		{
@@ -75,8 +74,8 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		}
 		else
 		{
-			vel = Vector2d<float>(0,0);
-			accel = Vector2d<float>(0,0);
+			vel = Vector2d<float>( 0, 0 );
+			accel = Vector2d<float>( 0, 0 );
 		}
 	}
 }
@@ -86,9 +85,9 @@ void UnitSpike::render( SDL_Surface *target )
 	UnitBase::render( target );
 	if ( chargeState == 1 )
 	{
-		spEllipse( *x, *y, -1, 20 * (SPIKE_WAIT_TIME - chargeTimer.getTime()) / SPIKE_WAIT_TIME,
-					20 * (SPIKE_WAIT_TIME - chargeTimer.getTime()) / SPIKE_WAIT_TIME,
-					SDL_MapRGB( target->format, 255, 0, 0));
+		spEllipse( *x, *y, -1, 20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
+				   20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
+				   spGetRGB( 255, 0 , 0 ) );
 	}
 }
 
