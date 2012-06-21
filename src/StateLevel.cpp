@@ -128,7 +128,7 @@ int StateLevel::update( Uint32 delta )
 
 	if ( player && player->toBeRemoved )
 	{
-		printf("Kill streak: %i\n",kills);
+		printf("Score: %i\n",kills);
 		return 1;
 	}
 
