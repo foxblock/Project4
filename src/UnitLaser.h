@@ -28,6 +28,7 @@ private:
 	ProjectileLaser* projectile;
 
 	float angle;
+	float angleVel;
 	bool hasCharged;
 	Timer charge;
 };

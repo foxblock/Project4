@@ -2,6 +2,7 @@
 #define _VECTOR2D_H
 
 #include <cmath>
+#include "SDL/SDL_video.h"
 
 template <typename T>
 class Vector2d
@@ -30,6 +31,15 @@ public:
 			float len = length();
 			return Vector2d<T>( x / len, y / len );
 		}
+	}
+
+	bool isInRect( const SDL_Rect &rect ) const
+	{
+		return ( x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h );
+	}
+	bool isInRect( const Vector2d<float> &topLeft, const Vector2d<float> &bottomRight ) const
+	{
+		return ( x >= topLeft.x && y >= topLeft.y && x <= bottomRight.x && y <= bottomRight.y );
 	}
 
 	/// Operators

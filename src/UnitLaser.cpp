@@ -13,6 +13,8 @@
 #define CHARGE_TIME 500
 // Actual value: 300
 #define LASER_ATTACK_RADIUS_SQR 90000.0f
+#define LASER_IDLE_SPEED 0.00001f
+#define LASER_IDLE_MAX_SPEED 0.0002f
 
 UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -43,7 +45,9 @@ UnitLaser::~UnitLaser()
 
 int UnitLaser::update( Uint32 delta )
 {
-
+	if ( angleVel > LASER_IDLE_MAX_SPEED )
+		angleVel = LASER_IDLE_MAX_SPEED;
+	angle += angleVel * Utility::sqr( delta );
 	if ( !projectile && charge.getStatus() == -1 && hasCharged )
 	{
 		if ( parent )
@@ -71,15 +75,19 @@ void UnitLaser::render( SDL_Surface *target )
 {
 	UnitBase::render( target );
 
+	Vector2d<float> eyePos( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) * EYE_DISTANCE );
+
 	if ( hasCharged )
 	{
 		float factor = (float)charge.getTime() / (float)CHARGE_TIME;
-		spEllipse( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) *
-					EYE_DISTANCE, -1, 4, 4, spGetRGB( 255.0f * (1.0f - factor), 0, 255.0f * factor ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, spGetRGB( 255, 255 * factor, 255 * factor ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetRGB( 255.0f * (1.0f - factor), 0, 255.0f * factor ) );
 	}
 	else
-		spEllipse( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) *
-					EYE_DISTANCE, -1, 4, 4, spGetRGB( 0, 0, 255 ) );
+	{
+		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, spGetRGB( 255, 255, 255 ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetRGB( 0, 0, 255 ) );
+	}
 }
 
 bool UnitLaser::checkCollision( UnitBase const *const other ) const
@@ -117,6 +125,10 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 			angle += 2 * M_PI;
 		else if ( angle > M_PI )
 			angle -= 2 * M_PI;
+	}
+	else if ( !hasCharged )
+	{
+		angleVel += (rand() % 3 - 1) * LASER_IDLE_SPEED;
 	}
 }
 

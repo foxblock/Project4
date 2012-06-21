@@ -8,8 +8,9 @@
 #include <string>
 
 // Pixels per millisecond
-#define UNIT_DEFAULT_FRICTION 0.02f
+#define UNIT_DEFAULT_FRICTION 0.005f
 #define UNIT_DEFAULT_MAX_VEL 0.75f
+#define UNIT_DEFAULT_MAX_ACCEL 0.1f
 
 class ShapeBase;
 class StateLevel;
@@ -47,6 +48,7 @@ public:
 
 	#ifdef _DEBUG
 	std::string debugString;
+	static spFontPointer debugFont;
 	#endif
 protected:
 	spSpritePointer activeSprite;
@@ -54,6 +56,7 @@ protected:
 	StateLevel *parent;
 
 	float maxVel;
+	float maxAccel;
 	float friction;
 private:
 

@@ -2,11 +2,15 @@
 
 #include <cmath>
 #include "UtilityFunctions.h"
+#include "gameDefines.h"
 
 // Pixels per millisecond
 #define SPIKE_ATTACK_ACCEL 0.008f
 #define SPIKE_CHARGE_SPEED 0.75f
 #define SPIKE_MOVEMENT_SPEED 0.5f
+#define SPIKE_IDLE_SPEED 0.1f
+#define SPIKE_IDLE_FRICTION 0.001f
+#define SPIKE_IDLE_ACCEL 0.005f
 #define SPIKE_ATTACK_RADIUS_SQR 40000.0f
 #define SPIKE_CHARGE_RADIUS_SQR 5625.0f
 #define SPIKE_WAIT_TIME 500
@@ -24,7 +28,9 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 	chargeState = 0;
-	maxVel = SPIKE_MOVEMENT_SPEED;
+	maxVel = SPIKE_IDLE_SPEED;
+	maxAccel = SPIKE_IDLE_ACCEL;
+	friction = SPIKE_IDLE_FRICTION;
 }
 
 UnitSpike::~UnitSpike()
@@ -51,13 +57,18 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		chargeState = 2;
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
+	if ( chargeTimer.getStatus() != -1 && chargeState == 2 &&
+		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_WIDTH)) )
+	{
+		chargeTimer.stop();
+	}
 	if ( chargeTimer.getStatus() == -1 && chargeState == 2 )
 	{
-		maxVel = SPIKE_MOVEMENT_SPEED;
 		chargeState = 0;
 		activeSprite = idle;
 		props.removeFlag( ufDeadlyOnTouch );
-		friction = UNIT_DEFAULT_FRICTION;
+		vel = Vector2d<float>( 0, 0 );
+		accel = Vector2d<float>( 0, 0 );
 	}
 	if ( chargeState == 0 )
 	{
@@ -70,12 +81,24 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		}
 		else if ( dist < SPIKE_ATTACK_RADIUS_SQR )
 		{
+			maxVel = SPIKE_MOVEMENT_SPEED;
+			friction = UNIT_DEFAULT_FRICTION;
+			maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 			accel = diff.unit() * SPIKE_ATTACK_ACCEL;
 		}
 		else
 		{
-			vel = Vector2d<float>( 0, 0 );
-			accel = Vector2d<float>( 0, 0 );
+			maxVel = SPIKE_IDLE_SPEED;
+			maxAccel = SPIKE_IDLE_ACCEL;
+			friction = SPIKE_IDLE_FRICTION;
+			Vector2d<float> temp(rand() % 3 - 1, rand() % 3 - 1);
+			accel += temp.unit() / 5000.0f;
+			if ( (*x < shape.radius && accel.x < 0) ||
+					(*x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )
+				accel.x *= -1;
+			if ( ( *y < shape.radius && accel.y < 0 ) ||
+					(*y > APP_SCREEN_HEIGHT - shape.radius && accel.y > 0 ) )
+				accel.y *= -1;
 		}
 	}
 }

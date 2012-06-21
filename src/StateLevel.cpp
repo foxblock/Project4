@@ -19,6 +19,7 @@
 #define LEVEL_CENTER_RADIUS 100.0f
 
 #define LEVEL_SPAWN_TIME 1000
+#define LEVEL_SPAWN_MAX 10
 
 StateLevel::StateLevel() : StateBase()
 {
@@ -28,13 +29,13 @@ StateLevel::StateLevel() : StateBase()
 //	player->props.addFlag( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
-	debugText = spFontLoad( "fonts/lato.ttf", 12 );
+	debugText = spFontLoad( GAME_FONT, 12 );
 	if ( debugText )
 		spFontAddRange( debugText, ' ', '~', spGetRGB( 255, 0, 0 ) );
 #endif
-	killText = spFontLoad( "fonts/lato.ttf", 32 );
+	killText = spFontLoad( GAME_FONT, 32 );
 	if ( killText )
-		spFontAddRange( killText, '0', '9', spGetRGB( 0, 0, 0 ) );
+		spFontAddRange( killText, '0', '9', spGetRGB( 255, 255, 255 ) );
 	kills = 0;
 
 	corner[0].pos = Vector2d<float>(LEVEL_CORNER_WIDTH / 2,LEVEL_CORNER_HEIGHT / 2);
@@ -78,7 +79,7 @@ int StateLevel::update( Uint32 delta )
 	delta = std::min( ( int )delta, MAX_DELTA );
 
 #ifdef _DEBUG
-	debugString = Utility::numToStr( spGetFPS() ) + " fps\n";
+	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr(delta) + ")\n";
 #endif
 
 	if ( player )
@@ -170,7 +171,8 @@ void StateLevel::addUnit( UnitBase *newUnit )
 
 void StateLevel::spawnUnits( Uint32 delta )
 {
-	if ( spawnTimer.getStatus() != -1 )
+	if ( spawnTimer.getStatus() != -1 ||
+		units.size() >= LEVEL_SPAWN_MAX )
 		return;
 
 	UnitBase *newUnit = NULL;
