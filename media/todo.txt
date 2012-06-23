@@ -13,9 +13,10 @@
   - Add more enemies
   - Change UnitLaser eye movement completely to use angleVel instead of setting it directly
   - Make UnitLaser not immediately stop eye when targeting the player
+  + Draw units with spPrimitive calls instead of sprites
 ---
 * Event system
-  - Create abstract event system
+  + Create abstract event system
 ---
 * Spawning system
   - create a class/definition of a wave

@@ -15,12 +15,14 @@
 #define LASER_ATTACK_RADIUS_SQR 90000.0f
 #define LASER_IDLE_SPEED 0.00001f
 #define LASER_IDLE_MAX_SPEED 0.0002f
+#define LASER_RADIUS 32
+
+SDL_Surface* UnitLaser::idle = NULL;
 
 UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
-	image = spLoadSurface( "images/units/laser.png" );
-	idle = spNewSprite();
-	spNewSubSpriteWithTiling( idle, image, 0, 0, 64, 64, 1000 );
+	if ( !idle )
+		generateIdleImage();
 	activeSprite = idle;
 
 	angle = 0;
@@ -35,8 +37,6 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 
 UnitLaser::~UnitLaser()
 {
-	spDeleteSprite( idle );
-	SDL_FreeSurface( image );
 	if ( projectile )
 		projectile->toBeRemoved = true;
 }
@@ -137,3 +137,12 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 ///--- PROTECTED ---------------------------------------------------------------
 
 ///--- PRIVATE -----------------------------------------------------------------
+
+void UnitLaser::generateIdleImage()
+{
+	idle = spCreateSurface( LASER_RADIUS * 2, LASER_RADIUS * 2 );
+	SDL_FillRect( idle, NULL, SP_ALPHA_COLOR );
+	spSelectRenderTarget( idle );
+	spEllipse( LASER_RADIUS, LASER_RADIUS, -1, LASER_RADIUS, LASER_RADIUS, 0 );
+	spSelectRenderTarget( spGetWindowSurface() );
+}

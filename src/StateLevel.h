@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "ShapeRect.h"
 #include "ShapeCircle.h"
+#include "Events.h"
 
 #define PLAYER_CLASS UnitPlayer
 
@@ -22,7 +23,9 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
-	void addUnit(UnitBase *newUnit);
+	void addUnit( UnitBase *newUnit );
+	// This function takes ownership of the event passed!
+	void addEvent( EventBase *newEvent );
 
 	PLAYER_CLASS *player;
 
@@ -31,9 +34,11 @@ public:
 #endif
 protected:
 	void spawnUnits( Uint32 delta );
+	void handleEvents();
 
 	std::vector<UnitBase *> units;
-	std::vector<UnitBase *> queue;
+	std::vector<UnitBase *> unitQueue;
+	std::vector<EventBase *> eventQueue;
 	Timer spawnTimer;
 	ShapeRect corner[4];
 	ShapeCircle center;
@@ -46,7 +51,6 @@ protected:
 #endif
 
 private:
-
 };
 
 

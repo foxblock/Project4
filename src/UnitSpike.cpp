@@ -15,14 +15,19 @@
 #define SPIKE_CHARGE_RADIUS_SQR 5625.0f
 #define SPIKE_WAIT_TIME 500
 #define SPIKE_CHARGE_TIME 500
+#define SPIKE_SPIKE_COUNT 16
+#define SPIKE_IDLE_RADIUS 20
+#define SPIKE_ATTACK_RADIUS 32
+
+SDL_Surface* UnitSpike::idle = NULL;
+SDL_Surface* UnitSpike::attack = NULL;
 
 UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
-	idle = spNewSprite();
-	attack = spNewSprite();
-	image = spLoadSurface( "images/units/spike.png" );
-	spNewSubSpriteWithTiling( idle, image, 0, 0, 64, 64, 1000 );
-	spNewSubSpriteWithTiling( attack, image, 64, 0, 64, 64, 1000 );
+	if ( !idle )
+		generateIdleImage();
+	if ( !attack )
+		generateAttackImage();
 	activeSprite = idle;
 	shape.radius = 20;
 	x = &( shape.pos.x );
@@ -35,9 +40,7 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 
 UnitSpike::~UnitSpike()
 {
-	spDeleteSprite( idle );
-	spDeleteSprite( attack );
-	SDL_FreeSurface( image );
+	//
 }
 
 
@@ -58,7 +61,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
 	if ( chargeTimer.getStatus() != -1 && chargeState == 2 &&
-		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_WIDTH)) )
+		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_HEIGHT)) )
 	{
 		chargeTimer.stop();
 	}
@@ -117,3 +120,32 @@ void UnitSpike::render( SDL_Surface *target )
 ///--- PROTECTED ---------------------------------------------------------------
 
 ///--- PRIVATE -----------------------------------------------------------------
+
+void UnitSpike::generateIdleImage()
+{
+	idle = spCreateSurface( SPIKE_IDLE_RADIUS * 2, SPIKE_IDLE_RADIUS * 2 );
+	SDL_FillRect( idle, NULL, SP_ALPHA_COLOR );
+	spSelectRenderTarget( idle );
+	spEllipse( SPIKE_IDLE_RADIUS ,SPIKE_IDLE_RADIUS, -1, SPIKE_IDLE_RADIUS, SPIKE_IDLE_RADIUS, 0 );
+	spSelectRenderTarget( spGetWindowSurface() );
+}
+
+void UnitSpike::generateAttackImage()
+{
+	attack = spCreateSurface( SPIKE_ATTACK_RADIUS * 2, SPIKE_ATTACK_RADIUS * 2 );
+	SDL_FillRect( attack, NULL, SP_ALPHA_COLOR );
+	spSelectRenderTarget( attack );
+	spEllipse( SPIKE_ATTACK_RADIUS, SPIKE_ATTACK_RADIUS, -1, SPIKE_IDLE_RADIUS, SPIKE_IDLE_RADIUS, spGetFastRGB(255,0,0) );
+	float spikeRadSize = 2.0f * M_PI / SPIKE_SPIKE_COUNT;
+	for ( int I = 0; I < SPIKE_SPIKE_COUNT; ++I )
+	{
+		spTriangle( SPIKE_ATTACK_RADIUS + SPIKE_ATTACK_RADIUS * sin( spikeRadSize * I ),
+					SPIKE_ATTACK_RADIUS - SPIKE_ATTACK_RADIUS * cos( spikeRadSize * I ), -1,
+					SPIKE_ATTACK_RADIUS + (SPIKE_IDLE_RADIUS-1) * sin( spikeRadSize * (I - 0.5f) ),
+					SPIKE_ATTACK_RADIUS - (SPIKE_IDLE_RADIUS-1) * cos( spikeRadSize * (I - 0.5f) ), -1,
+					SPIKE_ATTACK_RADIUS + (SPIKE_IDLE_RADIUS-1) * sin( spikeRadSize * (I + 0.5f) ),
+					SPIKE_ATTACK_RADIUS - (SPIKE_IDLE_RADIUS-1) * cos( spikeRadSize * (I + 0.5f) ), -1,
+					spGetFastRGB(255,0,0) );
+	}
+	spSelectRenderTarget( spGetWindowSurface() );
+}

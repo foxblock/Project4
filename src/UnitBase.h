@@ -51,7 +51,7 @@ public:
 	static spFontPointer debugFont;
 	#endif
 protected:
-	spSpritePointer activeSprite;
+	SDL_Surface *activeSprite;
 
 	StateLevel *parent;
 

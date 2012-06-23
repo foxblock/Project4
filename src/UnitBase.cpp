@@ -3,6 +3,8 @@
 #include "ShapeBase.h"
 #include "UtilityFunctions.h"
 #include "gameDefines.h"
+#include "Events.h"
+#include "StateLevel.h"
 
 #ifdef _DEBUG
 #define DEBUG_VELOCITY_LINE 200.0f
@@ -45,9 +47,6 @@ UnitBase::~UnitBase()
 
 int UnitBase::update( Uint32 delta )
 {
-	if ( activeSprite )
-		spUpdateSprite( activeSprite, delta );
-
 	vel += accel * delta;
 	if ( vel.lengthSquared() > Utility::sqr( friction ) * delta * delta )
 		vel -= vel.unit() * friction * delta;
@@ -65,7 +64,7 @@ int UnitBase::update( Uint32 delta )
 void UnitBase::render( SDL_Surface *target )
 {
 	if ( activeSprite )
-		spDrawSprite( *x, *y, -1, activeSprite );
+		spBlitSurface( *x, *y, -1, activeSprite );
 #ifdef _DEBUG
 	shape->render( target, spGetRGB( 228, 0, 228 ) );
 	spLine( *x, *y, -1, *x + vel.x * DEBUG_VELOCITY_LINE,
@@ -89,7 +88,11 @@ bool UnitBase::checkCollision( UnitBase const *const other ) const
 void UnitBase::collisionResponse( UnitBase *const other )
 {
 	if ( props.hasFlag( ufDeadlyOnTouch ) && !other->props.hasFlag( ufInvincible ) )
+	{
 		other->toBeRemoved = true;
+		EventUnitDeath *event = new EventUnitDeath( other, this );
+		parent->addEvent( event );
+	}
 }
 
 void UnitBase::ai( Uint32 delta, UnitBase *player )

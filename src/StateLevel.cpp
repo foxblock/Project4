@@ -65,9 +65,9 @@ StateLevel::~StateLevel()
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 		delete *I;
 	units.clear();
-	for ( std::vector<UnitBase *>::iterator I = queue.begin(); I != queue.end(); ++I )
+	for ( std::vector<UnitBase *>::iterator I = unitQueue.begin(); I != unitQueue.end(); ++I )
 		delete *I;
-	queue.clear();
+	unitQueue.clear();
 	delete player;
 }
 
@@ -82,6 +82,7 @@ int StateLevel::update( Uint32 delta )
 	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr(delta) + ")\n";
 #endif
 
+	// Unit update, collision checking
 	if ( player )
 		player->update( delta );
 
@@ -105,11 +106,11 @@ int StateLevel::update( Uint32 delta )
 		}
 	}
 
+	// Unit handling (adding, removing)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
 	{
 		if ( ( *I )->toBeRemoved )
 		{
-			++kills;
 			delete *I;
 			units.erase( I );
 		}
@@ -117,9 +118,13 @@ int StateLevel::update( Uint32 delta )
 			++I;
 	}
 
-	units.insert( units.end(), queue.begin(), queue.end() );
-	queue.clear();
+	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
+	unitQueue.clear();
 
+	// Events
+	handleEvents();
+
+	// Spawning
 	spawnUnits( delta );
 
 #ifdef _DEBUG
@@ -164,7 +169,12 @@ void StateLevel::render( SDL_Surface *target )
 
 void StateLevel::addUnit( UnitBase *newUnit )
 {
-	queue.push_back( newUnit );
+	unitQueue.push_back( newUnit );
+}
+
+void StateLevel::addEvent( EventBase *newEvent )
+{
+	eventQueue.push_back( newEvent );
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
@@ -206,6 +216,25 @@ void StateLevel::spawnUnits( Uint32 delta )
 	while ( temp < PLAYER_SAFE_RADIUS_SQR );
 
 	spawnTimer.start(LEVEL_SPAWN_TIME);
+}
+
+void StateLevel::handleEvents()
+{
+	for (std::vector<EventBase *>::iterator event = eventQueue.begin(); event != eventQueue.end(); ++event)
+	{
+		switch ( (*event)->type )
+		{
+		case EventBase::etUnitDeath:
+			++kills;
+			break;
+		case EventBase::etUnitSpawn:
+			break;
+		default:
+			break;
+		}
+		delete *event;
+	}
+	eventQueue.clear();
 }
 
 ///--- PRIVATE -----------------------------------------------------------------

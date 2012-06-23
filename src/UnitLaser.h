@@ -23,8 +23,9 @@ public:
 protected:
 
 private:
-	spSpritePointer idle;
-	SDL_Surface* image;
+	static void generateIdleImage();
+
+	static SDL_Surface* idle;
 	ProjectileLaser* projectile;
 
 	float angle;

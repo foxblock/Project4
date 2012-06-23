@@ -19,9 +19,11 @@ public:
 protected:
 
 private:
-	spSpritePointer idle;
-	spSpritePointer attack;
-	SDL_Surface *image;
+	static void generateIdleImage();
+	static void generateAttackImage();
+
+	static SDL_Surface *idle;
+	static SDL_Surface *attack;
 	Timer chargeTimer;
 	int chargeState; // 0 - idle/chasing, 1 - waiting for charge, 2 - charging
 };
