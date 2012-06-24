@@ -9,8 +9,8 @@
 
 // Pixels per millisecond
 #define UNIT_DEFAULT_FRICTION 0.005f
-#define UNIT_DEFAULT_MAX_VEL 0.75f
-#define UNIT_DEFAULT_MAX_ACCEL 0.1f
+#define UNIT_DEFAULT_MAX_VEL 0.5f
+#define UNIT_DEFAULT_MAX_ACCEL 0.05f
 
 class ShapeBase;
 class StateLevel;
@@ -24,20 +24,21 @@ public:
 	virtual int update( Uint32 delta );
 	virtual void render( SDL_Surface *target );
 
-	virtual bool checkCollision( UnitBase const * const other ) const;
-	virtual void collisionResponse( UnitBase * const other );
+	virtual bool checkCollision( UnitBase const *const other ) const;
+	virtual void collisionResponse( UnitBase *const other );
 
-	virtual void ai( Uint32 delta, UnitBase* player );
+	virtual void ai( Uint32 delta, UnitBase *player );
 
 	bool toBeRemoved;
 
 	SimpleFlags props;
 
-	enum UnitFlags {
-		ufUNKNOWN=0,
-		ufDeadlyOnTouch=1,
-		ufInvincible=2,
-		ufEOL=4
+	enum UnitFlags
+	{
+		ufUNKNOWN = 0,
+		ufDeadlyOnTouch = 1,
+		ufInvincible = 2,
+		ufEOL = 4
 	};
 
 	float *x;
@@ -46,10 +47,10 @@ public:
 	Vector2d<float> accel;
 	ShapeBase *shape;
 
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	std::string debugString;
 	static spFontPointer debugFont;
-	#endif
+#endif
 protected:
 	SDL_Surface *activeSprite;
 

@@ -58,6 +58,9 @@ int UnitBase::update( Uint32 delta )
 		accel = accel.unit() * maxAccel;
 	*x += vel.x * delta;
 	*y += vel.y * delta;
+#ifdef _DEBUG
+	debugString += Utility::vecToStr( accel ) + "\n" + Utility::vecToStr( vel ) + "\n";
+#endif
 	return 0;
 }
 
@@ -71,10 +74,14 @@ void UnitBase::render( SDL_Surface *target )
 			*y + vel.y * DEBUG_VELOCITY_LINE, -1, spGetRGB( 0, 255, 0 ) );
 	spLine( *x, *y, -1, *x + accel.x * DEBUG_ACCELERATION_LINE,
 			*y + accel.y * DEBUG_ACCELERATION_LINE, -1, spGetRGB( 0, 0, 255 ) );
-	spEllipseBorder( *x, *y, -1, friction / 2.0f * DEBUG_ACCELERATION_LINE,
-					friction / 2.0f * DEBUG_ACCELERATION_LINE, 1, 1, spGetRGB( 0, 255, 255 ) );
-	spFontDraw( *x, *y, -1, Utility::vecToStr( vel ).c_str(), debugFont );
-	spFontDraw( *x, *y + 12, -1, Utility::vecToStr( accel ).c_str(), debugFont );
+	spEllipseBorder( *x, *y, -1, maxVel * DEBUG_VELOCITY_LINE,
+					maxVel * DEBUG_VELOCITY_LINE, 1, 1, spGetRGB( 0, 255, 0 ) );
+	spEllipseBorder( *x, *y, -1, maxAccel * DEBUG_ACCELERATION_LINE,
+					maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetRGB( 0, 0, 255 ) );
+	spEllipseBorder( *x, *y, -1, friction * DEBUG_ACCELERATION_LINE,
+					friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetRGB( 0, 255, 255 ) );
+	spFontDraw( *x, *y, -1, debugString.c_str(), debugFont );
+	debugString = "";
 #endif
 }
 

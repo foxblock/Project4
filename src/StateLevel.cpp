@@ -8,6 +8,7 @@
 #include "UnitPlayer.h"
 #include "UnitSpike.h"
 #include "UnitLaser.h"
+#include "UnitBomb.h"
 
 // Actual value: 200
 #define PLAYER_SAFE_RADIUS_SQR 40000.0f
@@ -17,6 +18,10 @@
 #define LEVEL_CORNER_WIDTH 200.0f
 #define LEVEL_CORNER_HEIGHT 100.0f
 #define LEVEL_CENTER_RADIUS 100.0f
+#define LEVEL_SIDE_WIDTH 100.0f
+#define LEVEL_SIDE_HEIGHT 50.0f
+#define LEVEL_SIDE_OFFSET_H 30.0f
+#define LEVEL_SIDE_OFFSET_V 15.0f
 
 #define LEVEL_SPAWN_TIME 1000
 #define LEVEL_SPAWN_MAX 10
@@ -38,13 +43,21 @@ StateLevel::StateLevel() : StateBase()
 		spFontAddRange( killText, '0', '9', spGetRGB( 255, 255, 255 ) );
 	kills = 0;
 
-	corner[0].pos = Vector2d<float>(LEVEL_CORNER_WIDTH / 2,LEVEL_CORNER_HEIGHT / 2);
-	corner[1].pos = Vector2d<float>(APP_SCREEN_WIDTH - LEVEL_CORNER_WIDTH / 2,LEVEL_CORNER_HEIGHT / 2);
-	corner[2].pos = Vector2d<float>(LEVEL_CORNER_WIDTH / 2,APP_SCREEN_HEIGHT -LEVEL_CORNER_HEIGHT / 2);
-	corner[3].pos = Vector2d<float>(APP_SCREEN_WIDTH - LEVEL_CORNER_WIDTH / 2,APP_SCREEN_HEIGHT - LEVEL_CORNER_HEIGHT / 2);
-	for ( int I = 0; I < ARRAY_SIZE(corner); ++I)
-		corner[I].size = Vector2d<float>(LEVEL_CORNER_WIDTH, LEVEL_CORNER_HEIGHT);
-	center.pos = Vector2d<float>(APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2);
+	corner[0].pos = Vector2d<float>( LEVEL_CORNER_WIDTH / 2, LEVEL_CORNER_HEIGHT / 2 );
+	corner[1].pos = Vector2d<float>( APP_SCREEN_WIDTH - LEVEL_CORNER_WIDTH / 2, LEVEL_CORNER_HEIGHT / 2 );
+	corner[2].pos = Vector2d<float>( LEVEL_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - LEVEL_CORNER_HEIGHT / 2 );
+	corner[3].pos = Vector2d<float>( APP_SCREEN_WIDTH - LEVEL_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - LEVEL_CORNER_HEIGHT / 2 );
+	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
+		corner[I].size = Vector2d<float>( LEVEL_CORNER_WIDTH, LEVEL_CORNER_HEIGHT );
+	side[0].pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, LEVEL_SIDE_OFFSET_V + LEVEL_SIDE_HEIGHT / 2.0f );
+	side[1].pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT - LEVEL_SIDE_OFFSET_V - LEVEL_SIDE_HEIGHT / 2.0f );
+	side[2].pos = Vector2d<float>( LEVEL_SIDE_OFFSET_H + LEVEL_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
+	side[3].pos = Vector2d<float>( APP_SCREEN_WIDTH - LEVEL_SIDE_OFFSET_H - LEVEL_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
+	side[0].size = Vector2d<float>( LEVEL_SIDE_WIDTH, LEVEL_SIDE_HEIGHT );
+	side[1].size = side[0].size;
+	side[2].size = Vector2d<float>( LEVEL_SIDE_HEIGHT, LEVEL_SIDE_WIDTH );
+	side[3].size = side[2].size;
+	center.pos = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
 	center.radius = LEVEL_CENTER_RADIUS;
 
 //	spawnTimer.start();
@@ -79,7 +92,7 @@ int StateLevel::update( Uint32 delta )
 	delta = std::min( ( int )delta, MAX_DELTA );
 
 #ifdef _DEBUG
-	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr(delta) + ")\n";
+	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr( delta ) + ")\n";
 #endif
 
 	// Unit update, collision checking
@@ -133,7 +146,7 @@ int StateLevel::update( Uint32 delta )
 
 	if ( player && player->toBeRemoved )
 	{
-		printf("Score: %i\n",kills);
+		printf( "Score: %i\n", kills );
 		return 1;
 	}
 
@@ -149,20 +162,15 @@ void StateLevel::render( SDL_Surface *target )
 		player->render( target );
 
 	if ( killText )
-		spFontDrawRight( APP_SCREEN_WIDTH - 5, APP_SCREEN_HEIGHT - 40, -1, Utility::numToStr(kills).c_str(), killText );
+		spFontDrawRight( APP_SCREEN_WIDTH - 5, APP_SCREEN_HEIGHT - 40, -1, Utility::numToStr( kills ).c_str(), killText );
 
 #ifdef _DEBUG
-	if ( player && player->debugString[0] != 0)
-		debugString += player->debugString + "\n";
-	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
-	{
-		if ( ( *I )->debugString[0] != 0 )
-			debugString += ( *I )->debugString + "\n";
-	}
 	if ( debugText )
 		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
-	for ( int I = 0; I < ARRAY_SIZE(corner); ++I )
+	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
 		corner[I].render( target, spGetRGB( 228, 0, 228 ) );
+	for ( int I = 0; I < ARRAY_SIZE( side ); ++I )
+		side[I].render( target, spGetRGB( 228, 0, 228 ) );
 	center.render( target, spGetRGB( 228, 0, 228 ) );
 #endif
 }
@@ -182,7 +190,7 @@ void StateLevel::addEvent( EventBase *newEvent )
 void StateLevel::spawnUnits( Uint32 delta )
 {
 	if ( spawnTimer.getStatus() != -1 ||
-		units.size() >= LEVEL_SPAWN_MAX )
+			units.size() >= LEVEL_SPAWN_MAX )
 		return;
 
 	UnitBase *newUnit = NULL;
@@ -191,11 +199,19 @@ void StateLevel::spawnUnits( Uint32 delta )
 	{
 		newUnit = new UnitSpike( this );
 	}
-	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I)
+	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
 	{
 		if ( player->shape.checkCollision( &corner[I] ) )
 		{
 			newUnit = new UnitLaser( this );
+			break;
+		}
+	}
+	for ( int I = 0; I < ARRAY_SIZE( side ); ++I )
+	{
+		if ( player->shape.checkCollision( &side[I] ) )
+		{
+			newUnit = new UnitBomb( this );
 			break;
 		}
 	}
@@ -215,14 +231,14 @@ void StateLevel::spawnUnits( Uint32 delta )
 	}
 	while ( temp < PLAYER_SAFE_RADIUS_SQR );
 
-	spawnTimer.start(LEVEL_SPAWN_TIME);
+	spawnTimer.start( LEVEL_SPAWN_TIME );
 }
 
 void StateLevel::handleEvents()
 {
-	for (std::vector<EventBase *>::iterator event = eventQueue.begin(); event != eventQueue.end(); ++event)
+	for ( std::vector<EventBase *>::iterator event = eventQueue.begin(); event != eventQueue.end(); ++event )
 	{
-		switch ( (*event)->type )
+		switch ( ( *event )->type )
 		{
 		case EventBase::etUnitDeath:
 			++kills;

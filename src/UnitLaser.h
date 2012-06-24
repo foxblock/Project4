@@ -9,15 +9,15 @@
 class UnitLaser : public UnitBase
 {
 public:
-	UnitLaser( StateLevel* newParent );
+	UnitLaser( StateLevel *newParent );
 	virtual ~UnitLaser();
 
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
-	bool checkCollision( UnitBase const * const other ) const;
+	bool checkCollision( UnitBase const *const other ) const;
 
-	void ai( Uint32 delta, UnitBase* player );
+	void ai( Uint32 delta, UnitBase *player );
 
 	ShapeCircle shape;
 protected:
@@ -25,8 +25,8 @@ protected:
 private:
 	static void generateIdleImage();
 
-	static SDL_Surface* idle;
-	ProjectileLaser* projectile;
+	static SDL_Surface *idle;
+	ProjectileLaser *projectile;
 
 	float angle;
 	float angleVel;

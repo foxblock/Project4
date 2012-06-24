@@ -41,6 +41,7 @@ protected:
 	std::vector<EventBase *> eventQueue;
 	Timer spawnTimer;
 	ShapeRect corner[4];
+	ShapeRect side[4];
 	ShapeCircle center;
 
 	spFontPointer killText;

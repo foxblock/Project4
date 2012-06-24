@@ -24,8 +24,8 @@ public:
 
 	Vector2d<T> unit()
 	{
-		if (x == 0 && y == 0)
-			return Vector2d<T>(0,0);
+		if ( x == 0 && y == 0 )
+			return Vector2d<T>( 0, 0 );
 		else
 		{
 			float len = length();
@@ -72,7 +72,7 @@ public:
 	Vector2d<T> operator*( const Vector2d<T> &v )const {return Vector2d<T>( x * v.x, y * v.y );}
 	template <class S>
 	Vector2d<T> operator*( const Vector2d<S> &v )const {return Vector2d<T>( x * v.x, y * v.y );}
-	Vector2d<T> operator*( const T &s )const {return Vector2d<T>( x * s, y *s );}
+	Vector2d<T> operator*( const T &s )const {return Vector2d<T>( x * s, y * s );}
 	template <class S>
 	Vector2d<T> operator*( const S &s )const {return Vector2d<T>( x * s, y * s );}
 
@@ -106,7 +106,7 @@ public:
 	bool operator==( const Vector2d<S> &v ) const { return ( x == v.x ) && ( y == v.y ); }
 
 	// Negator
-    Vector2d<T> operator-() const { return this->opposite(); }
+	Vector2d<T> operator-() const { return Vector2d<T>(-x,-y); }
 
 	T x;
 	T y;

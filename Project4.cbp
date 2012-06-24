@@ -106,6 +106,7 @@
 		</Unit>
 		<Unit filename="src\Application.cpp" />
 		<Unit filename="src\Application.h" />
+		<Unit filename="src\Events.h" />
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
 		<Unit filename="src\ShapeBase.h" />
@@ -128,6 +129,8 @@
 		<Unit filename="src\Timer.h" />
 		<Unit filename="src\UnitBase.cpp" />
 		<Unit filename="src\UnitBase.h" />
+		<Unit filename="src\UnitBomb.cpp" />
+		<Unit filename="src\UnitBomb.h" />
 		<Unit filename="src\UnitLaser.cpp" />
 		<Unit filename="src\UnitLaser.h" />
 		<Unit filename="src\UnitPlayer.cpp" />

@@ -6,12 +6,15 @@
 
 // Pixels per millisecond
 #define SPIKE_ATTACK_ACCEL 0.008f
-#define SPIKE_CHARGE_SPEED 0.75f
-#define SPIKE_MOVEMENT_SPEED 0.5f
-#define SPIKE_IDLE_SPEED 0.1f
+#define SPIKE_CHARGE_MAX_VEL 0.75f
+#define SPIKE_MOVEMENT_MAX_VEL 0.5f
+#define SPIKE_IDLE_MAX_VEL 0.1f
 #define SPIKE_IDLE_FRICTION 0.001f
-#define SPIKE_IDLE_ACCEL 0.005f
+#define SPIKE_IDLE_MAX_ACCEL 0.005f
+#define SPIKE_IDLE_ACCEL 0.0002f
+// 200 pixels
 #define SPIKE_ATTACK_RADIUS_SQR 40000.0f
+// 75 pixels
 #define SPIKE_CHARGE_RADIUS_SQR 5625.0f
 #define SPIKE_WAIT_TIME 500
 #define SPIKE_CHARGE_TIME 500
@@ -29,12 +32,12 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	if ( !attack )
 		generateAttackImage();
 	activeSprite = idle;
-	shape.radius = 20;
+	shape.radius = SPIKE_IDLE_RADIUS;
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 	chargeState = 0;
-	maxVel = SPIKE_IDLE_SPEED;
-	maxAccel = SPIKE_IDLE_ACCEL;
+	maxVel = SPIKE_IDLE_MAX_VEL;
+	maxAccel = SPIKE_IDLE_MAX_ACCEL;
 	friction = SPIKE_IDLE_FRICTION;
 }
 
@@ -53,7 +56,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 	if ( chargeTimer.getStatus() == -1 && chargeState == 1 )
 	{
 		maxVel = UNIT_DEFAULT_MAX_VEL;
-		vel = diff.unit() * SPIKE_CHARGE_SPEED;
+		vel = diff.unit() * SPIKE_CHARGE_MAX_VEL;
 		friction = 0;
 		activeSprite = attack;
 		props.addFlag( ufDeadlyOnTouch );
@@ -84,18 +87,18 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		}
 		else if ( dist < SPIKE_ATTACK_RADIUS_SQR )
 		{
-			maxVel = SPIKE_MOVEMENT_SPEED;
+			maxVel = SPIKE_MOVEMENT_MAX_VEL;
 			friction = UNIT_DEFAULT_FRICTION;
 			maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 			accel = diff.unit() * SPIKE_ATTACK_ACCEL;
 		}
 		else
 		{
-			maxVel = SPIKE_IDLE_SPEED;
-			maxAccel = SPIKE_IDLE_ACCEL;
+			maxVel = SPIKE_IDLE_MAX_VEL;
+			maxAccel = SPIKE_IDLE_MAX_ACCEL;
 			friction = SPIKE_IDLE_FRICTION;
 			Vector2d<float> temp(rand() % 3 - 1, rand() % 3 - 1);
-			accel += temp.unit() / 5000.0f;
+			accel += temp.unit() * SPIKE_IDLE_ACCEL;
 			if ( (*x < shape.radius && accel.x < 0) ||
 					(*x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )
 				accel.x *= -1;
