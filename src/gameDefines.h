@@ -2,10 +2,10 @@
 #define _GAME_DEFINES_H
 
 #define APP_RESIZE 0
-	#define APP_FULLSCREEN 0
 #ifdef GP2X
 	#define APP_SCREEN_WIDTH 320
 	#define APP_SCREEN_HEIGHT 240
+	#define APP_FULLSCREEN 1
 #elif defined PANDORA
 	#define APP_SCREEN_WIDTH 800
 	#define APP_SCREEN_HEIGHT 480
@@ -13,6 +13,7 @@
 #else
 	#define APP_SCREEN_WIDTH 800
 	#define APP_SCREEN_HEIGHT 480
+	#define APP_FULLSCREEN 0
 #endif
 
 #define WARNING_STRING "WARNING:"

@@ -47,7 +47,10 @@ int StateCollision::update( Uint32 delta )
 	handleInput( delta );
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
+	{
+		spGetInput()->button[SP_BUTTON_START] = 0;
 		return 1; // switch to level state
+	}
 
 	unit1->update( delta );
 	unit2->update( delta );

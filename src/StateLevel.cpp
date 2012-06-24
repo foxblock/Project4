@@ -89,6 +89,9 @@ StateLevel::~StateLevel()
 
 int StateLevel::update( Uint32 delta )
 {
+	if ( spGetInput()->button[SP_BUTTON_START] )
+		return -1;
+
 	delta = std::min( ( int )delta, MAX_DELTA );
 
 #ifdef _DEBUG

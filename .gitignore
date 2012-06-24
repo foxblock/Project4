@@ -10,3 +10,4 @@ build/*.exe
 build/stdout.txt
 media/project4.txt
 media/*.zip
+Thumbs.db
