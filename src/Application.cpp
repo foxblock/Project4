@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "sparrow3d.h"
+#include <time.h>
 
 #include "gameDefines.h"
 #include "StateLevel.h"
@@ -26,6 +27,8 @@ Application::Application()
 	errorString = "";
 	activeState = new STARTING_STATE();
 	prevState = NULL;
+
+	srand( time( NULL ) );
 }
 
 Application::~Application()
@@ -85,7 +88,7 @@ int Application::update( Uint32 delta )
 void Application::render()
 {
 	//spResetZBuffer();
-	spClearTarget( SDL_MapRGB( screen->format, 0, 200, 200 ) );
+	spClearTarget( spGetRGB( 128, 0, 0 ) );
 
 	if ( prevState ) // Transition
 	{

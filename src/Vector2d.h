@@ -2,6 +2,7 @@
 #define _VECTOR2D_H
 
 #include <cmath>
+#include "SDL/SDL_video.h"
 
 template <typename T>
 class Vector2d
@@ -23,13 +24,22 @@ public:
 
 	Vector2d<T> unit()
 	{
-		if (x == 0 && y == 0)
-			return Vector2d<T>(0,0);
+		if ( x == 0 && y == 0 )
+			return Vector2d<T>( 0, 0 );
 		else
 		{
 			float len = length();
 			return Vector2d<T>( x / len, y / len );
 		}
+	}
+
+	bool isInRect( const SDL_Rect &rect ) const
+	{
+		return ( x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h );
+	}
+	bool isInRect( const Vector2d<float> &topLeft, const Vector2d<float> &bottomRight ) const
+	{
+		return ( x >= topLeft.x && y >= topLeft.y && x <= bottomRight.x && y <= bottomRight.y );
 	}
 
 	/// Operators
@@ -62,7 +72,7 @@ public:
 	Vector2d<T> operator*( const Vector2d<T> &v )const {return Vector2d<T>( x * v.x, y * v.y );}
 	template <class S>
 	Vector2d<T> operator*( const Vector2d<S> &v )const {return Vector2d<T>( x * v.x, y * v.y );}
-	Vector2d<T> operator*( const T &s )const {return Vector2d<T>( x * s, y *s );}
+	Vector2d<T> operator*( const T &s )const {return Vector2d<T>( x * s, y * s );}
 	template <class S>
 	Vector2d<T> operator*( const S &s )const {return Vector2d<T>( x * s, y * s );}
 
@@ -96,7 +106,7 @@ public:
 	bool operator==( const Vector2d<S> &v ) const { return ( x == v.x ) && ( y == v.y ); }
 
 	// Negator
-    Vector2d<T> operator-() const { return this->opposite(); }
+	Vector2d<T> operator-() const { return Vector2d<T>(-x,-y); }
 
 	T x;
 	T y;

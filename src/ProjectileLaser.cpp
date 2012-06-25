@@ -28,7 +28,7 @@ int ProjectileLaser::update( Uint32 delta )
 void ProjectileLaser::render( SDL_Surface *target )
 {
 	spLine( shape.pos.x, shape.pos.y, -1, shape.target.x, shape.target.y, -1,
-			SDL_MapRGB( target->format, 255, 0, 0 ) );
+			spGetRGB( 255, 0, 0 ) );
 }
 
 ///--- PROTECTED ---------------------------------------------------------------

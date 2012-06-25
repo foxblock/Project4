@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PXML xmlns="http://openpandora.org/namespaces/PXML">
+	<package id="project4">
+		<author name="foxblock"/>
+		<version major="0" minor="1" release="0" build="1" type="alpha"/>
+		<titles>
+			<title lang="en_US">Project4</title>
+		</titles>
+		<descriptions>
+			<description lang="en_US">Project4 - the latest game by foxblock</description>
+		</descriptions>
+		<icon src="./icon.png"/>
+	</package>
+	<application id="project4">
+		<exec command="./Project4"/>
+		<author name="foxblock"/>
+		<version major="0" minor="0" release="1" build="1" type="alpha"/>
+		<titles>
+			<title lang="en_US">Project4</title>
+		</titles>
+		<title lang="en_US">Project4</title>
+		<!-- pre HF6 compatibility -->
+		<descriptions>
+			<description lang="en_US">Project4 - the latest game by foxblock</description>
+		</descriptions>
+		<description lang="en_US">Project4 - the latest game by foxblock</description>
+		<!-- pre HF6 compatibility -->
+		<licenses>
+			<license name="none" sourcecodeurl="https://github.com/foxblock/Project4"/>
+		</licenses>
+		<icon src="./icon.png"/>
+		<info name="Project4 readme" type="text/plain" src="readme.txt"/>
+		<categories>
+			<category name="Game">
+				<subcategory name="ArcadeGame"/>
+			</category>
+		</categories>
+	</application>
+</PXML>

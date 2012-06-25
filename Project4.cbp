@@ -6,10 +6,10 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="W32 Debug">
 				<Option output="bin\W32\Project4_Debug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="build\" />
-				<Option object_output="obj\Debug\" />
+				<Option object_output="obj\W32\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -29,10 +29,10 @@
 					<Add directory="bin\W32" />
 				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="W32 Release">
 				<Option output="bin\W32\Project4" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="build\" />
-				<Option object_output="obj\Release\" />
+				<Option object_output="obj\W32\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -50,6 +50,81 @@
 					<Add option="-lSDL" />
 					<Add directory="$(#mingw.lib)" />
 					<Add directory="bin\W32" />
+				</Linker>
+			</Target>
+			<Target title="Pandora Release">
+				<Option output="bin\Pandora\Project4" prefix_auto="1" extension_auto="0" />
+				<Option working_dir="build\" />
+				<Option object_output="obj\Pandora\Release\" />
+				<Option type="1" />
+				<Option compiler="pandora" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-mcpu=cortex-a8" />
+					<Add option="-mtune=cortex-a8" />
+					<Add option="-mfpu=neon" />
+					<Add option="-march=armv7-a" />
+					<Add option="-ftree-vectorize" />
+					<Add option="-mfloat-abi=softfp" />
+					<Add option="-ffast-math" />
+					<Add option="-fsingle-precision-constant" />
+					<Add option="-fno-exceptions" />
+					<Add option="-fno-rtti" />
+					<Add option="-pipe" />
+					<Add option="-DARMCPU" />
+					<Add option="-DPANDORA" />
+					<Add option="-DMOBILE_DEVICE" />
+					<Add directory="$(#pandora_sdk.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-lSDL_image" />
+					<Add option="-lSDL_ttf" />
+					<Add option="-lSDL" />
+					<Add option="-lfreetype" />
+					<Add option="-lpng" />
+					<Add option="-lz" />
+					<Add option="-lts" />
+					<Add directory="$(#pandora_sdk.lib)" />
+					<Add directory="bin\Pandora" />
+				</Linker>
+			</Target>
+			<Target title="Pandora Debug">
+				<Option output="bin\Pandora\Project4_Debug" prefix_auto="1" extension_auto="0" />
+				<Option working_dir="build\" />
+				<Option object_output="obj\Pandora\Debug\" />
+				<Option type="1" />
+				<Option compiler="pandora" />
+				<Compiler>
+					<Add option="-mcpu=cortex-a8" />
+					<Add option="-mtune=cortex-a8" />
+					<Add option="-mfpu=neon" />
+					<Add option="-march=armv7-a" />
+					<Add option="-ftree-vectorize" />
+					<Add option="-mfloat-abi=softfp" />
+					<Add option="-ffast-math" />
+					<Add option="-fsingle-precision-constant" />
+					<Add option="-fno-exceptions" />
+					<Add option="-fno-rtti" />
+					<Add option="-pipe" />
+					<Add option="-DARMCPU" />
+					<Add option="-DPANDORA" />
+					<Add option="-DMOBILE_DEVICE" />
+					<Add option="-D_DEBUG" />
+					<Add directory="$(#pandora_sdk.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-static-libstdc++" />
+					<Add option="-lSDL_image" />
+					<Add option="-lSDL_ttf" />
+					<Add option="-lSDL" />
+					<Add option="-lfreetype" />
+					<Add option="-lpng" />
+					<Add option="-lz" />
+					<Add option="-lts" />
+					<Add directory="$(#pandora_sdk.lib)" />
+					<Add directory="bin\Pandora" />
 				</Linker>
 			</Target>
 		</Build>
@@ -106,6 +181,7 @@
 		</Unit>
 		<Unit filename="src\Application.cpp" />
 		<Unit filename="src\Application.h" />
+		<Unit filename="src\Events.h" />
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
 		<Unit filename="src\ShapeBase.h" />
@@ -128,6 +204,8 @@
 		<Unit filename="src\Timer.h" />
 		<Unit filename="src\UnitBase.cpp" />
 		<Unit filename="src\UnitBase.h" />
+		<Unit filename="src\UnitBomb.cpp" />
+		<Unit filename="src\UnitBomb.h" />
 		<Unit filename="src\UnitLaser.cpp" />
 		<Unit filename="src\UnitLaser.h" />
 		<Unit filename="src\UnitPlayer.cpp" />

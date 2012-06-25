@@ -5,7 +5,7 @@
 #include "UnitLaser.h"
 #include "ProjectileLaser.h"
 
-#define PLAYER_VELOCITY 0.1f
+#define PLAYER_VELOCITY 0.2f
 
 StateCollision::StateCollision()
 {
@@ -26,7 +26,7 @@ StateCollision::StateCollision()
 
 	font = spFontLoad( "fonts/lato.ttf", 12 );
 	if ( font )
-		spFontAddRange( font, ' ', '~', SDL_MapRGB( spGetWindowSurface()->format, 255, 0, 0 ) );
+		spFontAddRange( font, ' ', '~', spGetRGB( 255, 0, 0 ) );
 }
 
 StateCollision::~StateCollision()
@@ -47,7 +47,10 @@ int StateCollision::update( Uint32 delta )
 	handleInput( delta );
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
+	{
+		spGetInput()->button[SP_BUTTON_START] = 0;
 		return 1; // switch to level state
+	}
 
 	unit1->update( delta );
 	unit2->update( delta );
@@ -93,11 +96,11 @@ void StateCollision::handleInput( Uint32 delta )
 
 	if ( spGetInput()->axis[0] < 0 )
 	{
-		player->vel.x = -PLAYER_VELOCITY * delta;
+		player->vel.x = -PLAYER_VELOCITY;
 	}
 	else if ( spGetInput()->axis[0] > 0 )
 	{
-		player->vel.x = PLAYER_VELOCITY * delta;
+		player->vel.x = PLAYER_VELOCITY;
 	}
 	else
 	{
@@ -105,11 +108,11 @@ void StateCollision::handleInput( Uint32 delta )
 	}
 	if ( spGetInput()->axis[1] < 0 )
 	{
-		player->vel.y = PLAYER_VELOCITY * delta;
+		player->vel.y = PLAYER_VELOCITY;
 	}
 	else if ( spGetInput()->axis[1] > 0 )
 	{
-		player->vel.y = -PLAYER_VELOCITY * delta;
+		player->vel.y = -PLAYER_VELOCITY;
 	}
 	else
 	{

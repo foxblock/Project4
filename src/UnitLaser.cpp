@@ -13,27 +13,30 @@
 #define CHARGE_TIME 500
 // Actual value: 300
 #define LASER_ATTACK_RADIUS_SQR 90000.0f
+#define LASER_IDLE_SPEED 0.00001f
+#define LASER_IDLE_MAX_SPEED 0.0002f
+#define LASER_RADIUS 32
+
+SDL_Surface* UnitLaser::idle = NULL;
 
 UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
-	image = spLoadSurface( "images/units/laser.png" );
-	idle = spNewSprite();
-	spNewSubSpriteWithTiling( idle, image, 0, 0, 64, 64, 1000 );
+	if ( !idle )
+		generateIdleImage();
 	activeSprite = idle;
 
-	rotation = 0;
-	//shape.size = Vector2d<float>( 55, 55 );
-	shape.radius = 32;
+	angle = 0;
+	angleVel = 0;
+	shape.radius = LASER_RADIUS;
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 	projectile = NULL;
 	hasCharged = false;
+	maxAccel = 0.01f;
 }
 
 UnitLaser::~UnitLaser()
 {
-	spDeleteSprite( idle );
-	SDL_FreeSurface( image );
 	if ( projectile )
 		projectile->toBeRemoved = true;
 }
@@ -43,7 +46,9 @@ UnitLaser::~UnitLaser()
 
 int UnitLaser::update( Uint32 delta )
 {
-
+	if ( angleVel > LASER_IDLE_MAX_SPEED )
+		angleVel = LASER_IDLE_MAX_SPEED;
+	angle += angleVel * Utility::sqr( delta );
 	if ( !projectile && charge.getStatus() == -1 && hasCharged )
 	{
 		if ( parent )
@@ -59,9 +64,9 @@ int UnitLaser::update( Uint32 delta )
 			projectile = NULL;
 		else
 		{
-			Vector2d<float> angle( cos( rotation ), sin( rotation ) );
-			projectile->shape.pos = shape.pos + angle * EYE_DISTANCE;
-			projectile->shape.target = shape.pos + angle * 1000;
+			Vector2d<float> rot( cos( angle ), sin( angle ) );
+			projectile->shape.pos = shape.pos + rot * EYE_DISTANCE;
+			projectile->shape.target = shape.pos + rot * 1000;
 		}
 	}
 	return UnitBase::update( delta );
@@ -71,15 +76,19 @@ void UnitLaser::render( SDL_Surface *target )
 {
 	UnitBase::render( target );
 
+	Vector2d<float> eyePos( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) * EYE_DISTANCE );
+
 	if ( hasCharged )
 	{
 		float factor = (float)charge.getTime() / (float)CHARGE_TIME;
-		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) *
-					EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 255.0f * (1 - factor), 0, 255.0f * factor ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, spGetRGB( 255, 255 * factor, 255 * factor ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetRGB( 255.0f * (1.0f - factor), 0, 255.0f * factor ) );
 	}
 	else
-		spEllipse( *x + cos( rotation ) * EYE_DISTANCE, *y + sin( rotation ) *
-					EYE_DISTANCE, -1, 4, 4, SDL_MapRGB( target->format, 0, 0, 255 ) );
+	{
+		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, spGetRGB( 255, 255, 255 ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetRGB( 0, 0, 255 ) );
+	}
 }
 
 bool UnitLaser::checkCollision( UnitBase const *const other ) const
@@ -95,35 +104,45 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 	float diffY = *y - *player->y;
 	if ( !hasCharged && (Utility::sqr(diffX) + Utility::sqr(diffY) < LASER_ATTACK_RADIUS_SQR || projectile))
 	{
-		float newRot = 0;
+		float newAngle = 0;
 		if ( diffY > 0 )
-			newRot = ( -M_PI_2 + atan( diffX / diffY ) );
+			newAngle = ( -M_PI_2 + atan( diffX / diffY ) );
 		else if ( diffY < 0 )
-			newRot = ( M_PI_2 + atan( diffX / diffY ) );
+			newAngle = ( M_PI_2 + atan( diffX / diffY ) );
 
-		if ( newRot < -M_PI_2 && rotation > M_PI_2 )
-			newRot += 2 * M_PI;
-		else if ( newRot > M_PI_2 && rotation < -M_PI_2 )
-			newRot -= 2 * M_PI;
+		if ( newAngle < -M_PI_2 && angle > M_PI_2 )
+			newAngle += 2 * M_PI;
+		else if ( newAngle > M_PI_2 && angle < -M_PI_2 )
+			newAngle -= 2 * M_PI;
 
-		if ( !projectile && fabs( newRot - rotation ) < ROTATION_THESHOLD )
+		if ( !projectile && fabs( newAngle - angle ) < ROTATION_THESHOLD )
 		{
-			//rotation = newRot;
 			charge.start( CHARGE_TIME );
 			hasCharged = true;
+			angleVel = 0;
 		}
-		rotation += ( newRot - rotation ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
+		angle += ( newAngle - angle ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
 
-		if ( rotation < -M_PI )
-			rotation += 2 * M_PI;
-		else if ( rotation > M_PI )
-			rotation -= 2 * M_PI;
+		if ( angle < -M_PI )
+			angle += 2 * M_PI;
+		else if ( angle > M_PI )
+			angle -= 2 * M_PI;
 	}
-#ifdef _DEBUG
-	debugString = Utility::numToStr( rotation );
-#endif
+	else if ( !hasCharged )
+	{
+		angleVel += (rand() % 3 - 1) * LASER_IDLE_SPEED;
+	}
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
 
 ///--- PRIVATE -----------------------------------------------------------------
+
+void UnitLaser::generateIdleImage()
+{
+	idle = spCreateSurface( LASER_RADIUS * 2, LASER_RADIUS * 2 );
+	SDL_FillRect( idle, NULL, SP_ALPHA_COLOR );
+	spSelectRenderTarget( idle );
+	spEllipse( LASER_RADIUS, LASER_RADIUS, -1, LASER_RADIUS, LASER_RADIUS, 0 );
+	spSelectRenderTarget( spGetWindowSurface() );
+}

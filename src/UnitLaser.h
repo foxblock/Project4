@@ -9,25 +9,27 @@
 class UnitLaser : public UnitBase
 {
 public:
-	UnitLaser( StateLevel* newParent );
+	UnitLaser( StateLevel *newParent );
 	virtual ~UnitLaser();
 
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
-	bool checkCollision( UnitBase const * const other ) const;
+	bool checkCollision( UnitBase const *const other ) const;
 
-	void ai( Uint32 delta, UnitBase* player );
+	void ai( Uint32 delta, UnitBase *player );
 
 	ShapeCircle shape;
 protected:
 
 private:
-	spSpritePointer idle;
-	SDL_Surface* image;
-	ProjectileLaser* projectile;
+	static void generateIdleImage();
 
-	float rotation;
+	static SDL_Surface *idle;
+	ProjectileLaser *projectile;
+
+	float angle;
+	float angleVel;
 	bool hasCharged;
 	Timer charge;
 };
