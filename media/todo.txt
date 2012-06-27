@@ -4,16 +4,17 @@
    + redo spike movement
    + laser charge time, attack radius and tracking behaviour
  + Polish player movement
-   - acceleration, deceleration
+   + acceleration, deceleration
  + Change units to use SimpleFlags instead of boolean values
  + Add circle shape/collision class
 ---
 * Small, random stuff
   - Create player character
-  - Add more enemies
+  + Add more enemies
   - Change UnitLaser eye movement completely to use angleVel instead of setting it directly
   - Make UnitLaser not immediately stop eye when targeting the player
   + Draw units with spPrimitive calls instead of sprites
+  - change timer to take delta updates instead of real time updates
 ---
 * Event system
   + Create abstract event system

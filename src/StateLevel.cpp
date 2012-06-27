@@ -122,6 +122,9 @@ int StateLevel::update( Uint32 delta )
 		}
 	}
 
+	// Events
+	handleEvents();
+
 	// Unit handling (adding, removing)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
 	{
@@ -136,9 +139,6 @@ int StateLevel::update( Uint32 delta )
 
 	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
 	unitQueue.clear();
-
-	// Events
-	handleEvents();
 
 	// Spawning
 	spawnUnits( delta );

@@ -39,6 +39,7 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	maxVel = SPIKE_IDLE_MAX_VEL;
 	maxAccel = SPIKE_IDLE_MAX_ACCEL;
 	friction = SPIKE_IDLE_FRICTION;
+	type = utSpike;
 }
 
 UnitSpike::~UnitSpike()

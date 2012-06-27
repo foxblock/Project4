@@ -33,6 +33,7 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	projectile = NULL;
 	hasCharged = false;
 	maxAccel = 0.01f;
+	type = utLaser;
 }
 
 UnitLaser::~UnitLaser()

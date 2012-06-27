@@ -35,11 +35,20 @@ public:
 
 	enum UnitFlags
 	{
-		ufUNKNOWN = 0,
+		ufUnknown = 0,
 		ufDeadlyOnTouch = 1,
 		ufInvincible = 2,
 		ufEOL = 4
 	};
+	enum UnitType
+	{
+		utNone = 0,
+		utPlayer,
+		utSpike,
+		utLaser,
+		utBomb
+	};
+	UnitType type;
 
 	float *x;
 	float *y;

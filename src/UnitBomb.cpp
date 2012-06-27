@@ -2,6 +2,8 @@
 
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
+#include "Events.h"
+#include "StateLevel.h"
 
 #define BOMB_RADIUS 12
 #define BOMB_PRESSURE_RADIUS_SQR_HI  22500.0f
@@ -50,6 +52,7 @@ UnitBomb::UnitBomb( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	maxAccel = BOMB_IDLE_MAX_ACCEL;
 	friction = BOMB_IDLE_FRICTION;
 	isFlashing = false;
+	type = utBomb;
 }
 
 UnitBomb::~UnitBomb()
@@ -87,6 +90,23 @@ void UnitBomb::render( SDL_Surface *target )
 
 	if ( bombTimer.getMode() != -1 && bombTimer.getStatus() == -1 )
 		toBeRemoved = true;
+}
+
+void UnitBomb::collisionResponse( UnitBase *const other )
+{
+	if ( other->type == utBomb )
+	{
+		if ( props.hasFlag( ufDeadlyOnTouch ) && !other->props.hasFlag( ufInvincible ) )
+		{
+			((UnitBomb*)other)->bombTimer.start( BOMB_EXPLOSION_TIME );
+			other->accel = Vector2d<float>(0,0);
+			other->vel = Vector2d<float>(0,0);
+			other->props.addFlag( UnitBase::ufDeadlyOnTouch );
+			other->props.addFlag( UnitBase::ufInvincible );
+		}
+	}
+	else
+		UnitBase::collisionResponse( other );
 }
 
 void UnitBomb::ai( Uint32 delta, UnitBase *player )
@@ -156,7 +176,8 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 		bombTimer.start( BOMB_EXPLOSION_TIME );
 		accel = Vector2d<float>(0,0);
 		vel = Vector2d<float>(0,0);
-		props.addFlag( UnitBase::ufDeadlyOnTouch );
+		props.addFlag( ufDeadlyOnTouch );
+		props.addFlag( ufInvincible );
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_3 )
 	{

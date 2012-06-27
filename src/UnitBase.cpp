@@ -26,6 +26,7 @@ UnitBase::UnitBase( StateLevel *newParent, ShapeBase *newShape )
 	maxVel = UNIT_DEFAULT_MAX_VEL;
 	maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 	friction = UNIT_DEFAULT_FRICTION;
+	type = utNone;
 
 #ifdef _DEBUG
 	debugString = "";
