@@ -8,6 +8,7 @@ ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :
 	props.addFlag(ufDeadlyOnTouch);
 	props.addFlag(ufInvincible);
 	life.start( duration );
+	timers.push_back( &life );
 }
 
 ProjectileLaser::~ProjectileLaser()
@@ -20,7 +21,7 @@ ProjectileLaser::~ProjectileLaser()
 
 int ProjectileLaser::update( Uint32 delta )
 {
-	if (life.getStatus() == -1)
+	if ( life.isStopped() )
 		toBeRemoved = true;
 	return UnitBase::update( delta );
 }

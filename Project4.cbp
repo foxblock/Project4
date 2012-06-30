@@ -169,6 +169,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowSprite.h" />
+		<Unit filename="..\sparrow3d\sparrowText.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowText.h" />
 		<Unit filename="..\sparrow3d\testsparrow.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
@@ -184,6 +188,10 @@
 		<Unit filename="src\Events.h" />
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
+		<Unit filename="src\ScoreBase.cpp" />
+		<Unit filename="src\ScoreBase.h" />
+		<Unit filename="src\ScoreNormal.cpp" />
+		<Unit filename="src\ScoreNormal.h" />
 		<Unit filename="src\ShapeBase.h" />
 		<Unit filename="src\ShapeCircle.cpp" />
 		<Unit filename="src\ShapeCircle.h" />
@@ -200,6 +208,8 @@
 		<Unit filename="src\StateCollision.h" />
 		<Unit filename="src\StateLevel.cpp" />
 		<Unit filename="src\StateLevel.h" />
+		<Unit filename="src\StateScore.cpp" />
+		<Unit filename="src\StateScore.h" />
 		<Unit filename="src\Timer.cpp" />
 		<Unit filename="src\Timer.h" />
 		<Unit filename="src\UnitBase.cpp" />

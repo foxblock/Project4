@@ -9,6 +9,7 @@
 #include "ShapeRect.h"
 #include "ShapeCircle.h"
 #include "Events.h"
+#include "ScoreNormal.h"
 
 #define PLAYER_CLASS UnitPlayer
 
@@ -28,13 +29,14 @@ public:
 	void addEvent( EventBase *newEvent );
 
 	PLAYER_CLASS *player;
+	ScoreNormal scoreKeeper;
 
 #ifdef _DEBUG
 	std::string debugString;
 #endif
 protected:
 	void spawnUnits( Uint32 delta );
-	void handleEvents();
+	void handleEvents( Uint32 delta );
 
 	std::vector<UnitBase *> units;
 	std::vector<UnitBase *> unitQueue;
@@ -43,9 +45,6 @@ protected:
 	ShapeRect corner[4];
 	ShapeRect side[4];
 	ShapeCircle center;
-
-	spFontPointer killText;
-	int kills;
 
 #ifdef _DEBUG
 	spFontPointer debugText;

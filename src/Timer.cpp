@@ -4,11 +4,10 @@
 
 Timer::Timer()
 {
-	startTicks = 0;
-	pauseTicks = 0;
 	duration = 0;
 	status = -1;
 	mode = -1;
+	currentTicks = 0;
 }
 
 Timer::~Timer()
@@ -21,7 +20,7 @@ Timer::~Timer()
 
 void Timer::start( int milliseconds )
 {
-	startTicks = SDL_GetTicks();
+	currentTicks = 0;
 	status = 1;
 
 	duration = milliseconds;
@@ -33,19 +32,10 @@ void Timer::start( int milliseconds )
 
 void Timer::pause()
 {
-	switch ( status )
-	{
-	case -1:
-		return;
-	case 0:
-		startTicks += SDL_GetTicks() - pauseTicks;
-		status = 1;
-		break;
-	case 1:
-		pauseTicks = SDL_GetTicks();
+	if ( status == 1 )
 		status = 0;
-		break;
-	}
+	else if ( status == 0 )
+		status = 1;
 }
 
 void Timer::stop()
@@ -54,58 +44,25 @@ void Timer::stop()
 	mode = -1;
 }
 
-int Timer::getTime()
+void Timer::update( int delta )
 {
-	int temp = 0;
-
-	switch ( status )
-	{
-	case -1:
-		return 0;
-	case 0:
-		temp = pauseTicks;
-		break;
-	case 1:
-		temp = SDL_GetTicks();
-		break;
-	}
-	if ( mode == 0 )
-		return temp - startTicks;
-	else
-	{
-		int remaining = duration - ( temp - startTicks );
-		if ( remaining < 0 )
-		{
-			status = -1;
-			return 0;
-		}
-		return remaining;
-	}
+	if ( status == 1 )
+		currentTicks += delta;
+	if ( mode == 1 && status == 1 && currentTicks >= duration )
+		status = -1;
 }
 
-int Timer::getStatus()
+int Timer::getTime()
 {
-	if ( mode == 1 )
+	if ( status == -1 )
+		return 0;
+	else
 	{
-		int temp = 0;
-		switch ( status )
-		{
-		case -1:
-			return -1;
-		case 0:
-			temp = pauseTicks;
-			break;
-		case 1:
-			temp = SDL_GetTicks();
-			break;
-		}
-		int remaining = duration - ( temp - startTicks );
-		if ( remaining < 0 )
-		{
-			status = -1;
-		}
+		if ( mode == 0 )
+			return currentTicks;
+		else
+			return duration - currentTicks;
 	}
-	return status;
 }
 
 ///--- PROTECTED ---------------------------------------------------------------

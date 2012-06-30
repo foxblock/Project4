@@ -16,6 +16,16 @@ public:
 	virtual void render( SDL_Surface* target )=0;
 
 	std::string getLastError() { return errorString; }
+
+	enum StateType
+	{
+		stNone=0,
+		stLevel,
+		stCollision,
+		stScore
+	};
+	StateType type;
+
 protected:
 	std::string errorString;
 private:

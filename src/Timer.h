@@ -12,17 +12,21 @@ public:
 	void pause();
 	void stop();
 
+	void update( int delta );
+
 	// time remaining on countdown, time running on stopwatch
 	int getTime();
 	// -1 - stopped, 0 - paused, 1 - running
-	int getStatus();
+	int getStatus() { return status; }
 	// -1 - off, 0 - stopwatch, 1 - countdown
-	int getMode() { return mode; };
+	int getMode() { return mode; }
+
+	bool wasStarted() { return (mode != -1); }
+	bool isStopped() { return (status == -1); }
 
 protected:
-	int startTicks;
 	int duration;
-	int pauseTicks;
+	int currentTicks;
 
 	int status;
 	int mode;

@@ -59,6 +59,8 @@ int UnitBase::update( Uint32 delta )
 		accel = accel.unit() * maxAccel;
 	*x += vel.x * delta;
 	*y += vel.y * delta;
+	for ( std::vector< Timer* >::iterator I = timers.begin(); I != timers.end(); ++I )
+		(*I)->update( delta );
 #ifdef _DEBUG
 	debugString += Utility::vecToStr( accel ) + "\n" + Utility::vecToStr( vel ) + "\n";
 #endif

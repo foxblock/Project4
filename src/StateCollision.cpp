@@ -27,6 +27,7 @@ StateCollision::StateCollision()
 	font = spFontLoad( "fonts/lato.ttf", 12 );
 	if ( font )
 		spFontAddRange( font, ' ', '~', spGetRGB( 255, 0, 0 ) );
+	type = stCollision;
 }
 
 StateCollision::~StateCollision()
@@ -48,8 +49,7 @@ int StateCollision::update( Uint32 delta )
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
 	{
-		spGetInput()->button[SP_BUTTON_START] = 0;
-		return 1; // switch to level state
+		return stLevel; // switch to level state
 	}
 
 	unit1->update( delta );
@@ -71,6 +71,8 @@ int StateCollision::update( Uint32 delta )
 
 void StateCollision::render( SDL_Surface *target )
 {
+	spClearTarget( spGetRGB( 128, 0, 0 ) );
+
 	unit1->render( target );
 	unit2->render( target );
 	unit3->render( target );

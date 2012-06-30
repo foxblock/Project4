@@ -34,6 +34,7 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	hasCharged = false;
 	maxAccel = 0.01f;
 	type = utLaser;
+	timers.push_back( &charge );
 }
 
 UnitLaser::~UnitLaser()
@@ -50,7 +51,7 @@ int UnitLaser::update( Uint32 delta )
 	if ( angleVel > LASER_IDLE_MAX_SPEED )
 		angleVel = LASER_IDLE_MAX_SPEED;
 	angle += angleVel * Utility::sqr( delta );
-	if ( !projectile && charge.getStatus() == -1 && hasCharged )
+	if ( !projectile && charge.isStopped() && hasCharged )
 	{
 		if ( parent )
 		{

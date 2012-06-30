@@ -6,6 +6,7 @@
 
 #include "sparrowSprite.h"
 #include <string>
+#include <vector>
 
 // Pixels per millisecond
 #define UNIT_DEFAULT_FRICTION 0.005f
@@ -14,6 +15,7 @@
 
 class ShapeBase;
 class StateLevel;
+class Timer;
 
 class UnitBase
 {
@@ -68,8 +70,9 @@ protected:
 	float maxVel;
 	float maxAccel;
 	float friction;
-private:
 
+	std::vector< Timer* > timers;
+private:
 };
 
 

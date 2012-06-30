@@ -40,6 +40,7 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	maxAccel = SPIKE_IDLE_MAX_ACCEL;
 	friction = SPIKE_IDLE_FRICTION;
 	type = utSpike;
+	timers.push_back( &chargeTimer );
 }
 
 UnitSpike::~UnitSpike()
@@ -54,7 +55,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 {
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
-	if ( chargeTimer.getStatus() == -1 && chargeState == 1 )
+	if ( chargeTimer.isStopped() && chargeState == 1 )
 	{
 		maxVel = UNIT_DEFAULT_MAX_VEL;
 		vel = diff.unit() * SPIKE_CHARGE_MAX_VEL;
@@ -64,12 +65,12 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		chargeState = 2;
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
-	if ( chargeTimer.getStatus() != -1 && chargeState == 2 &&
+	if ( !chargeTimer.isStopped() && chargeState == 2 &&
 		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_HEIGHT)) )
 	{
 		chargeTimer.stop();
 	}
-	if ( chargeTimer.getStatus() == -1 && chargeState == 2 )
+	if ( chargeTimer.isStopped() && chargeState == 2 )
 	{
 		chargeState = 0;
 		activeSprite = idle;
