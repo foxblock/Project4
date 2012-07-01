@@ -4,6 +4,7 @@
 #include "UnitBase.h"
 #include "UtilityFunctions.h"
 #include "gameDefines.h"
+#include "StateLevel.h"
 
 #define SCORE_LASER_POINTS 100
 #define SCORE_SPIKE_POINTS 50
@@ -12,6 +13,9 @@
 #define SCORE_COMBO_MIN_TIME 500
 #define SCORE_COMBO_KILL_TIME 50
 #define SCORE_MULTI_PER_KILL 0.2f
+#define SCORE_PEACE_TIMER 1000
+#define SCORE_PEACE_POINTS 0.02f
+#define SCORE_PEACE_MIN_UNITS 3
 
 #define SCORE_FONT_SIZE 32
 
@@ -34,6 +38,7 @@ ScoreNormal::ScoreNormal( StateLevel *newParent ) : ScoreBase( newParent )
 		spFontAdd( scoreText, '.', spGetRGB( 255, 255, 255 ) );
 		spFontAdd( scoreText, 'x', spGetRGB( 255, 255, 255 ) );
 	}
+	peaceTimer.start( SCORE_PEACE_TIMER );
 }
 
 ScoreNormal::~ScoreNormal()
@@ -51,13 +56,24 @@ int ScoreNormal::getScore() const
 
 int ScoreNormal::update( Uint32 delta )
 {
+	ScoreBase::update( delta );
+
 	if ( comboTimer.isStopped() && comboTimer.wasStarted() )
 	{
 		multiplier = 1;
 		streak = 0;
 		comboTimer.stop();
+		peaceTimer.start( SCORE_PEACE_TIMER );
 	}
-	return ScoreBase::update( delta );
+	if ( peaceTimer.isStopped() && peaceTimer.wasStarted() )
+	{
+		if ( parent->countUnits() >= SCORE_PEACE_MIN_UNITS )
+		{
+			points += SCORE_PEACE_POINTS * multiplier * delta;
+		}
+	}
+
+	return 0;
 }
 
 void ScoreNormal::handleEvent( EventBase const * const event )
@@ -66,6 +82,11 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 	{
 	case EventBase::etUnitDeath:
 	{
+		if ( peaceTimer.wasStarted() )
+		{
+			peaceTimer.stop();
+			multiplier = 1;
+		}
 		std::map<int,int>::iterator p = pointMatrix.find( ((EventUnitDeath*)event)->unit->type);
 		if ( p != pointMatrix.end() )
 		{
@@ -76,6 +97,14 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 			++streak;
 		}
 		break;
+	}
+	case EventBase::etUnitSpawn:
+	{
+		if ( peaceTimer.isStopped() && peaceTimer.wasStarted() &&
+			parent->countUnits() >= SCORE_PEACE_MIN_UNITS )
+		{
+			multiplier += 1;
+		}
 	}
 	default:
 		break;

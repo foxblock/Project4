@@ -72,11 +72,11 @@ int Application::update( Uint32 delta )
 			return -1;
 		case 0: // keep using current state
 			break;
-		case StateBase::stLevel: // StateLevel
+		case StateBase::stLevel:
 			prevState = activeState;
 			activeState = new StateLevel();
 			break;
-		case StateBase::stCollision: // StateCollision
+		case StateBase::stCollision:
 			prevState = activeState;
 			activeState = new StateCollision();
 			break;

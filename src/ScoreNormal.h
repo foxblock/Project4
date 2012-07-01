@@ -18,7 +18,7 @@ public:
 
 	void render( SDL_Surface *target );
 protected:
-	int points;
+	float points;
 	int kills;
 	int streak;
 	float multiplier;

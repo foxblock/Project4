@@ -6,29 +6,11 @@
 #include "UtilityFunctions.h"
 
 #include "UnitPlayer.h"
-#include "UnitSpike.h"
-#include "UnitLaser.h"
-#include "UnitBomb.h"
-
-// Actual value: 200
-#define PLAYER_SAFE_RADIUS_SQR 40000.0f
-
-#define UNIT_TYPE_COUNT 2
-
-#define LEVEL_CORNER_WIDTH 200.0f
-#define LEVEL_CORNER_HEIGHT 100.0f
-#define LEVEL_CENTER_RADIUS 100.0f
-#define LEVEL_SIDE_WIDTH 100.0f
-#define LEVEL_SIDE_HEIGHT 50.0f
-#define LEVEL_SIDE_OFFSET_H 30.0f
-#define LEVEL_SIDE_OFFSET_V 15.0f
-
-#define LEVEL_SPAWN_TIME 1000
-#define LEVEL_SPAWN_MAX 10
 
 StateLevel::StateLevel() :
 	StateBase(),
-	scoreKeeper( this )
+	scoreKeeper( this ),
+	spawnHandler( this )
 {
 	player = new PLAYER_CLASS( this );
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
@@ -40,23 +22,6 @@ StateLevel::StateLevel() :
 	if ( debugText )
 		spFontAddRange( debugText, ' ', '~', spGetRGB( 255, 0, 0 ) );
 #endif
-
-	corner[0].pos = Vector2d<float>( LEVEL_CORNER_WIDTH / 2, LEVEL_CORNER_HEIGHT / 2 );
-	corner[1].pos = Vector2d<float>( APP_SCREEN_WIDTH - LEVEL_CORNER_WIDTH / 2, LEVEL_CORNER_HEIGHT / 2 );
-	corner[2].pos = Vector2d<float>( LEVEL_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - LEVEL_CORNER_HEIGHT / 2 );
-	corner[3].pos = Vector2d<float>( APP_SCREEN_WIDTH - LEVEL_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - LEVEL_CORNER_HEIGHT / 2 );
-	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
-		corner[I].size = Vector2d<float>( LEVEL_CORNER_WIDTH, LEVEL_CORNER_HEIGHT );
-	side[0].pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, LEVEL_SIDE_OFFSET_V + LEVEL_SIDE_HEIGHT / 2.0f );
-	side[1].pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT - LEVEL_SIDE_OFFSET_V - LEVEL_SIDE_HEIGHT / 2.0f );
-	side[2].pos = Vector2d<float>( LEVEL_SIDE_OFFSET_H + LEVEL_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
-	side[3].pos = Vector2d<float>( APP_SCREEN_WIDTH - LEVEL_SIDE_OFFSET_H - LEVEL_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
-	side[0].size = Vector2d<float>( LEVEL_SIDE_WIDTH, LEVEL_SIDE_HEIGHT );
-	side[1].size = side[0].size;
-	side[2].size = Vector2d<float>( LEVEL_SIDE_HEIGHT, LEVEL_SIDE_WIDTH );
-	side[3].size = side[2].size;
-	center.pos = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
-	center.radius = LEVEL_CENTER_RADIUS;
 
 	spGetInput()->button[SP_BUTTON_START] = 0;
 
@@ -100,9 +65,7 @@ int StateLevel::update( Uint32 delta )
 	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr( delta ) + ")\n";
 #endif
 
-	spawnTimer.update( delta );
-
-	// Unit update, collision checking
+	// Unit update, collision checking (creates events)
 	if ( player )
 		player->update( delta );
 
@@ -126,9 +89,8 @@ int StateLevel::update( Uint32 delta )
 		}
 	}
 
-	// Events
-	scoreKeeper.update( delta );
-	handleEvents( delta );
+	// Spawning (creates events)
+	spawnHandler.update( delta );
 
 	// Unit handling (adding, removing)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
@@ -145,8 +107,11 @@ int StateLevel::update( Uint32 delta )
 	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
 	unitQueue.clear();
 
-	// Spawning
-	spawnUnits( delta );
+	// Score (reads events)
+	scoreKeeper.update( delta );
+
+	// Events (reads and removes events)
+	handleEvents( delta );
 
 #ifdef _DEBUG
 	debugString += Utility::numToStr( units.size() ) + " units\n";
@@ -176,11 +141,7 @@ void StateLevel::render( SDL_Surface *target )
 #ifdef _DEBUG
 	if ( debugText )
 		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
-	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
-		corner[I].render( target, spGetRGB( 228, 0, 228 ) );
-	for ( int I = 0; I < ARRAY_SIZE( side ); ++I )
-		side[I].render( target, spGetRGB( 228, 0, 228 ) );
-	center.render( target, spGetRGB( 228, 0, 228 ) );
+	spawnHandler.render( target );
 #endif
 }
 
@@ -195,53 +156,6 @@ void StateLevel::addEvent( EventBase *newEvent )
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
-
-void StateLevel::spawnUnits( Uint32 delta )
-{
-	if ( !spawnTimer.isStopped() ||
-			units.size() >= LEVEL_SPAWN_MAX )
-		return;
-
-	UnitBase *newUnit = NULL;
-
-	if ( player->shape.checkCollision( &center ) )
-	{
-		newUnit = new UnitSpike( this );
-	}
-	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
-	{
-		if ( player->shape.checkCollision( &corner[I] ) )
-		{
-			newUnit = new UnitLaser( this );
-			break;
-		}
-	}
-	for ( int I = 0; I < ARRAY_SIZE( side ); ++I )
-	{
-		if ( player->shape.checkCollision( &side[I] ) )
-		{
-			newUnit = new UnitBomb( this );
-			break;
-		}
-	}
-
-	if ( !newUnit )
-		return;
-
-	units.push_back( newUnit );
-
-	*newUnit->x = rand() % APP_SCREEN_WIDTH;
-	float temp = 0;
-	do
-	{
-		*newUnit->y = rand() % APP_SCREEN_HEIGHT;
-		if ( player )
-			temp = Utility::sqr( *newUnit->x - *player->x ) + Utility::sqr( *newUnit->y - * player->y );
-	}
-	while ( temp < PLAYER_SAFE_RADIUS_SQR );
-
-	spawnTimer.start( LEVEL_SPAWN_TIME );
-}
 
 void StateLevel::handleEvents( Uint32 delta )
 {
