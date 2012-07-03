@@ -29,22 +29,74 @@
 
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
-	corner[0].pos = Vector2d<float>( SPAWN_CORNER_WIDTH / 2, SPAWN_CORNER_HEIGHT / 2 );
-	corner[1].pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2, SPAWN_CORNER_HEIGHT / 2 );
-	corner[2].pos = Vector2d<float>( SPAWN_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2 );
-	corner[3].pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2 );
-	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
-		corner[I].size = Vector2d<float>( SPAWN_CORNER_WIDTH, SPAWN_CORNER_HEIGHT );
-	side[0].pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, SPAWN_SIDE_OFFSET_V + SPAWN_SIDE_HEIGHT / 2.0f );
-	side[1].pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT - SPAWN_SIDE_OFFSET_V - SPAWN_SIDE_HEIGHT / 2.0f );
-	side[2].pos = Vector2d<float>( SPAWN_SIDE_OFFSET_H + SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
-	side[3].pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_SIDE_OFFSET_H - SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
-	side[0].size = Vector2d<float>( SPAWN_SIDE_WIDTH, SPAWN_SIDE_HEIGHT );
-	side[1].size = side[0].size;
-	side[2].size = Vector2d<float>( SPAWN_SIDE_HEIGHT, SPAWN_SIDE_WIDTH );
-	side[3].size = side[2].size;
-	center.pos = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
-	center.radius = SPAWN_CENTER_RADIUS;
+	std::vector< ShapeBase* > tempVec;
+	std::map< int, int > tempMat;
+	ShapeBase* tempShape;
+
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( SPAWN_CORNER_WIDTH / 2, SPAWN_CORNER_HEIGHT / 2 );
+	tempVec.push_back( tempShape );
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2, SPAWN_CORNER_HEIGHT / 2 );
+	tempVec.push_back( tempShape );
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( SPAWN_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2 );
+	tempVec.push_back( tempShape );
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2 );
+	tempVec.push_back( tempShape );
+	for ( std::vector< ShapeBase* >::iterator I = tempVec.begin(); I != tempVec.end(); ++I )
+		((ShapeRect*)(*I))->size = Vector2d<float>( SPAWN_CORNER_WIDTH, SPAWN_CORNER_HEIGHT );
+	tempMat[ UnitBase::utSpike ] = 35;
+	tempMat[ UnitBase::utLaser ] = 40;
+	tempMat[ UnitBase::utBomb ] = 25;
+	corners = new SpawnRegion( tempVec, tempMat );
+	tempVec.clear();
+	tempMat.clear();
+
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, SPAWN_SIDE_OFFSET_V + SPAWN_SIDE_HEIGHT / 2.0f );
+	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_WIDTH, SPAWN_SIDE_HEIGHT );
+	tempVec.push_back( tempShape );
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT - SPAWN_SIDE_OFFSET_V - SPAWN_SIDE_HEIGHT / 2.0f );
+	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_WIDTH, SPAWN_SIDE_HEIGHT );
+	tempVec.push_back( tempShape );
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( SPAWN_SIDE_OFFSET_H + SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
+	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_HEIGHT, SPAWN_SIDE_WIDTH );
+	tempVec.push_back( tempShape );
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_SIDE_OFFSET_H - SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
+	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_HEIGHT, SPAWN_SIDE_WIDTH );
+	tempVec.push_back( tempShape );
+	tempMat[ UnitBase::utSpike ] = 40;
+	tempMat[ UnitBase::utLaser ] = 25;
+	tempMat[ UnitBase::utBomb ] = 35;
+	sides = new SpawnRegion( tempVec, tempMat );
+	tempVec.clear();
+	tempMat.clear();
+
+	tempShape = new ShapeCircle();
+	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
+	((ShapeCircle*)tempShape)->radius = SPAWN_CENTER_RADIUS;
+	tempVec.push_back( tempShape );
+	tempMat[ UnitBase::utSpike ] = 60;
+	tempMat[ UnitBase::utLaser ] = 15;
+	tempMat[ UnitBase::utBomb ] = 25;
+	centre = new SpawnRegion( tempVec, tempMat );
+	tempVec.clear();
+	tempMat.clear();
+
+	tempShape = new ShapeRect();
+	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
+	((ShapeRect*)tempShape)->size = Vector2d<float>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
+	tempVec.push_back( tempShape );
+	tempMat[ UnitBase::utSpike ] = 50;
+	tempMat[ UnitBase::utLaser ] = 30;
+	tempMat[ UnitBase::utBomb ] = 20;
+	screen = new SpawnRegion( tempVec, tempMat );
+
 	timers.push_back( &spawnTimer );
 }
 
@@ -65,26 +117,30 @@ int SpawnNormal::update( Uint32 delta )
 		return 0;
 
 	UnitBase *newUnit = NULL;
+	int unitType = 0;
 
-	if ( parent->player->shape.checkCollision( &center ) )
+	unitType = corners->checkSpawn( parent->player );
+	if ( unitType == 0 )
+		unitType = sides->checkSpawn( parent->player );
+	if ( unitType == 0 )
+		unitType = centre->checkSpawn( parent->player );
+	if ( unitType == 0 )
+		unitType = screen->checkSpawn( parent->player );
+
+	if ( unitType == 0 )
+		return 0;
+
+	switch ( unitType )
 	{
+	case UnitBase::utSpike:
 		newUnit = new UnitSpike( parent );
-	}
-	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
-	{
-		if ( parent->player->shape.checkCollision( &corner[I] ) )
-		{
-			newUnit = new UnitLaser( parent );
-			break;
-		}
-	}
-	for ( int I = 0; I < ARRAY_SIZE( side ); ++I )
-	{
-		if ( parent->player->shape.checkCollision( &side[I] ) )
-		{
-			newUnit = new UnitBomb( parent );
-			break;
-		}
+		break;
+	case UnitBase::utLaser:
+		newUnit = new UnitLaser( parent );
+		break;
+	case UnitBase::utBomb:
+		newUnit = new UnitBomb( parent );
+		break;
 	}
 
 	if ( !newUnit )
@@ -111,13 +167,61 @@ int SpawnNormal::update( Uint32 delta )
 
 void SpawnNormal::render( SDL_Surface *target )
 {
-	for ( int I = 0; I < ARRAY_SIZE( corner ); ++I )
-		corner[I].render( target, spGetRGB( 228, 0, 228 ) );
-	for ( int I = 0; I < ARRAY_SIZE( side ); ++I )
-		side[I].render( target, spGetRGB( 228, 0, 228 ) );
-	center.render( target, spGetRGB( 228, 0, 228 ) );
+	corners->render( target );
+	sides->render( target );
+	centre->render( target );
+	screen->render( target );
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
 
 ///--- PRIVATE -----------------------------------------------------------------
+
+
+
+SpawnRegion::SpawnRegion(std::vector< ShapeBase* > shapes, std::map< int, int > probMatrix)
+{
+	this->shapes = shapes;
+	this->probMatrix = probMatrix;
+	for (std::map< int, int >::iterator I = this->probMatrix.begin(); I != this->probMatrix.end(); ++I)
+		totalCount += I->second;
+}
+
+SpawnRegion::~SpawnRegion()
+{
+	for ( std::vector< ShapeBase* >::iterator I = shapes.begin(); I != shapes.end(); ++ I )
+	{
+		delete *I;
+	}
+}
+
+int SpawnRegion::checkSpawn(UnitBase const* const unit)
+{
+	bool result = false;
+	for ( std::vector< ShapeBase * >::iterator I = shapes.begin(); I != shapes.end(); ++I )
+	{
+		if ( unit->shape->checkCollision( *I ) )
+		{
+			result = true;
+			break;
+		}
+	}
+	if ( result )
+	{
+		int val = rand() % totalCount;
+		int temp = 0;
+		for ( std::map< int, int >::iterator I = probMatrix.begin(); I != probMatrix.end(); ++I )
+		{
+			temp += I->second;
+			if ( val < temp )
+				return I->first;
+		}
+	}
+	return 0;
+}
+
+void SpawnRegion::render(SDL_Surface* target)
+{
+	for( std::vector< ShapeBase* >::iterator I = shapes.begin(); I != shapes.end(); ++I )
+		(*I)->render( target, spGetFastRGB(228,0,228) );
+}

@@ -25,7 +25,7 @@
   - create different wave data
   - create event system checking wave spawning criteria
   + create spawn class
-  - create region class for single spawns
+  ~ create region class for single spawns
 ---
 * Scoring system
   + assign points to each unit
