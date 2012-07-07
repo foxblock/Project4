@@ -14,6 +14,13 @@ ShapeCircle::ShapeCircle() :
 	//
 }
 
+ShapeCircle::ShapeCircle( const Vector2d<float> &newPos, const float &newRadius ) :
+	ShapeBase( newPos ),
+	radius( newRadius )
+{
+	//
+}
+
 ShapeCircle::~ShapeCircle()
 {
 	//

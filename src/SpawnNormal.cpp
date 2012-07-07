@@ -18,7 +18,7 @@
 
 #define SPAWN_CORNER_WIDTH 200.0f
 #define SPAWN_CORNER_HEIGHT 100.0f
-#define SPAWN_CENTER_RADIUS 100.0f
+#define SPAWN_CENTRE_RADIUS 100.0f
 #define SPAWN_SIDE_WIDTH 100.0f
 #define SPAWN_SIDE_HEIGHT 50.0f
 #define SPAWN_SIDE_OFFSET_H 30.0f
@@ -27,82 +27,65 @@
 #define SPAWN_TIME_START 1000
 #define SPAWN_MAX_START 10
 
+#define SPAWN_POSITION_MAX_TRIES 50
+
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
-	std::vector< ShapeBase* > tempVec;
+	Vector2d<float> tempVec;
 	std::map< int, int > tempMat;
-	ShapeBase* tempShape;
+	SpawnRegion *tempRegion;
 
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( SPAWN_CORNER_WIDTH / 2, SPAWN_CORNER_HEIGHT / 2 );
-	tempVec.push_back( tempShape );
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2, SPAWN_CORNER_HEIGHT / 2 );
-	tempVec.push_back( tempShape );
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( SPAWN_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2 );
-	tempVec.push_back( tempShape );
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2 );
-	tempVec.push_back( tempShape );
-	for ( std::vector< ShapeBase* >::iterator I = tempVec.begin(); I != tempVec.end(); ++I )
-		((ShapeRect*)(*I))->size = Vector2d<float>( SPAWN_CORNER_WIDTH, SPAWN_CORNER_HEIGHT );
+	// Corners
 	tempMat[ UnitBase::utSpike ] = 35;
 	tempMat[ UnitBase::utLaser ] = 40;
 	tempMat[ UnitBase::utBomb ] = 25;
-	corners = new SpawnRegion( tempVec, tempMat );
-	tempVec.clear();
+	tempRegion = new SpawnRegion( tempMat );
+	tempVec = Vector2d<float>( SPAWN_CORNER_WIDTH, SPAWN_CORNER_HEIGHT );
+	tempRegion->addRect( Vector2d<float>( SPAWN_CORNER_WIDTH / 2.0f, SPAWN_CORNER_HEIGHT / 2.0f ), tempVec );
+	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2, SPAWN_CORNER_HEIGHT / 2.0f ), tempVec );
+	tempRegion->addRect( Vector2d<float>( SPAWN_CORNER_WIDTH / 2.0f, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2.0f ), tempVec );
+	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_CORNER_WIDTH / 2.0f, APP_SCREEN_HEIGHT - SPAWN_CORNER_HEIGHT / 2.0f ), tempVec );
+	regions.push_back( tempRegion );
 	tempMat.clear();
 
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, SPAWN_SIDE_OFFSET_V + SPAWN_SIDE_HEIGHT / 2.0f );
-	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_WIDTH, SPAWN_SIDE_HEIGHT );
-	tempVec.push_back( tempShape );
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT - SPAWN_SIDE_OFFSET_V - SPAWN_SIDE_HEIGHT / 2.0f );
-	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_WIDTH, SPAWN_SIDE_HEIGHT );
-	tempVec.push_back( tempShape );
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( SPAWN_SIDE_OFFSET_H + SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
-	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_HEIGHT, SPAWN_SIDE_WIDTH );
-	tempVec.push_back( tempShape );
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_SIDE_OFFSET_H - SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f );
-	((ShapeRect*)tempShape)->size = Vector2d<float>( SPAWN_SIDE_HEIGHT, SPAWN_SIDE_WIDTH );
-	tempVec.push_back( tempShape );
+	// Sides
 	tempMat[ UnitBase::utSpike ] = 40;
 	tempMat[ UnitBase::utLaser ] = 25;
 	tempMat[ UnitBase::utBomb ] = 35;
-	sides = new SpawnRegion( tempVec, tempMat );
-	tempVec.clear();
+	tempRegion = new SpawnRegion( tempMat );
+	tempVec = Vector2d<float>( SPAWN_SIDE_WIDTH, SPAWN_SIDE_HEIGHT );
+	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, SPAWN_SIDE_OFFSET_V + SPAWN_SIDE_HEIGHT / 2.0f ), tempVec );
+	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT - SPAWN_SIDE_OFFSET_V - SPAWN_SIDE_HEIGHT / 2.0f ), tempVec );
+	tempVec = Vector2d<float>( SPAWN_SIDE_HEIGHT, SPAWN_SIDE_WIDTH );
+	tempRegion->addRect( Vector2d<float>( SPAWN_SIDE_OFFSET_H + SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f ), tempVec );
+	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH - SPAWN_SIDE_OFFSET_H - SPAWN_SIDE_HEIGHT / 2.0f, APP_SCREEN_HEIGHT / 2.0f ), tempVec );
+	regions.push_back( tempRegion );
 	tempMat.clear();
 
-	tempShape = new ShapeCircle();
-	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
-	((ShapeCircle*)tempShape)->radius = SPAWN_CENTER_RADIUS;
-	tempVec.push_back( tempShape );
+	// Centre
 	tempMat[ UnitBase::utSpike ] = 60;
 	tempMat[ UnitBase::utLaser ] = 15;
 	tempMat[ UnitBase::utBomb ] = 25;
-	centre = new SpawnRegion( tempVec, tempMat );
-	tempVec.clear();
+	tempRegion = new SpawnRegion( tempMat );
+	tempRegion->addCircle( Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 ), SPAWN_CENTRE_RADIUS );
+	regions.push_back( tempRegion );
 	tempMat.clear();
 
-	tempShape = new ShapeRect();
-	tempShape->pos = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
-	((ShapeRect*)tempShape)->size = Vector2d<float>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
-	tempVec.push_back( tempShape );
+	// Whole screen
 	tempMat[ UnitBase::utSpike ] = 50;
 	tempMat[ UnitBase::utLaser ] = 30;
 	tempMat[ UnitBase::utBomb ] = 20;
-	screen = new SpawnRegion( tempVec, tempMat );
+	tempRegion = new SpawnRegion( tempMat );
+	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT / 2.0f ), Vector2d<float>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) );
+	regions.push_back( tempRegion );
 
 	timers.push_back( &spawnTimer );
 }
 
 SpawnNormal::~SpawnNormal()
 {
-	//
+	for ( std::vector< SpawnRegion * >::iterator I = regions.begin(); I != regions.end(); ++I )
+		delete (*I);
 }
 
 
@@ -117,15 +100,13 @@ int SpawnNormal::update( Uint32 delta )
 		return 0;
 
 	UnitBase *newUnit = NULL;
-	int unitType = 0;
+	int unitType = UnitBase::utNone;
 
-	unitType = corners->checkSpawn( parent->player );
-	if ( unitType == 0 )
-		unitType = sides->checkSpawn( parent->player );
-	if ( unitType == 0 )
-		unitType = centre->checkSpawn( parent->player );
-	if ( unitType == 0 )
-		unitType = screen->checkSpawn( parent->player );
+	for ( std::vector< SpawnRegion* >::iterator I = regions.begin();
+			I != regions.end() && unitType == UnitBase::utNone; ++I )
+	{
+		unitType = (*I)->checkSpawn( parent->player );
+	}
 
 	if ( unitType == 0 )
 		return 0;
@@ -134,12 +115,15 @@ int SpawnNormal::update( Uint32 delta )
 	{
 	case UnitBase::utSpike:
 		newUnit = new UnitSpike( parent );
+		newUnit->shape->pos = getSpikePosition();
 		break;
 	case UnitBase::utLaser:
 		newUnit = new UnitLaser( parent );
+		newUnit->shape->pos = getLaserPosition();
 		break;
 	case UnitBase::utBomb:
 		newUnit = new UnitBomb( parent );
+		newUnit->shape->pos = getLaserPosition();
 		break;
 	}
 
@@ -147,16 +131,6 @@ int SpawnNormal::update( Uint32 delta )
 		return 0;
 
 	parent->addUnit( newUnit );
-
-	*newUnit->x = rand() % APP_SCREEN_WIDTH;
-	float temp = 0;
-	do
-	{
-		*newUnit->y = rand() % APP_SCREEN_HEIGHT;
-		temp = Utility::sqr( *newUnit->x - *parent->player->x ) +
-				Utility::sqr( *newUnit->y - * parent->player->y );
-	}
-	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR );
 
 	spawnTimer.start( SPAWN_TIME_START );
 	EventUnitSpawn *event = new EventUnitSpawn( newUnit );
@@ -167,21 +141,59 @@ int SpawnNormal::update( Uint32 delta )
 
 void SpawnNormal::render( SDL_Surface *target )
 {
-	corners->render( target );
-	sides->render( target );
-	centre->render( target );
-	screen->render( target );
+	for ( std::vector< SpawnRegion * >::iterator I = regions.begin(); I != regions.end(); ++I )
+		(*I)->render( target );
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
+
+Vector2d<float> SpawnNormal::getSpikePosition()
+{
+	Vector2d<float> result;
+	int count = 0;
+	result.x = -APP_SCREEN_WIDTH * 0.4f + rand() % (int)(APP_SCREEN_WIDTH * 0.8f);
+	if ( result.x < 0 )
+		result.x += APP_SCREEN_WIDTH;
+	float temp = 0;
+	do
+	{
+		result.y = -APP_SCREEN_HEIGHT * 0.4f + rand() % (int)(APP_SCREEN_HEIGHT * 0.8f);
+		if ( result.y < 0 )
+			result.y += APP_SCREEN_HEIGHT;
+		temp = Utility::sqr( result.x - *parent->player->x ) +
+				Utility::sqr( result.y - * parent->player->y );
+		++count;
+	}
+	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR && count < SPAWN_POSITION_MAX_TRIES );
+	return result;
+}
+
+Vector2d<float> SpawnNormal::getLaserPosition()
+{
+	Vector2d<float> result;
+	int count = 0;
+	result.x = APP_SCREEN_WIDTH * 0.25f + rand() % (int)(APP_SCREEN_WIDTH * 0.5f);
+	float temp = 0;
+	do
+	{
+		result.y = APP_SCREEN_HEIGHT * 0.25f + rand() % (int)(APP_SCREEN_HEIGHT * 0.5f);
+		temp = Utility::sqr( result.x - *parent->player->x ) +
+				Utility::sqr( result.y - * parent->player->y );
+		++count;
+	}
+	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR && count < SPAWN_POSITION_MAX_TRIES );
+	return result;
+}
+
 
 ///--- PRIVATE -----------------------------------------------------------------
 
 
 
-SpawnRegion::SpawnRegion(std::vector< ShapeBase* > shapes, std::map< int, int > probMatrix)
+///-----------------------------------------------------------------------------
+
+SpawnRegion::SpawnRegion(std::map< int, int > probMatrix)
 {
-	this->shapes = shapes;
 	this->probMatrix = probMatrix;
 	for (std::map< int, int >::iterator I = this->probMatrix.begin(); I != this->probMatrix.end(); ++I)
 		totalCount += I->second;
@@ -225,3 +237,14 @@ void SpawnRegion::render(SDL_Surface* target)
 	for( std::vector< ShapeBase* >::iterator I = shapes.begin(); I != shapes.end(); ++I )
 		(*I)->render( target, spGetFastRGB(228,0,228) );
 }
+
+void SpawnRegion::addCircle(const Vector2d<float>& pos, const float& radius)
+{
+	shapes.push_back( new ShapeCircle( pos, radius ) );
+}
+
+void SpawnRegion::addRect(const Vector2d<float>& pos, const Vector2d<float>& size)
+{
+	shapes.push_back( new ShapeRect( pos, size ) );
+}
+

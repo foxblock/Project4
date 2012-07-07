@@ -19,11 +19,11 @@ public:
 	void render( SDL_Surface *target );
 
 protected:
+	Vector2d<float> getSpikePosition( );
+	Vector2d<float> getLaserPosition( );
+
 	Timer spawnTimer;
-	SpawnRegion *corners;
-	SpawnRegion *sides;
-	SpawnRegion *centre;
-	SpawnRegion *screen;
+	std::vector< SpawnRegion* > regions;
 
 private:
 
@@ -32,11 +32,14 @@ private:
 class SpawnRegion
 {
 public:
-	SpawnRegion( std::vector< ShapeBase * > shapes, std::map< int, int > probMatrix );
+	SpawnRegion( std::map< int, int > probMatrix );
 	virtual ~SpawnRegion();
 
 	int checkSpawn( UnitBase const *const unit );
 	void render( SDL_Surface *target );
+
+	void addRect( const Vector2d<float> &pos, const Vector2d<float> &size );
+	void addCircle( const Vector2d<float> &pos, const float &radius );
 
 private:
 	std::vector< ShapeBase * > shapes;
