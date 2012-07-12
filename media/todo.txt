@@ -1,3 +1,8 @@
+Legend:
+ - todo
+ + done
+ ~ undecided
+
 ---
  + Go over existing code
  + Polish enemy behaviour
@@ -9,9 +14,9 @@
  + Add circle shape/collision class
 ---
 * Small, random stuff
-  - Create player character
+  + Create player character
   + Add more enemies
-  - Change UnitLaser eye movement completely to use angleVel instead of setting it directly
+  + Change UnitLaser eye movement completely to use angleVel instead of setting it directly
   ~ Make UnitLaser not immediately stop eye when targeting the player
   + Draw units with spPrimitive calls instead of sprites
   + change timer to take delta updates instead of real time updates
@@ -25,7 +30,7 @@
   - create different wave data
   - create event system checking wave spawning criteria
   + create spawn class
-  ~ create region class for single spawns
+  + create region class for single spawns
 ---
 * Scoring system
   + assign points to each unit

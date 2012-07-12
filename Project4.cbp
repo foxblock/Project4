@@ -20,6 +20,7 @@
 					<Add option="-DBUILDING_DLL" />
 					<Add option="-D_DEBUG" />
 					<Add directory="$(#mingw.include)" />
+					<Add directory="$(#mingw.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-lmingw32" />
@@ -42,6 +43,7 @@
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
 					<Add directory="$(#mingw.include)" />
+					<Add directory="$(#mingw.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -77,6 +79,7 @@
 					<Add option="-DPANDORA" />
 					<Add option="-DMOBILE_DEVICE" />
 					<Add directory="$(#pandora_sdk.include)" />
+					<Add directory="$(#pandora_sdk.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -115,6 +118,7 @@
 					<Add option="-DMOBILE_DEVICE" />
 					<Add option="-D_DEBUG" />
 					<Add directory="$(#pandora_sdk.include)" />
+					<Add directory="$(#pandora_sdk.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-static-libstdc++" />

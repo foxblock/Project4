@@ -1,7 +1,7 @@
 #ifndef _SPAWN_BASE_H
 #define _SPAWN_BASE_H
 
-#include "SDL/SDL.h"
+#include "SDL.h"
 #include "Timer.h"
 #include <vector>
 

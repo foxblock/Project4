@@ -3,7 +3,7 @@
 
 #include "Vector2d.h"
 #include <cstdio>
-#include "SDL/SDL.h"
+#include "SDL.h"
 
 class ShapeRect;
 class ShapeRay;

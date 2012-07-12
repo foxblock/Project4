@@ -1,7 +1,7 @@
 #ifndef _BASE_STATE_H
 #define _BASE_STATE_H
 
-#include "SDL/SDL.h"
+#include "SDL.h"
 #include <string>
 
 #define MAX_DELTA 5

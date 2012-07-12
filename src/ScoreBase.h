@@ -2,7 +2,7 @@
 #define _SCORE_BASE_H
 
 #include "Timer.h"
-#include "SDL/SDL.h"
+#include "SDL.h"
 #include <vector>
 
 class ScoreBase;
