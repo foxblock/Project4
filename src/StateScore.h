@@ -3,6 +3,8 @@
 
 #include "StateBase.h"
 #include "sparrowFont.h"
+#include <string>
+#include "Timer.h"
 
 class StateLevel;
 
@@ -18,6 +20,10 @@ protected:
 	SDL_Surface *killFrame;
 	int score;
 	spFontPointer scoreText;
+	char name[100];
+	int state;
+	bool caret;
+	Timer caretTimer;
 private:
 
 };

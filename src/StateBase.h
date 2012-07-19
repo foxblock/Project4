@@ -3,6 +3,9 @@
 
 #include "SDL.h"
 #include <string>
+#include <vector>
+
+#include "Timer.h"
 
 #define MAX_DELTA 5
 
@@ -12,7 +15,7 @@ public:
 	StateBase();
 	virtual ~StateBase();
 
-	virtual int update( Uint32 delta )=0;
+	virtual int update( Uint32 delta );
 	virtual void render( SDL_Surface* target )=0;
 
 	std::string getLastError() { return errorString; }
@@ -28,6 +31,7 @@ public:
 
 protected:
 	std::string errorString;
+	std::vector< Timer* > timers;
 private:
 
 };

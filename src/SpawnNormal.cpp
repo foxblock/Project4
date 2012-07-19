@@ -11,6 +11,9 @@
 #include "UnitLaser.h"
 #include "UnitBomb.h"
 
+#include "ShapeRect.h"
+#include "ShapeCircle.h"
+
 // Actual value: 200
 #define SPAWN_PLAYER_SAFE_RADIUS_SQR 40000.0f
 
@@ -27,7 +30,7 @@
 #define SPAWN_TIME_START 1000
 #define SPAWN_MAX_START 10
 
-#define SPAWN_POSITION_MAX_TRIES 50
+#define SPAWN_POSITION_MAX_TRIES 100
 
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
@@ -108,24 +111,7 @@ int SpawnNormal::update( Uint32 delta )
 		unitType = (*I)->checkSpawn( parent->player );
 	}
 
-	if ( unitType == 0 )
-		return 0;
-
-	switch ( unitType )
-	{
-	case UnitBase::utSpike:
-		newUnit = new UnitSpike( parent );
-		newUnit->shape->pos = getSpikePosition();
-		break;
-	case UnitBase::utLaser:
-		newUnit = new UnitLaser( parent );
-		newUnit->shape->pos = getLaserPosition();
-		break;
-	case UnitBase::utBomb:
-		newUnit = new UnitBomb( parent );
-		newUnit->shape->pos = getLaserPosition();
-		break;
-	}
+	spawnUnit( unitType, newUnit );
 
 	if ( !newUnit )
 		return 0;
@@ -139,6 +125,28 @@ int SpawnNormal::update( Uint32 delta )
 	return 0;
 }
 
+void SpawnNormal::spawnUnit(const int& type, UnitBase * &unit)
+{
+	switch ( type )
+	{
+	case UnitBase::utSpike:
+		unit = new UnitSpike( parent );
+		unit->shape->pos = getSpikePosition();
+		break;
+	case UnitBase::utLaser:
+		unit = new UnitLaser( parent );
+		unit->shape->pos = getLaserPosition();
+		break;
+	case UnitBase::utBomb:
+		unit = new UnitBomb( parent );
+		unit->shape->pos = getLaserPosition();
+		break;
+	default:
+		unit = NULL;
+		break;
+	}
+}
+
 void SpawnNormal::render( SDL_Surface *target )
 {
 	for ( std::vector< SpawnRegion * >::iterator I = regions.begin(); I != regions.end(); ++I )
@@ -147,7 +155,7 @@ void SpawnNormal::render( SDL_Surface *target )
 
 ///--- PROTECTED ---------------------------------------------------------------
 
-Vector2d<float> SpawnNormal::getSpikePosition()
+Vector2d<float> SpawnNormal::getSpikePosition() const
 {
 	Vector2d<float> result;
 	int count = 0;
@@ -168,7 +176,7 @@ Vector2d<float> SpawnNormal::getSpikePosition()
 	return result;
 }
 
-Vector2d<float> SpawnNormal::getLaserPosition()
+Vector2d<float> SpawnNormal::getLaserPosition() const
 {
 	Vector2d<float> result;
 	int count = 0;
@@ -192,7 +200,8 @@ Vector2d<float> SpawnNormal::getLaserPosition()
 
 ///-----------------------------------------------------------------------------
 
-SpawnRegion::SpawnRegion(std::map< int, int > probMatrix)
+SpawnRegion::SpawnRegion(std::map< int, int > probMatrix) :
+	totalCount(0)
 {
 	this->probMatrix = probMatrix;
 	for (std::map< int, int >::iterator I = this->probMatrix.begin(); I != this->probMatrix.end(); ++I)

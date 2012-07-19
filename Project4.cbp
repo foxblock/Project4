@@ -19,6 +19,7 @@
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
 					<Add option="-D_DEBUG" />
+					<Add option="-DCORE_DEBUG" />
 					<Add directory="$(#mingw.include)" />
 					<Add directory="$(#mingw.include)\SDL" />
 				</Compiler>

@@ -118,7 +118,7 @@ void UnitSpike::render( SDL_Surface *target )
 	{
 		spEllipse( *x, *y, -1, 20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
 				   20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
-				   spGetRGB( 255, 0 , 0 ) );
+				   spGetFastRGB( 255, 0 , 0 ) );
 	}
 }
 

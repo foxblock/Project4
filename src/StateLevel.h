@@ -1,13 +1,8 @@
 #ifndef _LEVEL_STATE_H
 #define _LEVEL_STATE_H
 
-#include <vector>
-
 #include "StateBase.h"
 #include "UnitBase.h"
-#include "Timer.h"
-#include "ShapeRect.h"
-#include "ShapeCircle.h"
 #include "Events.h"
 #include "ScoreNormal.h"
 #include "SpawnNormal.h"
@@ -43,6 +38,15 @@ protected:
 	std::vector<UnitBase *> units;
 	std::vector<UnitBase *> unitQueue;
 	std::vector<EventBase *> eventQueue;
+
+	struct colour
+	{
+		float r,g,b,intensity;
+	};
+	colour bgcol;
+	colour fadecol;
+	Timer bgFadeTimer;
+	ScoreNormal::ScoreMode scoreMode;
 
 #ifdef _DEBUG
 	spFontPointer debugText;

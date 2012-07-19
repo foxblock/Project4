@@ -6,6 +6,7 @@
 #include "UtilityFunctions.h"
 
 #define SCORE_FONT_SIZE 32
+#define SCORE_CARET_BLINK_TIME 600
 
 StateScore::StateScore( StateLevel *level ) : StateBase()
 {
@@ -21,8 +22,18 @@ StateScore::StateScore( StateLevel *level ) : StateBase()
 	score = level->scoreKeeper.getScore();
 	scoreText = spFontLoad( GAME_FONT, SCORE_FONT_SIZE );
 	if ( scoreText )
-		spFontAddRange( scoreText, ' ', '~', spGetRGB( 255, 255, 255 ) );
+	{
+		spFontAdd( scoreText, SP_FONT_GROUP_ALPHABET SP_FONT_GROUP_GERMAN ".:!\"_", -1 );
+		spFontAdd( scoreText, SP_FONT_GROUP_NUMBERS, spGetRGB( 255, 128, 0 ) );
+	}
+
 	spGetInput()->button[SP_BUTTON_START] = 0;
+	strcpy( name, "player" );
+	spPollKeyboardInput( name, 100, NULL );
+	state = 0;
+	caret = true;
+	caretTimer.start( SCORE_CARET_BLINK_TIME );
+	timers.push_back( &caretTimer );
 
 	type = stScore;
 }
@@ -37,8 +48,26 @@ StateScore::~StateScore()
 
 int StateScore::update( Uint32 delta )
 {
+	StateBase::update( delta );
+
+	if ( caretTimer.isStopped() && state == 0 )
+	{
+		caret = !caret;
+		caretTimer.start( SCORE_CARET_BLINK_TIME );
+	}
+
 	if ( spGetInput()->button[SP_BUTTON_START] )
-		return stLevel;
+	{
+		if ( state == 0 )
+		{
+			spGetInput()->button[SP_BUTTON_START] = 0;
+			spStopKeyboardInput( );
+			state = 1;
+			caret = false;
+		}
+		else
+			return stLevel;
+	}
 }
 
 void StateScore::render( SDL_Surface *target )
@@ -48,7 +77,13 @@ void StateScore::render( SDL_Surface *target )
 	{
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE * 2, -1, "You died!", scoreText );
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE, -1, ("Score:  " + Utility::numToStr( score )).c_str(), scoreText );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE, -1, "Press \""SP_BUTTON_START_NAME"\" to go again...", scoreText );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "Enter your name:", scoreText );
+		char temp[strlen(name) + caret];
+		strcpy( temp, name );
+		if ( caret )
+			strcat( temp, "_\0" );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE, -1, temp, scoreText);
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE * 3, -1, "Press \""SP_BUTTON_START_NAME"\" to go again...", scoreText );
 	}
 
 }

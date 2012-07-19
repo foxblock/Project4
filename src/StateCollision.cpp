@@ -26,7 +26,7 @@ StateCollision::StateCollision()
 
 	font = spFontLoad( "fonts/lato.ttf", 12 );
 	if ( font )
-		spFontAddRange( font, ' ', '~', spGetRGB( 255, 0, 0 ) );
+		spFontAdd( font, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 	type = stCollision;
 }
 
@@ -42,6 +42,8 @@ StateCollision::~StateCollision()
 
 int StateCollision::update( Uint32 delta )
 {
+	StateBase::update( delta );
+
 	delta = std::min((int)delta, MAX_DELTA);
 	debugString.clear();
 

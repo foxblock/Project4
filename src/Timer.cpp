@@ -18,14 +18,17 @@ Timer::~Timer()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-void Timer::start( int milliseconds )
+void Timer::start( const int &milliseconds )
 {
 	currentTicks = 0;
 	status = 1;
 
 	duration = milliseconds;
 	if ( duration <= 0 )
+	{
 		mode = 0;
+		duration = 0;
+	}
 	else
 		mode = 1;
 }
@@ -44,7 +47,7 @@ void Timer::stop()
 	mode = -1;
 }
 
-void Timer::update( int delta )
+void Timer::update( const int &delta )
 {
 	if ( status == 1 )
 		currentTicks += delta;
@@ -52,7 +55,7 @@ void Timer::update( int delta )
 		status = -1;
 }
 
-int Timer::getTime()
+int Timer::getTime() const
 {
 	if ( status == -1 )
 		return 0;

@@ -95,8 +95,8 @@ void UnitLaser::render( SDL_Surface *target )
 	}
 	else
 	{
-		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, spGetRGB( 255, 255, 255 ) );
-		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetRGB( 0, 0, 255 ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, -1 );
+		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetFastRGB( 0, 0, 255 ) );
 	}
 }
 

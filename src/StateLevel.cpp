@@ -7,6 +7,8 @@
 
 #include "UnitPlayer.h"
 
+#define LEVEL_BG_FADE_TIME 2500
+
 StateLevel::StateLevel() :
 	StateBase(),
 	scoreKeeper( this ),
@@ -20,24 +22,19 @@ StateLevel::StateLevel() :
 #ifdef _DEBUG
 	debugText = spFontLoad( GAME_FONT, 12 );
 	if ( debugText )
-		spFontAddRange( debugText, ' ', '~', spGetRGB( 255, 0, 0 ) );
+		spFontAdd( debugText, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 #endif
 
 	spGetInput()->button[SP_BUTTON_START] = 0;
 
+	bgcol.r = 0;
+	bgcol.g = 0;
+	bgcol.b = 255;
+	bgcol.intensity = 0.5;
+	timers.push_back( &bgFadeTimer );
+	scoreMode = ScoreNormal::smNone;
+
 	type = stLevel;
-
-//	spawnTimer.start();
-//	spawnTimer.pause();
-
-//	ProjectileLaser* temp = new ProjectileLaser(this,1000);
-//	units.push_back(temp);
-//	temp->shape.pos = Vector2d<float>(0,0);
-//	temp->shape.target = Vector2d<float>(600,600);
-//	temp = new ProjectileLaser(this,1000);
-//	units.push_back(temp);
-//	temp->shape.pos = Vector2d<float>(0,600);
-//	temp->shape.target = Vector2d<float>(600,0);
 }
 
 StateLevel::~StateLevel()
@@ -56,6 +53,8 @@ StateLevel::~StateLevel()
 
 int StateLevel::update( Uint32 delta )
 {
+	StateBase::update( delta );
+
 	if ( spGetInput()->button[SP_BUTTON_START] )
 		return -1;
 
@@ -109,6 +108,12 @@ int StateLevel::update( Uint32 delta )
 
 	// Score (reads events)
 	scoreKeeper.update( delta );
+	if ( scoreKeeper.getMode() != scoreMode )
+	{
+		bgFadeTimer.start( LEVEL_BG_FADE_TIME );
+		scoreMode = scoreKeeper.getMode();
+		fadecol = bgcol;
+	}
 
 	// Events (reads and removes events)
 	handleEvents( delta );
@@ -128,7 +133,34 @@ int StateLevel::update( Uint32 delta )
 
 void StateLevel::render( SDL_Surface *target )
 {
-	spClearTarget( spGetRGB( 128, 0, 0 ) );
+	if ( bgFadeTimer.wasStarted() )
+	{
+		float timerFactor = (float)bgFadeTimer.getTime() / (float)LEVEL_BG_FADE_TIME;
+		switch ( scoreMode )
+		{
+		case ScoreNormal::smNone:
+			bgcol.r = 0 + fadecol.r * timerFactor;
+			bgcol.g = 0 + fadecol.g * timerFactor;
+			bgcol.b = 255 + ( fadecol.b - 255 ) * timerFactor;
+			break;
+		case ScoreNormal::smPeace:
+			bgcol.r = 0 + fadecol.r * timerFactor;
+			bgcol.g = 255 + ( fadecol.g - 255 ) * timerFactor;
+			bgcol.b = 0 + fadecol.b * timerFactor;
+			break;
+		case ScoreNormal::smAggression:
+			bgcol.r = 255 + ( fadecol.r - 255 ) * timerFactor;
+			bgcol.g = 0 + fadecol.g * timerFactor;
+			bgcol.b = 0 + fadecol.b * timerFactor;
+			break;
+		}
+		if ( bgFadeTimer.isStopped() )
+			bgFadeTimer.stop();
+	}
+
+	spClearTarget( spGetRGB( bgcol.r * bgcol.intensity,
+							 bgcol.g * bgcol.intensity,
+							 bgcol.b * bgcol.intensity ) );
 
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 		( *I )->render( target );

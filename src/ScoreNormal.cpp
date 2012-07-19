@@ -30,13 +30,13 @@ ScoreNormal::ScoreNormal( StateLevel *newParent ) : ScoreBase( newParent )
 	pointMatrix[ UnitBase::utSpike ] = SCORE_SPIKE_POINTS;
 	pointMatrix[ UnitBase::utLaser ] = SCORE_LASER_POINTS;
 	pointMatrix[ UnitBase::utBomb ] = SCORE_BOMB_POINTS;
+	mode = smNone;
 
 	scoreText = spFontLoad( GAME_FONT, SCORE_FONT_SIZE );
 	if ( scoreText )
 	{
-		spFontAddRange( scoreText, '0', '9', spGetRGB( 255, 255, 255 ) );
-		spFontAdd( scoreText, '.', spGetRGB( 255, 255, 255 ) );
-		spFontAdd( scoreText, 'x', spGetRGB( 255, 255, 255 ) );
+		spFontAdd( scoreText, SP_FONT_GROUP_NUMBERS, -1 );
+		spFontAdd( scoreText, "x", -1 );
 	}
 	peaceTimer.start( SCORE_PEACE_TIMER );
 }
@@ -54,6 +54,11 @@ int ScoreNormal::getScore() const
 	return points;
 }
 
+ScoreNormal::ScoreMode ScoreNormal::getMode() const
+{
+	return mode;
+}
+
 int ScoreNormal::update( Uint32 delta )
 {
 	ScoreBase::update( delta );
@@ -64,12 +69,14 @@ int ScoreNormal::update( Uint32 delta )
 		streak = 0;
 		comboTimer.stop();
 		peaceTimer.start( SCORE_PEACE_TIMER );
+		mode = smNone;
 	}
 	if ( peaceTimer.isStopped() && peaceTimer.wasStarted() )
 	{
 		if ( parent->countUnits() >= SCORE_PEACE_MIN_UNITS )
 		{
 			points += SCORE_PEACE_POINTS * multiplier * delta;
+			mode = smPeace;
 		}
 	}
 
@@ -96,6 +103,7 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 			comboTimer.start( std::max( SCORE_COMBO_START_TIME - SCORE_COMBO_KILL_TIME * streak, SCORE_COMBO_MIN_TIME ) );
 			++streak;
 		}
+		mode = smAggression;
 		break;
 	}
 	case EventBase::etUnitSpawn:

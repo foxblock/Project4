@@ -18,9 +18,11 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
+	void spawnUnit( const int &type, UnitBase * &unit );
+
 protected:
-	Vector2d<float> getSpikePosition( );
-	Vector2d<float> getLaserPosition( );
+	Vector2d<float> getSpikePosition( ) const;
+	Vector2d<float> getLaserPosition( ) const;
 
 	Timer spawnTimer;
 	std::vector< SpawnRegion* > regions;

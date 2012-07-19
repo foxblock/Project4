@@ -8,15 +8,25 @@
 class ScoreNormal : public ScoreBase
 {
 public:
+	enum ScoreMode
+	{
+		smNone=0,
+		smPeace,
+		smAggression
+	};
+
+public:
 	ScoreNormal( StateLevel *newParent );
 	virtual ~ScoreNormal();
 
 	int getScore() const;
+	ScoreMode getMode() const;
 
 	int update( Uint32 delta );
 	void handleEvent( EventBase const * const event );
 
 	void render( SDL_Surface *target );
+
 protected:
 	float points;
 	int kills;
@@ -25,6 +35,7 @@ protected:
 	Timer comboTimer;
 	Timer peaceTimer;
 	std::map< int, int > pointMatrix;
+	ScoreMode mode;
 
 	spFontPointer scoreText;
 private:
