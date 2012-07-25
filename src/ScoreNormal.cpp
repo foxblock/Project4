@@ -44,7 +44,7 @@ ScoreNormal::ScoreNormal( StateLevel *newParent ) :
 
 ScoreNormal::~ScoreNormal()
 {
-	//
+	spFontDelete( scoreText );
 }
 
 

@@ -31,23 +31,23 @@ StateScore::StateScore( StateLevel *level ) :
 		spFontAdd( scoreText, SP_FONT_GROUP_NUMBERS, spGetRGB( 255, 128, 0 ) );
 	}
 
-	spGetInput()->button[SP_BUTTON_START] = 0;
-	strcpy( name, "player" );
-	spPollKeyboardInput( name, 100, NULL );
-	if ( level->replayFilename[0] != 0 )
-	{
-		state = 0;
-		caret = true;
-	}
-	else
+	if ( level->fromReplay )
 	{
 		state = 1;
 		caret = false;
 	}
+	else
+	{
+		caret = true;
+		state = 0;
+	}
+
+	spGetInput()->button[SP_BUTTON_START] = 0;
+	strcpy( name, "player" );
+	spPollKeyboardInput( name, 100, NULL );
+
 	caretTimer.start( SCORE_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );
-
-	replayFilename = level->replayFilename;
 
 	type = stScore;
 }
@@ -55,6 +55,7 @@ StateScore::StateScore( StateLevel *level ) :
 StateScore::~StateScore()
 {
 	spDeleteSurface( killFrame );
+	spFontDelete( scoreText );
 }
 
 
@@ -78,14 +79,12 @@ int StateScore::update( Uint32 delta )
 			spStopKeyboardInput( );
 			state = 1;
 			caret = false;
+			file.addScore( name, score, time( NULL ) );
 		}
 		else
 		{
-			file.addScore( name, score, time( NULL ) );
-			if ( replayFilename[0] != 0 )
-				return stReplay;
-			else
-				return stLevel;
+			spGetInput()->button[SP_BUTTON_START] = 0;
+			return stMenu;
 		}
 	}
 

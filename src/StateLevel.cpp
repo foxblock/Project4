@@ -38,15 +38,16 @@ StateLevel::StateLevel( const std::string &filename ) :
 
 	if ( filename[0] != 0 )
 	{
-		fromReplay = true;
-		run.loadFromFile( filename );
+		fromReplay = run.loadFromFile( filename );
 	}
 	else
 	{
 		fromReplay = false;
-		replayFilename = "";
 	}
 	frameCounter = 0;
+
+	spResetButtonsState();
+	spResetAxisState();
 
 	type = stLevel;
 }
@@ -60,6 +61,9 @@ StateLevel::~StateLevel()
 		delete *I;
 	unitQueue.clear();
 	delete player;
+#ifdef _DEBUG
+	spFontDelete( debugText );
+#endif
 }
 
 
@@ -154,8 +158,7 @@ int StateLevel::update( Uint32 delta )
 		printf( "Score: %i\n", scoreKeeper.getScore() );
 		if ( !fromReplay )
 		{
-			replayFilename = "replays\\" + Utility::numToStr( time(NULL) ) + ".txt";
-			run.saveToFile( replayFilename );
+			run.saveToFile( "replays\\" + Utility::numToStr( time(NULL) ) + ".txt" );
 		}
 		return stScore;
 	}

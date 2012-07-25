@@ -30,7 +30,8 @@ public:
 	ScoreNormal scoreKeeper;
 	SpawnNormal spawnHandler;
 
-	std::string replayFilename;
+	Replay run;
+	bool fromReplay;
 	int frameCounter;
 
 #ifdef _DEBUG
@@ -51,9 +52,6 @@ protected:
 	colour fadecol;
 	Timer bgFadeTimer;
 	ScoreNormal::ScoreMode scoreMode;
-
-	Replay run;
-	bool fromReplay;
 
 #ifdef _DEBUG
 	spFontPointer debugText;

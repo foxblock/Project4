@@ -44,7 +44,7 @@ int Replay::playEntry()
 	return entry.delta;
 }
 
-void Replay::loadFromFile(const std::string& filename)
+bool Replay::loadFromFile(const std::string& filename)
 {
 	std::fstream file( filename.c_str(), std::fstream::in );
 
@@ -77,6 +77,8 @@ void Replay::loadFromFile(const std::string& filename)
 	}
 
 	file.close();
+
+	return !entries.empty();
 }
 
 void Replay::saveToFile(const std::string& filename)

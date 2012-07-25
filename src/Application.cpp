@@ -7,11 +7,13 @@
 #include "StateLevel.h"
 #include "StateCollision.h"
 #include "StateScore.h"
+#include "StateMenu.h"
+#include "StateReplayLoader.h"
 
 #ifdef _DEBUG
-#define STARTING_STATE StateCollision
+#define STARTING_STATE StateMenu
 #else
-#define STARTING_STATE StateLevel
+#define STARTING_STATE StateMenu
 #endif
 
 Application::Application()
@@ -83,7 +85,15 @@ int Application::update( Uint32 delta )
 			break;
 		case StateBase::stReplay:
 			prevState = activeState;
-			activeState = new StateLevel( ((StateScore*)prevState)->replayFilename );
+			activeState = new StateLevel( ((StateReplayLoader*)prevState)->filename );
+			break;
+		case StateBase::stMenu:
+			prevState = activeState;
+			activeState = new StateMenu();
+			break;
+		case StateBase::stReplayLoader:
+			prevState = activeState;
+			activeState = new StateReplayLoader();
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );

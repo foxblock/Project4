@@ -13,7 +13,7 @@ public:
 	SpawnBase( StateLevel *newUnit );
 	virtual ~SpawnBase();
 
-	virtual int update( Uint32 delta )=0;
+	virtual int update( Uint32 delta );
 	virtual void render( SDL_Surface *target )=0;
 protected:
 	StateLevel *parent;
