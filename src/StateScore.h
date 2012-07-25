@@ -5,6 +5,7 @@
 #include "sparrowFont.h"
 #include <string>
 #include "Timer.h"
+#include "HighscoreFile.h"
 
 class StateLevel;
 
@@ -16,6 +17,8 @@ public:
 
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
+
+	std::string replayFilename;
 protected:
 	SDL_Surface *killFrame;
 	int score;
@@ -24,6 +27,7 @@ protected:
 	int state;
 	bool caret;
 	Timer caretTimer;
+	HighscoreFile file;
 private:
 
 };

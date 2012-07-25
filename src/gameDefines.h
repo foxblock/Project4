@@ -21,7 +21,10 @@
 #define CRITICAL_STRING "CRITICAL ERROR:"
 #define ERROR_CODE -67
 
-#define GAME_FONT "fonts/lato.ttf"
+#define FONT_GENERAL "fonts/lato.ttf"
+#define FILE_HIGHSCORE_NORMAL "data/scores_normal.txt"
+
+#define VERSION_STRING "0.0.1.1"
 
 #endif // _GAME_DEFINES_H
 

@@ -2,6 +2,7 @@
 #define _SCORE_NORMAL_H
 
 #include "ScoreBase.h"
+
 #include <map>
 #include "sparrowFont.h"
 

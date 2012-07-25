@@ -5,10 +5,14 @@
 #include "sparrowCore.h"
 #include "UtilityFunctions.h"
 
+#include <time.h>
+
 #define SCORE_FONT_SIZE 32
 #define SCORE_CARET_BLINK_TIME 600
 
-StateScore::StateScore( StateLevel *level ) : StateBase()
+StateScore::StateScore( StateLevel *level ) :
+	StateBase(),
+	file( FILE_HIGHSCORE_NORMAL )
 {
 	SDL_Surface *temp = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 	killFrame = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
@@ -20,7 +24,7 @@ StateScore::StateScore( StateLevel *level ) : StateBase()
 	spDeleteSurface( temp );
 
 	score = level->scoreKeeper.getScore();
-	scoreText = spFontLoad( GAME_FONT, SCORE_FONT_SIZE );
+	scoreText = spFontLoad( FONT_GENERAL, SCORE_FONT_SIZE );
 	if ( scoreText )
 	{
 		spFontAdd( scoreText, SP_FONT_GROUP_ALPHABET SP_FONT_GROUP_GERMAN ".:!\"_", -1 );
@@ -30,10 +34,20 @@ StateScore::StateScore( StateLevel *level ) : StateBase()
 	spGetInput()->button[SP_BUTTON_START] = 0;
 	strcpy( name, "player" );
 	spPollKeyboardInput( name, 100, NULL );
-	state = 0;
-	caret = true;
+	if ( level->replayFilename[0] != 0 )
+	{
+		state = 0;
+		caret = true;
+	}
+	else
+	{
+		state = 1;
+		caret = false;
+	}
 	caretTimer.start( SCORE_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );
+
+	replayFilename = level->replayFilename;
 
 	type = stScore;
 }
@@ -66,8 +80,16 @@ int StateScore::update( Uint32 delta )
 			caret = false;
 		}
 		else
-			return stLevel;
+		{
+			file.addScore( name, score, time( NULL ) );
+			if ( replayFilename[0] != 0 )
+				return stReplay;
+			else
+				return stLevel;
+		}
 	}
+
+	return 0;
 }
 
 void StateScore::render( SDL_Surface *target )

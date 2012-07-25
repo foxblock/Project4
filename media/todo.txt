@@ -51,6 +51,6 @@ Legend:
 - Draw menu elements (buttons, icons, etc.)
 ---
 * Change render pipeline for final graphics style
-  - change units to be drawn with sparrow shapes
+  + change units to be drawn with sparrow shapes
   - expose pixel matrix
   - create style class for pixel manipulation

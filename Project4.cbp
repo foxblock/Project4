@@ -6,12 +6,35 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
+			<Target title="W32 Release">
+				<Option output="bin\W32\Project4" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="build\" />
+				<Option object_output="obj\W32\Release\" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-DX86CPU" />
+					<Add option="-DBUILDING_DLL" />
+					<Add directory="$(#mingw.include)" />
+					<Add directory="$(#mingw.include)\SDL" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lmingw32" />
+					<Add option="-lSDLmain" />
+					<Add directory="$(#mingw.lib)" />
+					<Add directory="..\sparrow3d\bin\W32" />
+				</Linker>
+			</Target>
 			<Target title="W32 Debug">
 				<Option output="bin\W32\Project4_Debug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="build\" />
 				<Option object_output="obj\W32\Debug\" />
-				<Option type="1" />
+				<Option type="0" />
 				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-Winit-self" />
 					<Add option="-Wunreachable-code" />
@@ -19,50 +42,22 @@
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DCORE_DEBUG" />
 					<Add directory="$(#mingw.include)" />
 					<Add directory="$(#mingw.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-lmingw32" />
-					<Add option="-lSDL_image" />
-					<Add option="-lSDL_ttf" />
 					<Add option="-lSDLmain" />
-					<Add option="-lSDL" />
 					<Add directory="$(#mingw.lib)" />
-					<Add directory="bin\W32" />
-				</Linker>
-			</Target>
-			<Target title="W32 Release">
-				<Option output="bin\W32\Project4" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="build\" />
-				<Option object_output="obj\W32\Release\" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O3" />
-					<Add option="-DX86CPU" />
-					<Add option="-DBUILDING_DLL" />
-					<Add directory="$(#mingw.include)" />
-					<Add directory="$(#mingw.include)\SDL" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-					<Add option="-lmingw32" />
-					<Add option="-lSDL_image" />
-					<Add option="-lSDL_ttf" />
-					<Add option="-lSDLmain" />
-					<Add option="-lSDL" />
-					<Add directory="$(#mingw.lib)" />
-					<Add directory="bin\W32" />
+					<Add directory="..\sparrow3d\bin\W32" />
 				</Linker>
 			</Target>
 			<Target title="Pandora Release">
 				<Option output="bin\Pandora\Project4" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="build\" />
 				<Option object_output="obj\Pandora\Release\" />
-				<Option type="1" />
-				<Option compiler="pandora" />
+				<Option type="0" />
+				<Option compiler="armelfgcc" />
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-mcpu=cortex-a8" />
@@ -85,23 +80,20 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-static-libstdc++" />
-					<Add option="-lSDL_image" />
-					<Add option="-lSDL_ttf" />
-					<Add option="-lSDL" />
 					<Add option="-lfreetype" />
 					<Add option="-lpng" />
 					<Add option="-lz" />
 					<Add option="-lts" />
 					<Add directory="$(#pandora_sdk.lib)" />
-					<Add directory="bin\Pandora" />
+					<Add directory="..\sparrow3d\bin\Pandora" />
 				</Linker>
 			</Target>
 			<Target title="Pandora Debug">
 				<Option output="bin\Pandora\Project4_Debug" prefix_auto="1" extension_auto="0" />
 				<Option working_dir="build\" />
 				<Option object_output="obj\Pandora\Debug\" />
-				<Option type="1" />
-				<Option compiler="pandora" />
+				<Option type="0" />
+				<Option compiler="armelfgcc" />
 				<Compiler>
 					<Add option="-mcpu=cortex-a8" />
 					<Add option="-mtune=cortex-a8" />
@@ -123,15 +115,12 @@
 				</Compiler>
 				<Linker>
 					<Add option="-static-libstdc++" />
-					<Add option="-lSDL_image" />
-					<Add option="-lSDL_ttf" />
-					<Add option="-lSDL" />
 					<Add option="-lfreetype" />
 					<Add option="-lpng" />
 					<Add option="-lz" />
 					<Add option="-lts" />
 					<Add directory="$(#pandora_sdk.lib)" />
-					<Add directory="bin\Pandora" />
+					<Add directory="..\sparrow3d\bin\Pandora" />
 				</Linker>
 			</Target>
 		</Build>
@@ -141,60 +130,138 @@
 			<Add directory="..\sparrow3d\" />
 		</Compiler>
 		<Linker>
-			<Add directory="..\sparrow3d\" />
+			<Add option="-lSDL" />
+			<Add option="-lSDL_image" />
+			<Add option="-lSDL_ttf" />
+			<Add option="-lsparrow3d" />
 		</Linker>
-		<Unit filename="..\sparrow3d\sparrow3d.h" />
+		<Unit filename="..\sparrow3d\sparrow3d.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowCore.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowCore.h" />
-		<Unit filename="..\sparrow3d\sparrowDefines.h" />
+		<Unit filename="..\sparrow3d\sparrowCore.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowDefines.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowFont.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowFont.h" />
+		<Unit filename="..\sparrow3d\sparrowFont.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMath.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowMath.h" />
+		<Unit filename="..\sparrow3d\sparrowMath.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMesh.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowMesh.h" />
+		<Unit filename="..\sparrow3d\sparrowMesh.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowPrimitives.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowPrimitives.h" />
+		<Unit filename="..\sparrow3d\sparrowPrimitives.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowPrimitivesAsm.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowRenderer.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowRenderer.h" />
+		<Unit filename="..\sparrow3d\sparrowRenderer.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowSprite.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowSprite.h" />
+		<Unit filename="..\sparrow3d\sparrowSprite.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\sparrowText.c">
 			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
 		</Unit>
-		<Unit filename="..\sparrow3d\sparrowText.h" />
+		<Unit filename="..\sparrow3d\sparrowText.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
+		</Unit>
 		<Unit filename="..\sparrow3d\testsparrow.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
 			<Option link="0" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Release" />
+			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\testsprite.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
 			<Option link="0" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="src\Application.cpp" />
 		<Unit filename="src\Application.h" />
 		<Unit filename="src\Events.h" />
+		<Unit filename="src\HighscoreFile.cpp" />
+		<Unit filename="src\HighscoreFile.h" />
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
+		<Unit filename="src\Random.cpp" />
+		<Unit filename="src\Random.h" />
+		<Unit filename="src\Replay.cpp" />
+		<Unit filename="src\Replay.h" />
 		<Unit filename="src\ScoreBase.cpp" />
 		<Unit filename="src\ScoreBase.h" />
 		<Unit filename="src\ScoreNormal.cpp" />

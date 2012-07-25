@@ -3,6 +3,8 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
+#include "Vector2d.h"
 
 #define FLOAT_ACCURACY 1e-10
 #define VEC_DELIMIT_CHAR ((std::string)",")
@@ -32,7 +34,7 @@ T strToNum( std::string str )
 template <class T>
 std::string vecToStr( Vector2d<T> vec )
 {
-	std::string result = numToStr(vec.x) + VEC_DELIMIT_CHAR + numToStr(vec.y);
+	std::string result = numToStr( vec.x ) + VEC_DELIMIT_CHAR + numToStr( vec.y );
 	return result;
 }
 
@@ -45,13 +47,39 @@ int sign( T number )
 template <class T>
 T sqr( T number )
 {
-	return number*number;
+	return number * number;
 }
 
 template <class T>
 T clamp( T number, T minV, T maxV )
 {
 	return std::min( std::max( minV, number ), maxV );
+}
+
+inline void tokenize( const std::string &str,
+					  std::vector<std::string> &tokens,
+					  const std::string &delimiters,
+					  const int &maxParts = -1 )
+{
+	tokens.clear();
+	// Skip delimiters at beginning.
+	std::string::size_type lastPos = str.find_first_not_of( delimiters, 0 );
+	// Find first "non-delimiter".
+	std::string::size_type pos     = str.find_first_of( delimiters, lastPos );
+
+	while ( ( ( maxParts <= 0 ) || tokens.size() < maxParts - 1 ) && ( std::string::npos != pos || std::string::npos != lastPos ) )
+	{
+		// Found a token, add it to the vector.
+		tokens.push_back( str.substr( lastPos, pos - lastPos ) );
+		// Skip delimiters.  Note the "not_of"
+		lastPos = str.find_first_not_of( delimiters, pos );
+		// Find next "non-delimiter"
+		pos = str.find_first_of( delimiters, lastPos );
+	}
+	if ( lastPos < str.size() )
+	{
+		tokens.push_back( str.substr( lastPos, str.size() - lastPos ) );
+	}
 }
 };
 

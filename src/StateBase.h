@@ -25,7 +25,8 @@ public:
 		stNone=0,
 		stLevel,
 		stCollision,
-		stScore
+		stScore,
+		stReplay
 	};
 	StateType type;
 

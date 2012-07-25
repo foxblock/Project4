@@ -4,6 +4,7 @@
 #include "UtilityFunctions.h"
 #include "Events.h"
 #include "StateLevel.h"
+#include "Random.h"
 
 #define BOMB_RADIUS 12
 #define BOMB_PRESSURE_RADIUS_SQR_HI  22500.0f
@@ -73,6 +74,20 @@ int UnitBomb::update( Uint32 delta )
 	else
 		activeSprite = idle;
 
+	if ( !bombTimer.isStopped() )
+	{
+		float radius = BOMB_EXPLOSION_RADIUS * (float)(BOMB_EXPLOSION_TIME - bombTimer.getTime()) / (float)BOMB_EXPLOSION_TIME;
+		shape.radius = radius;
+		activeSprite = NULL;
+	}
+
+	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
+	{
+		toBeRemoved = true;
+		EventUnitDeath *event = new EventUnitDeath( this, NULL );
+		parent->addEvent( event );
+	}
+
 #ifdef _DEBUG
 	debugString += Utility::numToStr( pressure ) + "\n" + Utility::numToStr( status ) + "\n";
 #endif
@@ -84,19 +99,9 @@ void UnitBomb::render( SDL_Surface *target )
 {
 	if ( !bombTimer.isStopped() )
 	{
-		float radius = BOMB_EXPLOSION_RADIUS * (float)(BOMB_EXPLOSION_TIME - bombTimer.getTime()) / (float)BOMB_EXPLOSION_TIME;
-		spEllipse( *x, *y, -1, radius, radius, spGetFastRGB( 255, 0, 0 ) );
-		shape.radius = radius;
-		activeSprite = NULL;
+		spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 255, 0, 0 ) );
 	}
 	UnitBase::render( target );
-
-	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
-	{
-		toBeRemoved = true;
-		EventUnitDeath *event = new EventUnitDeath( this, NULL );
-		parent->addEvent( event );
-	}
 }
 
 void UnitBomb::collisionResponse( UnitBase *const other )
@@ -170,7 +175,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 			accel = Vector2d<float>(0,0);
 		}
 		maxVel = BOMB_IDLE_MAX_VEL;
-		Vector2d<float> temp( rand() % 3 - 1, rand() % 3 - 1 );
+		Vector2d<float> temp( RANDOM->getNumber( -1, 1 ), RANDOM->getNumber( -1, 1 ) );
 		accel += temp.unit() * BOMB_IDLE_ACCEL;
 		if ( ( *x < shape.radius && accel.x < 0 ) ||
 		( *x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )

@@ -13,3 +13,5 @@ media/*.zip
 Thumbs.db
 media/*.pnd
 media/*.tar.gz
+build/replays/*
+build/data/scores*

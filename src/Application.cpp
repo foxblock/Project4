@@ -1,7 +1,6 @@
 #include "Application.h"
 
 #include "sparrow3d.h"
-#include <time.h>
 
 #include "gameDefines.h"
 
@@ -31,8 +30,6 @@ Application::Application()
 	errorString = "";
 	activeState = new STARTING_STATE();
 	prevState = NULL;
-
-	srand( time( NULL ) );
 }
 
 Application::~Application()
@@ -83,6 +80,10 @@ int Application::update( Uint32 delta )
 		case StateBase::stScore:
 			prevState = activeState;
 			activeState = new StateScore( (StateLevel*)prevState );
+			break;
+		case StateBase::stReplay:
+			prevState = activeState;
+			activeState = new StateLevel( ((StateScore*)prevState)->replayFilename );
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );

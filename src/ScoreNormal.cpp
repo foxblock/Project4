@@ -19,7 +19,8 @@
 
 #define SCORE_FONT_SIZE 32
 
-ScoreNormal::ScoreNormal( StateLevel *newParent ) : ScoreBase( newParent )
+ScoreNormal::ScoreNormal( StateLevel *newParent ) :
+	ScoreBase( newParent )
 {
 	points = 0;
 	kills = 0;
@@ -32,7 +33,7 @@ ScoreNormal::ScoreNormal( StateLevel *newParent ) : ScoreBase( newParent )
 	pointMatrix[ UnitBase::utBomb ] = SCORE_BOMB_POINTS;
 	mode = smNone;
 
-	scoreText = spFontLoad( GAME_FONT, SCORE_FONT_SIZE );
+	scoreText = spFontLoad( FONT_GENERAL, SCORE_FONT_SIZE );
 	if ( scoreText )
 	{
 		spFontAdd( scoreText, SP_FONT_GROUP_NUMBERS, -1 );
@@ -94,7 +95,7 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 			peaceTimer.stop();
 			multiplier = 1;
 		}
-		std::map<int,int>::iterator p = pointMatrix.find( ((EventUnitDeath*)event)->unit->type);
+		std::map<int,int>::iterator p = pointMatrix.find( ((EventUnitDeath*)event)->unit->type );
 		if ( p != pointMatrix.end() )
 		{
 			points += p->second * multiplier;

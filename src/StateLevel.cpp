@@ -1,15 +1,17 @@
 #include "StateLevel.h"
 
 #include <cmath>
+#include <time.h>
 
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
+#include "Random.h"
 
 #include "UnitPlayer.h"
 
 #define LEVEL_BG_FADE_TIME 2500
 
-StateLevel::StateLevel() :
+StateLevel::StateLevel( const std::string &filename ) :
 	StateBase(),
 	scoreKeeper( this ),
 	spawnHandler( this )
@@ -20,7 +22,7 @@ StateLevel::StateLevel() :
 //	player->props.addFlag( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
-	debugText = spFontLoad( GAME_FONT, 12 );
+	debugText = spFontLoad( FONT_GENERAL, 12 );
 	if ( debugText )
 		spFontAdd( debugText, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 #endif
@@ -33,6 +35,18 @@ StateLevel::StateLevel() :
 	bgcol.intensity = 0.5;
 	timers.push_back( &bgFadeTimer );
 	scoreMode = ScoreNormal::smNone;
+
+	if ( filename[0] != 0 )
+	{
+		fromReplay = true;
+		run.loadFromFile( filename );
+	}
+	else
+	{
+		fromReplay = false;
+		replayFilename = "";
+	}
+	frameCounter = 0;
 
 	type = stLevel;
 }
@@ -53,6 +67,15 @@ StateLevel::~StateLevel()
 
 int StateLevel::update( Uint32 delta )
 {
+	RANDOM->clearCache();
+	if ( fromReplay )
+	{
+		delta = run.playEntry();
+		if ( delta == 0 )
+			return stScore;
+	}
+	++frameCounter;
+
 	StateBase::update( delta );
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
@@ -91,18 +114,6 @@ int StateLevel::update( Uint32 delta )
 	// Spawning (creates events)
 	spawnHandler.update( delta );
 
-	// Unit handling (adding, removing)
-	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
-	{
-		if ( ( *I )->toBeRemoved )
-		{
-			delete *I;
-			units.erase( I );
-		}
-		else
-			++I;
-	}
-
 	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
 	unitQueue.clear();
 
@@ -118,6 +129,22 @@ int StateLevel::update( Uint32 delta )
 	// Events (reads and removes events)
 	handleEvents( delta );
 
+	// Unit handling (adding, removing)
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
+	{
+		if ( ( *I )->toBeRemoved )
+		{
+			delete *I;
+			units.erase( I );
+		}
+		else
+			++I;
+	}
+
+	// Replay recording
+	if ( !fromReplay )
+		run.addEntry( delta );
+
 #ifdef _DEBUG
 	debugString += Utility::numToStr( units.size() ) + " units\n";
 #endif
@@ -125,6 +152,11 @@ int StateLevel::update( Uint32 delta )
 	if ( player && player->toBeRemoved )
 	{
 		printf( "Score: %i\n", scoreKeeper.getScore() );
+		if ( !fromReplay )
+		{
+			replayFilename = "replays\\" + Utility::numToStr( time(NULL) ) + ".txt";
+			run.saveToFile( replayFilename );
+		}
 		return stScore;
 	}
 

@@ -5,6 +5,7 @@
 
 #include "UtilityFunctions.h"
 #include "StateLevel.h"
+#include "Random.h"
 
 #define EYE_DISTANCE 15.0f
 // Radians per millisecond
@@ -134,7 +135,7 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 	}
 	else if ( !hasCharged )
 	{
-		angleVel += (rand() % 3 - 1) * LASER_IDLE_SPEED;
+		angleVel += ( RANDOM->getNumber( -1, 1 ) ) * LASER_IDLE_SPEED;
 		if ( angleVel > LASER_IDLE_MAX_SPEED )
 			angleVel = LASER_IDLE_MAX_SPEED;
 	}

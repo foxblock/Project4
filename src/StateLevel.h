@@ -6,6 +6,7 @@
 #include "Events.h"
 #include "ScoreNormal.h"
 #include "SpawnNormal.h"
+#include "Replay.h"
 
 #define PLAYER_CLASS UnitPlayer
 
@@ -14,7 +15,7 @@ class PLAYER_CLASS;
 class StateLevel : public StateBase
 {
 public:
-	StateLevel();
+	StateLevel( const std::string &filename = "" );
 	virtual ~StateLevel();
 
 	int update( Uint32 delta );
@@ -28,6 +29,9 @@ public:
 	PLAYER_CLASS *player;
 	ScoreNormal scoreKeeper;
 	SpawnNormal spawnHandler;
+
+	std::string replayFilename;
+	int frameCounter;
 
 #ifdef _DEBUG
 	std::string debugString;
@@ -47,6 +51,9 @@ protected:
 	colour fadecol;
 	Timer bgFadeTimer;
 	ScoreNormal::ScoreMode scoreMode;
+
+	Replay run;
+	bool fromReplay;
 
 #ifdef _DEBUG
 	spFontPointer debugText;

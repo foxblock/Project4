@@ -4,6 +4,7 @@
 #include "gameDefines.h"
 #include "StateLevel.h"
 #include "UtilityFunctions.h"
+#include "Random.h"
 
 // Unit classes
 #include "UnitPlayer.h"
@@ -159,13 +160,13 @@ Vector2d<float> SpawnNormal::getSpikePosition() const
 {
 	Vector2d<float> result;
 	int count = 0;
-	result.x = -APP_SCREEN_WIDTH * 0.4f + rand() % (int)(APP_SCREEN_WIDTH * 0.8f);
+	result.x = RANDOM->getNumber( -APP_SCREEN_WIDTH * 0.4f, APP_SCREEN_WIDTH * 0.4f );
 	if ( result.x < 0 )
 		result.x += APP_SCREEN_WIDTH;
 	float temp = 0;
 	do
 	{
-		result.y = -APP_SCREEN_HEIGHT * 0.4f + rand() % (int)(APP_SCREEN_HEIGHT * 0.8f);
+		result.y = RANDOM->getNumber(-APP_SCREEN_HEIGHT * 0.4f, APP_SCREEN_HEIGHT * 0.4f);
 		if ( result.y < 0 )
 			result.y += APP_SCREEN_HEIGHT;
 		temp = Utility::sqr( result.x - *parent->player->x ) +
@@ -180,11 +181,11 @@ Vector2d<float> SpawnNormal::getLaserPosition() const
 {
 	Vector2d<float> result;
 	int count = 0;
-	result.x = APP_SCREEN_WIDTH * 0.25f + rand() % (int)(APP_SCREEN_WIDTH * 0.5f);
+	result.x = RANDOM->getNumber( APP_SCREEN_WIDTH * 0.25f, APP_SCREEN_WIDTH * 0.75f );
 	float temp = 0;
 	do
 	{
-		result.y = APP_SCREEN_HEIGHT * 0.25f + rand() % (int)(APP_SCREEN_HEIGHT * 0.5f);
+		result.y = RANDOM->getNumber( APP_SCREEN_HEIGHT * 0.25f, APP_SCREEN_HEIGHT * 0.75f );
 		temp = Utility::sqr( result.x - *parent->player->x ) +
 				Utility::sqr( result.y - * parent->player->y );
 		++count;
@@ -229,7 +230,7 @@ int SpawnRegion::checkSpawn(UnitBase const* const unit)
 	}
 	if ( result )
 	{
-		int val = rand() % totalCount;
+		int val = RANDOM->getNumber( 0, totalCount-1 );
 		int temp = 0;
 		for ( std::map< int, int >::iterator I = probMatrix.begin(); I != probMatrix.end(); ++I )
 		{
