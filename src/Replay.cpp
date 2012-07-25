@@ -34,7 +34,7 @@ int Replay::playEntry()
 {
 	if ( entries.empty() )
 	{
-		return 0;
+		return -1;
 	}
 
 	ReplayEntry entry = entries.front();

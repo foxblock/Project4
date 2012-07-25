@@ -74,9 +74,10 @@ int StateLevel::update( Uint32 delta )
 	RANDOM->clearCache();
 	if ( fromReplay )
 	{
-		delta = run.playEntry();
-		if ( delta == 0 )
+		int temp = run.playEntry();
+		if ( temp < 0 )
 			return stScore;
+		delta = temp;
 	}
 	++frameCounter;
 
@@ -158,7 +159,7 @@ int StateLevel::update( Uint32 delta )
 		printf( "Score: %i\n", scoreKeeper.getScore() );
 		if ( !fromReplay )
 		{
-			run.saveToFile( "replays\\" + Utility::numToStr( time(NULL) ) + ".txt" );
+			run.saveToFile( "replays/" + Utility::numToStr( time(NULL) ) + ".txt" );
 		}
 		return stScore;
 	}

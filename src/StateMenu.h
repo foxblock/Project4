@@ -16,7 +16,7 @@ public:
 	void render( SDL_Surface *target );
 
 protected:
-	unsigned int choice;
+	std::size_t choice;
 	spFontPointer fontDark;
 	spFontPointer fontBright;
 
