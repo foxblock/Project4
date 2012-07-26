@@ -10,7 +10,7 @@
 
 Replay::Replay()
 {
-	//
+	frameCount = 0;
 }
 
 Replay::~Replay()
@@ -42,6 +42,11 @@ int Replay::playEntry()
 	setReplayButtons( entry.frameInput );
 	RANDOM->loadCache( entry.numbers );
 	return entry.delta;
+}
+
+int Replay::getFrameCount()
+{
+	return frameCount;
 }
 
 bool Replay::loadFromFile(const std::string& filename)
@@ -77,6 +82,7 @@ bool Replay::loadFromFile(const std::string& filename)
 	}
 
 	file.close();
+	frameCount = entries.size();
 
 	return !entries.empty();
 }

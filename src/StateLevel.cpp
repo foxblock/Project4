@@ -90,6 +90,8 @@ int StateLevel::update( Uint32 delta )
 
 #ifdef _DEBUG
 	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr( delta ) + ")\n";
+	if ( fromReplay )
+		debugString += "frame: " + Utility::numToStr( frameCounter ) + " / " + Utility::numToStr( run.getFrameCount() ) + "\n";
 #endif
 
 	// Unit update, collision checking (creates events)

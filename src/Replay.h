@@ -23,6 +23,7 @@ public:
 
 	void addEntry( Uint32 delta );
 	int playEntry();
+	int getFrameCount();
 
 	bool loadFromFile( const std::string &filename );
 	void saveToFile( const std::string &filename );
@@ -34,6 +35,7 @@ protected:
 	void stringToButtons( const std::string &str, SspInput &buttons );
 
 	std::list< ReplayEntry > entries;
+	int frameCount;
 
 private:
 

@@ -17,13 +17,13 @@
 #define BOMB_PRESSURE_TIMER_1 200
 #define BOMB_PRESSURE_TIMER_2 120
 #define BOMB_PRESSURE_TIMER_3 50
-#define BOMB_PRESSURE_ADD_1 2
-#define BOMB_PRESSURE_ADD_2 5
-#define BOMB_PRESSURE_ADD_3 9
+#define BOMB_PRESSURE_ADD_1 1
+#define BOMB_PRESSURE_ADD_2 2
+#define BOMB_PRESSURE_ADD_3 3
 #define BOMB_PRESSURE_REL 1
 #define BOMB_EVASION_RADIUS_SQR 90000.0f
 #define BOMB_IDLE_MAX_ACCEL 0.005f
-#define BOMB_IDLE_ACCEL 0.0002f
+#define BOMB_IDLE_ACCEL 0.00005f
 #define BOMB_IDLE_MAX_VEL 0.07f
 #define BOMB_IDLE_FRICTION 0.001f
 #define BOMB_EVASION_ACCEL 0.002f
@@ -132,15 +132,15 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 	float dist = diff.lengthSquared();
 	if ( dist < BOMB_PRESSURE_RADIUS_SQR_HI )
 	{
-		pressure += BOMB_PRESSURE_ADD_1;
+		pressure += BOMB_PRESSURE_ADD_1 * delta;
 		maxVel = BOMB_EVASION_MAX_VEL;
 	}
 	else if ( dist < BOMB_PRESSURE_RADIUS_SQR_MID )
-		pressure += BOMB_PRESSURE_ADD_2;
+		pressure += BOMB_PRESSURE_ADD_2 * delta;
 	else if ( dist < BOMB_PRESSURE_RADIUS_SQR_LOW )
-		pressure += BOMB_PRESSURE_ADD_3;
+		pressure += BOMB_PRESSURE_ADD_3 * delta;
 	else if ( pressure > 0 )
-		pressure -= BOMB_PRESSURE_REL;
+		pressure -= BOMB_PRESSURE_REL * delta;
 
 	bool idleRoaming = true;
 	if ( dist < BOMB_EVASION_RADIUS_SQR )
@@ -176,7 +176,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 		}
 		maxVel = BOMB_IDLE_MAX_VEL;
 		Vector2d<float> temp( RANDOM->getNumber( -1, 1 ), RANDOM->getNumber( -1, 1 ) );
-		accel += temp.unit() * BOMB_IDLE_ACCEL;
+		accel += temp.unit() * BOMB_IDLE_ACCEL * delta;
 		if ( ( *x < shape.radius && accel.x < 0 ) ||
 		( *x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )
 			accel.x *= -1;

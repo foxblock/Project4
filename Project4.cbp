@@ -286,6 +286,10 @@
 		<Unit filename="src\StateCollision.h" />
 		<Unit filename="src\StateLevel.cpp" />
 		<Unit filename="src\StateLevel.h" />
+		<Unit filename="src\StateMenu.cpp" />
+		<Unit filename="src\StateMenu.h" />
+		<Unit filename="src\StateReplayLoader.cpp" />
+		<Unit filename="src\StateReplayLoader.h" />
 		<Unit filename="src\StateScore.cpp" />
 		<Unit filename="src\StateScore.h" />
 		<Unit filename="src\Timer.cpp" />
