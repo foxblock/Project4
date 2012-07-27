@@ -31,6 +31,7 @@ StateScore::StateScore( StateLevel *level ) :
 		spFontAdd( scoreText, SP_FONT_GROUP_NUMBERS, spGetRGB( 255, 128, 0 ) );
 	}
 
+	strcpy( name, "player" );
 	if ( level->fromReplay )
 	{
 		state = 1;
@@ -40,11 +41,10 @@ StateScore::StateScore( StateLevel *level ) :
 	{
 		caret = true;
 		state = 0;
+		spPollKeyboardInput( name, 100, NULL );
 	}
 
 	spGetInput()->button[SP_BUTTON_START] = 0;
-	strcpy( name, "player" );
-	spPollKeyboardInput( name, 100, NULL );
 
 	caretTimer.start( SCORE_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );

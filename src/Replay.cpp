@@ -67,6 +67,8 @@ bool Replay::loadFromFile(const std::string& filename)
 		ReplayEntry temp;
 
 		temp.delta = Utility::strToNum<int>( tokens[0] );
+		if ( temp.delta <= 0 )
+			continue;
 		stringToButtons( tokens[1], temp.frameInput );
 		if ( tokens.size() > 2 )
 		{
