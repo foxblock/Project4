@@ -41,7 +41,7 @@ int StateReplayLoader::update(Uint32 delta)
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
 	{
-		spGetInput()->button[SP_BUTTON_START] = 0;
+		spResetButtonsState();
 		spStopKeyboardInput( );
 		filename = "replays/";
 		filename += filenameBuffer;

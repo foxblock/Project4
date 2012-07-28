@@ -24,7 +24,7 @@
 #define FONT_GENERAL "fonts/lato.ttf"
 #define FILE_HIGHSCORE_NORMAL "data/scores_normal.txt"
 
-#define VERSION_STRING "0.0.1.1"
+#define VERSION_STRING "0.0.2.2"
 
 #endif // _GAME_DEFINES_H
 

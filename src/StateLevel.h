@@ -30,8 +30,7 @@ public:
 	ScoreNormal scoreKeeper;
 	SpawnNormal spawnHandler;
 
-	Replay run;
-	bool fromReplay;
+	Replay *run;
 	int frameCounter;
 
 #ifdef _DEBUG

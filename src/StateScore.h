@@ -6,6 +6,7 @@
 #include <string>
 #include "Timer.h"
 #include "HighscoreFile.h"
+#include "Replay.h"
 
 class StateLevel;
 
@@ -21,12 +22,14 @@ public:
 protected:
 	SDL_Surface *killFrame;
 	int score;
+	int timecode;
 	spFontPointer scoreText;
 	char name[100];
 	int state;
 	bool caret;
 	Timer caretTimer;
 	HighscoreFile file;
+	Replay *run;
 private:
 
 };

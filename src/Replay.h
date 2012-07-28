@@ -6,6 +6,7 @@
 #include "sparrowCore.h"
 
 #define REPLAY_ENTRY_SIZE 3
+#define REPLAY_VERSION 2
 
 class Replay
 {
@@ -15,6 +16,13 @@ public:
 		Uint32 delta;
 		SspInput frameInput;
 		std::list< int > numbers;
+	};
+	struct ReplayInfo
+	{
+		std::string name;
+		int score;
+		int timecode;
+		int version;
 	};
 
 public:
@@ -27,6 +35,10 @@ public:
 
 	bool loadFromFile( const std::string &filename );
 	void saveToFile( const std::string &filename );
+
+	ReplayInfo info;
+
+	bool playing;
 
 protected:
 	void getReplayButtons( SspInput &buttons );

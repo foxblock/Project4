@@ -36,8 +36,9 @@ StateCollision::~StateCollision()
 	delete unit2;
 	delete unit3;
 	spFontDelete( font );
+	spResetButtonsState();
+	spResetAxisState();
 }
-
 
 ///--- PUBLIC ------------------------------------------------------------------
 

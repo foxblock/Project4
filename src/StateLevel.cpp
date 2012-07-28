@@ -36,18 +36,12 @@ StateLevel::StateLevel( const std::string &filename ) :
 	timers.push_back( &bgFadeTimer );
 	scoreMode = ScoreNormal::smNone;
 
+	run = new Replay();
 	if ( filename[0] != 0 )
 	{
-		fromReplay = run.loadFromFile( filename );
-	}
-	else
-	{
-		fromReplay = false;
+		run->loadFromFile( filename );
 	}
 	frameCounter = 0;
-
-	spResetButtonsState();
-	spResetAxisState();
 
 	type = stLevel;
 }
@@ -61,6 +55,9 @@ StateLevel::~StateLevel()
 		delete *I;
 	unitQueue.clear();
 	delete player;
+	delete run;
+	spResetButtonsState();
+	spResetAxisState();
 #ifdef _DEBUG
 	spFontDelete( debugText );
 #endif
@@ -72,9 +69,9 @@ StateLevel::~StateLevel()
 int StateLevel::update( Uint32 delta )
 {
 	RANDOM->clearCache();
-	if ( fromReplay )
+	if ( run->playing )
 	{
-		int temp = run.playEntry();
+		int temp = run->playEntry();
 		if ( temp < 0 )
 			return stScore;
 		delta = temp;
@@ -84,14 +81,14 @@ int StateLevel::update( Uint32 delta )
 	StateBase::update( delta );
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
-		return -1;
+		return stMenu;
 
 	delta = std::min( ( int )delta, MAX_DELTA );
 
 #ifdef _DEBUG
 	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr( delta ) + ")\n";
-	if ( fromReplay )
-		debugString += "frame: " + Utility::numToStr( frameCounter ) + " / " + Utility::numToStr( run.getFrameCount() ) + "\n";
+	if ( run->playing )
+		debugString += "frame: " + Utility::numToStr( frameCounter ) + " / " + Utility::numToStr( run->getFrameCount() ) + "\n";
 #endif
 
 	// Unit update, collision checking (creates events)
@@ -149,8 +146,8 @@ int StateLevel::update( Uint32 delta )
 	}
 
 	// Replay recording
-	if ( !fromReplay )
-		run.addEntry( delta );
+	if ( !run->playing )
+		run->addEntry( delta );
 
 #ifdef _DEBUG
 	debugString += Utility::numToStr( units.size() ) + " units\n";
@@ -159,10 +156,6 @@ int StateLevel::update( Uint32 delta )
 	if ( player && player->toBeRemoved )
 	{
 		printf( "Score: %i\n", scoreKeeper.getScore() );
-		if ( !fromReplay )
-		{
-			run.saveToFile( "replays/" + Utility::numToStr( time(NULL) ) + ".txt" );
-		}
 		return stScore;
 	}
 

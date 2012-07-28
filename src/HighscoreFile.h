@@ -38,6 +38,10 @@ public:
 		ScoreEntry temp = { name, score, timestamp };
 		scores.insert( temp );
 	}
+	void addScore( const ScoreEntry &entry )
+	{
+		scores.insert( entry );
+	}
 
 	std::multiset< ScoreEntry, ScoreComp > scores;
 

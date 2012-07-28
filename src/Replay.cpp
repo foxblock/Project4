@@ -7,10 +7,12 @@
 
 #define FILE_REPLAY_DELIMITER "|"
 #define FILE_REPLAY_SUB_DELIMITER ","
+#define FILE_REPLAY_INFO_CHAR "#"
 
 Replay::Replay()
 {
 	frameCount = 0;
+	playing = false;
 }
 
 Replay::~Replay()
@@ -28,6 +30,7 @@ void Replay::addEntry( Uint32 delta )
 	getReplayButtons( entry.frameInput );
 	RANDOM->copyCache( entry.numbers );
 	entries.push_back( entry );
+	playing = false;
 }
 
 int Replay::playEntry()
@@ -41,6 +44,7 @@ int Replay::playEntry()
 	entries.pop_front();
 	setReplayButtons( entry.frameInput );
 	RANDOM->loadCache( entry.numbers );
+	playing = true;
 	return entry.delta;
 }
 
@@ -52,6 +56,26 @@ int Replay::getFrameCount()
 bool Replay::loadFromFile(const std::string& filename)
 {
 	std::fstream file( filename.c_str(), std::fstream::in );
+
+	if ( file.good() )
+	{
+		std::string line;
+		getline( file, line );
+		if ( line[0] != FILE_REPLAY_INFO_CHAR[0] )
+			return false;
+		std::vector< std::string > tokens;
+
+		Utility::tokenize( line, tokens, (std::string)FILE_REPLAY_DELIMITER + FILE_REPLAY_INFO_CHAR );
+		if ( tokens.size() < 4 )
+			return false;
+		info.name = tokens[0];
+		info.score = Utility::strToNum<int>( tokens[1] );
+		info.timecode = Utility::strToNum<int>( tokens[2] );
+		info.version = Utility::strToNum<int>( tokens[3] );
+
+		if ( info.version != REPLAY_VERSION )
+			return false;
+	}
 
 	while ( file.is_open() && file.good() )
 	{
@@ -86,12 +110,21 @@ bool Replay::loadFromFile(const std::string& filename)
 	file.close();
 	frameCount = entries.size();
 
-	return !entries.empty();
+	playing = !entries.empty();
+	return playing;
 }
 
 void Replay::saveToFile(const std::string& filename)
 {
 	std::fstream file( filename.c_str(), std::fstream::out | std::fstream::trunc );
+
+	if ( file.good() )
+	{
+		file << FILE_REPLAY_INFO_CHAR << info.name << FILE_REPLAY_DELIMITER <<
+				info.score << FILE_REPLAY_DELIMITER <<
+				info.timecode << FILE_REPLAY_DELIMITER <<
+				info.version << "\n";
+	}
 
 	for ( std::list< ReplayEntry >::const_iterator I = entries.begin(); I != entries.end() && file.good(); ++I )
 	{

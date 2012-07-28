@@ -31,23 +31,29 @@ StateScore::StateScore( StateLevel *level ) :
 		spFontAdd( scoreText, SP_FONT_GROUP_NUMBERS, spGetRGB( 255, 128, 0 ) );
 	}
 
-	strcpy( name, "player" );
-	if ( level->fromReplay )
+	if ( level->run->playing )
 	{
 		state = 1;
 		caret = false;
+		strcpy( name, level->run->info.name.c_str() );
+		run = level->run;
+		level->run = NULL;
 	}
 	else
 	{
 		caret = true;
 		state = 0;
+		strcpy( name, "player" );
 		spPollKeyboardInput( name, 100, NULL );
+		run = level->run;
+		level->run = NULL;
 	}
 
 	spGetInput()->button[SP_BUTTON_START] = 0;
 
 	caretTimer.start( SCORE_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );
+	timecode = time( NULL );
 
 	type = stScore;
 }
@@ -56,6 +62,7 @@ StateScore::~StateScore()
 {
 	spDeleteSurface( killFrame );
 	spFontDelete( scoreText );
+	delete run;
 }
 
 
@@ -79,7 +86,16 @@ int StateScore::update( Uint32 delta )
 			spStopKeyboardInput( );
 			state = 1;
 			caret = false;
-			file.addScore( name, score, time( NULL ) );
+			file.addScore( name, score, timecode );
+			if ( run )
+			{
+				run->info.name = name;
+				run->info.score = score;
+				run->info.timecode = timecode;
+				run->info.version = REPLAY_VERSION;
+				run->saveToFile( "replays/" + Utility::numToStr( timecode ) + ".txt" );
+			}
+
 		}
 		else
 		{
@@ -98,7 +114,10 @@ void StateScore::render( SDL_Surface *target )
 	{
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE * 2, -1, "You died!", scoreText );
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE, -1, ("Score:  " + Utility::numToStr( score )).c_str(), scoreText );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "Enter your name:", scoreText );
+		if ( run && run->playing )
+			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "Name of this player:", scoreText );
+		else
+			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "Enter your name:", scoreText );
 		char temp[strlen(name) + caret];
 		strcpy( temp, name );
 		if ( caret )
