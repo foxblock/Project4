@@ -24,7 +24,7 @@ StateCollision::StateCollision()
 	unit4->shape.pos.x = APP_SCREEN_WIDTH;
 	player = unit1;
 
-	font = spFontLoad( "fonts/lato.ttf", 12 );
+	font = spFontLoad( FONT_GENERAL, 12 );
 	if ( font )
 		spFontAdd( font, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 	type = stCollision;
@@ -35,8 +35,10 @@ StateCollision::~StateCollision()
 	delete unit1;
 	delete unit2;
 	delete unit3;
+	spFontDelete( font );
+	spResetButtonsState();
+	spResetAxisState();
 }
-
 
 ///--- PUBLIC ------------------------------------------------------------------
 
@@ -51,7 +53,8 @@ int StateCollision::update( Uint32 delta )
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
 	{
-		return stLevel; // switch to level state
+		spResetButtonsState();
+		return stMenu; // switch to menu state
 	}
 
 	unit1->update( delta );
@@ -73,7 +76,7 @@ int StateCollision::update( Uint32 delta )
 
 void StateCollision::render( SDL_Surface *target )
 {
-	spClearTarget( spGetRGB( 128, 0, 0 ) );
+	spClearTarget( COLOUR_BACKGROUND );
 
 	unit1->render( target );
 	unit2->render( target );

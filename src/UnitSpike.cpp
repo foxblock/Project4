@@ -3,6 +3,7 @@
 #include <cmath>
 #include "UtilityFunctions.h"
 #include "gameDefines.h"
+#include "Random.h"
 
 // Pixels per millisecond
 #define SPIKE_ATTACK_ACCEL 0.008f
@@ -11,7 +12,7 @@
 #define SPIKE_IDLE_MAX_VEL 0.1f
 #define SPIKE_IDLE_FRICTION 0.001f
 #define SPIKE_IDLE_MAX_ACCEL 0.005f
-#define SPIKE_IDLE_ACCEL 0.0002f
+#define SPIKE_IDLE_ACCEL 0.00005f
 // 200 pixels
 #define SPIKE_ATTACK_RADIUS_SQR 40000.0f
 // 75 pixels
@@ -99,8 +100,8 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 			maxVel = SPIKE_IDLE_MAX_VEL;
 			maxAccel = SPIKE_IDLE_MAX_ACCEL;
 			friction = SPIKE_IDLE_FRICTION;
-			Vector2d<float> temp(rand() % 3 - 1, rand() % 3 - 1);
-			accel += temp.unit() * SPIKE_IDLE_ACCEL;
+			Vector2d<float> temp( RANDOM->getNumber( -1, 1 ),  RANDOM->getNumber( -1, 1 ) );
+			accel += temp.unit() * SPIKE_IDLE_ACCEL * delta;
 			if ( (*x < shape.radius && accel.x < 0) ||
 					(*x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )
 				accel.x *= -1;

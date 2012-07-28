@@ -1,15 +1,17 @@
 #include "StateLevel.h"
 
 #include <cmath>
+#include <time.h>
 
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
+#include "Random.h"
 
 #include "UnitPlayer.h"
 
 #define LEVEL_BG_FADE_TIME 2500
 
-StateLevel::StateLevel() :
+StateLevel::StateLevel( const std::string &filename ) :
 	StateBase(),
 	scoreKeeper( this ),
 	spawnHandler( this )
@@ -20,7 +22,7 @@ StateLevel::StateLevel() :
 //	player->props.addFlag( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
-	debugText = spFontLoad( GAME_FONT, 12 );
+	debugText = spFontLoad( FONT_GENERAL, 12 );
 	if ( debugText )
 		spFontAdd( debugText, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 #endif
@@ -34,6 +36,13 @@ StateLevel::StateLevel() :
 	timers.push_back( &bgFadeTimer );
 	scoreMode = ScoreNormal::smNone;
 
+	run = new Replay();
+	if ( filename[0] != 0 )
+	{
+		run->loadFromFile( filename );
+	}
+	frameCounter = 0;
+
 	type = stLevel;
 }
 
@@ -46,6 +55,12 @@ StateLevel::~StateLevel()
 		delete *I;
 	unitQueue.clear();
 	delete player;
+	delete run;
+	spResetButtonsState();
+	spResetAxisState();
+#ifdef _DEBUG
+	spFontDelete( debugText );
+#endif
 }
 
 
@@ -53,15 +68,27 @@ StateLevel::~StateLevel()
 
 int StateLevel::update( Uint32 delta )
 {
+	RANDOM->clearCache();
+	if ( run->playing )
+	{
+		int temp = run->playEntry();
+		if ( temp < 0 )
+			return stScore;
+		delta = temp;
+	}
+	++frameCounter;
+
 	StateBase::update( delta );
 
 	if ( spGetInput()->button[SP_BUTTON_START] )
-		return -1;
+		return stMenu;
 
 	delta = std::min( ( int )delta, MAX_DELTA );
 
 #ifdef _DEBUG
 	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr( delta ) + ")\n";
+	if ( run->playing )
+		debugString += "frame: " + Utility::numToStr( frameCounter ) + " / " + Utility::numToStr( run->getFrameCount() ) + "\n";
 #endif
 
 	// Unit update, collision checking (creates events)
@@ -91,18 +118,6 @@ int StateLevel::update( Uint32 delta )
 	// Spawning (creates events)
 	spawnHandler.update( delta );
 
-	// Unit handling (adding, removing)
-	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
-	{
-		if ( ( *I )->toBeRemoved )
-		{
-			delete *I;
-			units.erase( I );
-		}
-		else
-			++I;
-	}
-
 	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
 	unitQueue.clear();
 
@@ -117,6 +132,22 @@ int StateLevel::update( Uint32 delta )
 
 	// Events (reads and removes events)
 	handleEvents( delta );
+
+	// Unit handling (adding, removing)
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
+	{
+		if ( ( *I )->toBeRemoved )
+		{
+			delete *I;
+			units.erase( I );
+		}
+		else
+			++I;
+	}
+
+	// Replay recording
+	if ( !run->playing )
+		run->addEntry( delta );
 
 #ifdef _DEBUG
 	debugString += Utility::numToStr( units.size() ) + " units\n";

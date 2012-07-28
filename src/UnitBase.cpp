@@ -32,7 +32,7 @@ UnitBase::UnitBase( StateLevel *newParent, ShapeBase *newShape )
 	debugString = "";
 	if ( !debugFont )
 	{
-		debugFont = spFontLoad( GAME_FONT, 10 );
+		debugFont = spFontLoad( FONT_GENERAL, 10 );
 		spFontAdd( debugFont, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 	}
 #endif

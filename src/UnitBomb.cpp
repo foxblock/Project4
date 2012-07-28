@@ -4,6 +4,7 @@
 #include "UtilityFunctions.h"
 #include "Events.h"
 #include "StateLevel.h"
+#include "Random.h"
 
 #define BOMB_RADIUS 12
 #define BOMB_PRESSURE_RADIUS_SQR_HI  22500.0f
@@ -16,13 +17,13 @@
 #define BOMB_PRESSURE_TIMER_1 200
 #define BOMB_PRESSURE_TIMER_2 120
 #define BOMB_PRESSURE_TIMER_3 50
-#define BOMB_PRESSURE_ADD_1 2
-#define BOMB_PRESSURE_ADD_2 5
-#define BOMB_PRESSURE_ADD_3 9
+#define BOMB_PRESSURE_ADD_1 1
+#define BOMB_PRESSURE_ADD_2 2
+#define BOMB_PRESSURE_ADD_3 3
 #define BOMB_PRESSURE_REL 1
 #define BOMB_EVASION_RADIUS_SQR 90000.0f
 #define BOMB_IDLE_MAX_ACCEL 0.005f
-#define BOMB_IDLE_ACCEL 0.0002f
+#define BOMB_IDLE_ACCEL 0.00005f
 #define BOMB_IDLE_MAX_VEL 0.07f
 #define BOMB_IDLE_FRICTION 0.001f
 #define BOMB_EVASION_ACCEL 0.002f
@@ -73,6 +74,20 @@ int UnitBomb::update( Uint32 delta )
 	else
 		activeSprite = idle;
 
+	if ( !bombTimer.isStopped() )
+	{
+		float radius = BOMB_EXPLOSION_RADIUS * (float)(BOMB_EXPLOSION_TIME - bombTimer.getTime()) / (float)BOMB_EXPLOSION_TIME;
+		shape.radius = radius;
+		activeSprite = NULL;
+	}
+
+	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
+	{
+		toBeRemoved = true;
+		EventUnitDeath *event = new EventUnitDeath( this, NULL );
+		parent->addEvent( event );
+	}
+
 #ifdef _DEBUG
 	debugString += Utility::numToStr( pressure ) + "\n" + Utility::numToStr( status ) + "\n";
 #endif
@@ -84,19 +99,9 @@ void UnitBomb::render( SDL_Surface *target )
 {
 	if ( !bombTimer.isStopped() )
 	{
-		float radius = BOMB_EXPLOSION_RADIUS * (float)(BOMB_EXPLOSION_TIME - bombTimer.getTime()) / (float)BOMB_EXPLOSION_TIME;
-		spEllipse( *x, *y, -1, radius, radius, spGetFastRGB( 255, 0, 0 ) );
-		shape.radius = radius;
-		activeSprite = NULL;
+		spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 255, 0, 0 ) );
 	}
 	UnitBase::render( target );
-
-	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
-	{
-		toBeRemoved = true;
-		EventUnitDeath *event = new EventUnitDeath( this, NULL );
-		parent->addEvent( event );
-	}
 }
 
 void UnitBomb::collisionResponse( UnitBase *const other )
@@ -127,15 +132,15 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 	float dist = diff.lengthSquared();
 	if ( dist < BOMB_PRESSURE_RADIUS_SQR_HI )
 	{
-		pressure += BOMB_PRESSURE_ADD_1;
+		pressure += BOMB_PRESSURE_ADD_1 * delta;
 		maxVel = BOMB_EVASION_MAX_VEL;
 	}
 	else if ( dist < BOMB_PRESSURE_RADIUS_SQR_MID )
-		pressure += BOMB_PRESSURE_ADD_2;
+		pressure += BOMB_PRESSURE_ADD_2 * delta;
 	else if ( dist < BOMB_PRESSURE_RADIUS_SQR_LOW )
-		pressure += BOMB_PRESSURE_ADD_3;
+		pressure += BOMB_PRESSURE_ADD_3 * delta;
 	else if ( pressure > 0 )
-		pressure -= BOMB_PRESSURE_REL;
+		pressure -= BOMB_PRESSURE_REL * delta;
 
 	bool idleRoaming = true;
 	if ( dist < BOMB_EVASION_RADIUS_SQR )
@@ -170,8 +175,8 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 			accel = Vector2d<float>(0,0);
 		}
 		maxVel = BOMB_IDLE_MAX_VEL;
-		Vector2d<float> temp( rand() % 3 - 1, rand() % 3 - 1 );
-		accel += temp.unit() * BOMB_IDLE_ACCEL;
+		Vector2d<float> temp( RANDOM->getNumber( -1, 1 ), RANDOM->getNumber( -1, 1 ) );
+		accel += temp.unit() * BOMB_IDLE_ACCEL * delta;
 		if ( ( *x < shape.radius && accel.x < 0 ) ||
 		( *x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )
 			accel.x *= -1;

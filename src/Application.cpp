@@ -1,18 +1,26 @@
 #include "Application.h"
 
 #include "sparrow3d.h"
-#include <time.h>
 
 #include "gameDefines.h"
 
 #include "StateLevel.h"
 #include "StateCollision.h"
 #include "StateScore.h"
+#include "StateMenu.h"
+#include "StateReplayLoader.h"
+#include "StateHighscores.h"
+
+#ifdef WIN32
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#endif
 
 #ifdef _DEBUG
-#define STARTING_STATE StateCollision
+#define STARTING_STATE StateMenu
 #else
-#define STARTING_STATE StateLevel
+#define STARTING_STATE StateMenu
 #endif
 
 Application::Application()
@@ -32,7 +40,14 @@ Application::Application()
 	activeState = new STARTING_STATE();
 	prevState = NULL;
 
-	srand( time( NULL ) );
+	// Create important folders
+	#ifdef WIN32
+	mkdir( FOLDER_REPLAY );
+	mkdir( FOLDER_DATA );
+	#else
+	mkdir( FOLDER_REPLAY, 0xFFFF );
+	mkdir( FOLDER_DATA, 0xFFFF );
+	#endif
 }
 
 Application::~Application()
@@ -83,6 +98,22 @@ int Application::update( Uint32 delta )
 		case StateBase::stScore:
 			prevState = activeState;
 			activeState = new StateScore( (StateLevel*)prevState );
+			break;
+		case StateBase::stReplay:
+			prevState = activeState;
+			activeState = new StateLevel( ((StateReplayLoader*)prevState)->filename );
+			break;
+		case StateBase::stMenu:
+			prevState = activeState;
+			activeState = new StateMenu();
+			break;
+		case StateBase::stReplayLoader:
+			prevState = activeState;
+			activeState = new StateReplayLoader();
+			break;
+		case StateBase::stHighscores:
+			prevState = activeState;
+			activeState = new StateHighscores();
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );

@@ -5,6 +5,8 @@
 #include "sparrowFont.h"
 #include <string>
 #include "Timer.h"
+#include "HighscoreFile.h"
+#include "Replay.h"
 
 class StateLevel;
 
@@ -16,14 +18,18 @@ public:
 
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
+
 protected:
 	SDL_Surface *killFrame;
 	int score;
+	int timecode;
 	spFontPointer scoreText;
 	char name[100];
 	int state;
 	bool caret;
 	Timer caretTimer;
+	HighscoreFile file;
+	Replay *run;
 private:
 
 };
