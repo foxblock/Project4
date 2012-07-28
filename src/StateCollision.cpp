@@ -76,7 +76,7 @@ int StateCollision::update( Uint32 delta )
 
 void StateCollision::render( SDL_Surface *target )
 {
-	spClearTarget( spGetRGB( 128, 0, 0 ) );
+	spClearTarget( COLOUR_BACKGROUND );
 
 	unit1->render( target );
 	unit2->render( target );

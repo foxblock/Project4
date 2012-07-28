@@ -21,7 +21,7 @@ Legend:
   + Draw units with spPrimitive calls instead of sprites
   + change timer to take delta updates instead of real time updates
   - Make UnitBomb evade sides of the level and not get stuck in corners as easily
-  - UnitLaser delta timing
+  + UnitLaser delta timing
 ---
 * Event system
   + Create abstract event system
@@ -44,14 +44,14 @@ Legend:
   + keep list of top scores and compare with new score
   + save score to disk
   - encrypt save file
-  - state to show scores
-  - create data folder
+  + state to show scores
+  + create data folder
 ---
 * Replay
   + basic system
-  - look into delta=0 frames (need those or not?)
+  + look into delta=0 frames (need those or not?)
   - look into smoother playback (talk to Ziz)
-  - create replays folder
+  + create replays folder
 ---
 - Menus, navigation
 - Help screen

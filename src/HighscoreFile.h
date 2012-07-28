@@ -44,6 +44,7 @@ public:
 	}
 
 	std::multiset< ScoreEntry, ScoreComp > scores;
+	typedef std::multiset< ScoreEntry, ScoreComp >::const_iterator scoreIter;
 
 protected:
 	std::fstream file;

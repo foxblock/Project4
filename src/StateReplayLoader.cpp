@@ -19,6 +19,8 @@ StateReplayLoader::StateReplayLoader()
 	caretTimer.start( REPLAY_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );
 	caret = true;
+
+	type = stReplayLoader;
 }
 
 StateReplayLoader::~StateReplayLoader()
@@ -54,7 +56,7 @@ int StateReplayLoader::update(Uint32 delta)
 
 void StateReplayLoader::render(SDL_Surface* target)
 {
-	spClearTarget( spGetRGB( 128, 0, 0 ) );
+	spClearTarget( COLOUR_BACKGROUND );
 	if ( font )
 	{
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - REPLAY_FONT_SIZE, -1, "Enter the name of the replay file to load:", font );

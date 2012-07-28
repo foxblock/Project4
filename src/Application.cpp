@@ -9,6 +9,13 @@
 #include "StateScore.h"
 #include "StateMenu.h"
 #include "StateReplayLoader.h"
+#include "StateHighscores.h"
+
+#ifdef WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
 
 #ifdef _DEBUG
 #define STARTING_STATE StateMenu
@@ -32,6 +39,15 @@ Application::Application()
 	errorString = "";
 	activeState = new STARTING_STATE();
 	prevState = NULL;
+
+	// Create important folders
+	#ifdef WIN32
+	mkdir( FOLDER_REPLAY );
+	mkdir( FOLDER_DATA );
+	#else
+	mkdir( FOLDER_REPLAY, 0xFFFF );
+	mkdir( FOLDER_DATA, 0xFFFF );
+	#endif
 }
 
 Application::~Application()
@@ -94,6 +110,10 @@ int Application::update( Uint32 delta )
 		case StateBase::stReplayLoader:
 			prevState = activeState;
 			activeState = new StateReplayLoader();
+			break;
+		case StateBase::stHighscores:
+			prevState = activeState;
+			activeState = new StateHighscores();
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );

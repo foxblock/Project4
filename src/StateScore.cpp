@@ -12,7 +12,7 @@
 
 StateScore::StateScore( StateLevel *level ) :
 	StateBase(),
-	file( FILE_HIGHSCORE_NORMAL )
+	file( FOLDER_DATA "/" FILE_HIGHSCORE_NORMAL )
 {
 	SDL_Surface *temp = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 	killFrame = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );

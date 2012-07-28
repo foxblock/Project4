@@ -23,12 +23,15 @@ StateMenu::StateMenu() : StateBase()
 	addMenuEntry( "collision test", stCollision );
 #endif
 	addMenuEntry( "exit", -1 );
+
+	type = stMenu;
 }
 
 StateMenu::~StateMenu()
 {
 	spFontDelete( fontDark );
 	spFontDelete( fontBright );
+	spResetAxisState();
 }
 
 

@@ -33,7 +33,7 @@ HighscoreFile::~HighscoreFile()
 	// write scores to file
 	file.open( filename.c_str(), std::fstream::out | std::fstream::trunc );
 
-	for ( std::multiset< ScoreEntry, ScoreComp >::const_iterator I = scores.begin(); I != scores.end() && file.good(); ++I )
+	for ( scoreIter I = scores.begin(); I != scores.end() && file.good(); ++I )
 	{
 		file << I->name << FILE_HIGHSCORE_DELIMITER <<
 				I->score << FILE_HIGHSCORE_DELIMITER <<

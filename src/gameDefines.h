@@ -22,9 +22,14 @@
 #define ERROR_CODE -67
 
 #define FONT_GENERAL "fonts/lato.ttf"
-#define FILE_HIGHSCORE_NORMAL "data/scores_normal.txt"
+#define FILE_HIGHSCORE_NORMAL "scores_normal.txt"
+
+#define FOLDER_REPLAY "replays"
+#define FOLDER_DATA "data"
 
 #define VERSION_STRING "0.0.2.2"
+
+#define COLOUR_BACKGROUND spGetRGB( 128, 0, 0 )
 
 #endif // _GAME_DEFINES_H
 

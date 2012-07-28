@@ -284,6 +284,8 @@
 		<Unit filename="src\StateBase.h" />
 		<Unit filename="src\StateCollision.cpp" />
 		<Unit filename="src\StateCollision.h" />
+		<Unit filename="src\StateHighscores.cpp" />
+		<Unit filename="src\StateHighscores.h" />
 		<Unit filename="src\StateLevel.cpp" />
 		<Unit filename="src\StateLevel.h" />
 		<Unit filename="src\StateMenu.cpp" />
