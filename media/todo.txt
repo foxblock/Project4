@@ -1,19 +1,26 @@
+Legend:
+ - todo
+ + done
+ ~ undecided
+
 ---
  + Go over existing code
  + Polish enemy behaviour
    + redo spike movement
    + laser charge time, attack radius and tracking behaviour
  + Polish player movement
-   - acceleration, deceleration
+   + acceleration, deceleration
  + Change units to use SimpleFlags instead of boolean values
  + Add circle shape/collision class
 ---
 * Small, random stuff
-  - Create player character
-  - Add more enemies
-  - Change UnitLaser eye movement completely to use angleVel instead of setting it directly
-  - Make UnitLaser not immediately stop eye when targeting the player
+  + Create player character
+  + Add more enemies
+  + Change UnitLaser eye movement completely to use angleVel instead of setting it directly
+  ~ Make UnitLaser not immediately stop eye when targeting the player
   + Draw units with spPrimitive calls instead of sprites
+  + change timer to take delta updates instead of real time updates
+  - Make UnitBomb evade sides of the level and not get stuck in corners as easily
 ---
 * Event system
   + Create abstract event system
@@ -22,13 +29,16 @@
   - create a class/definition of a wave
   - create different wave data
   - create event system checking wave spawning criteria
+  + create spawn class
+  + create region class for single spawns
 ---
 * Scoring system
-  - assign points to each unit
-  - create combo and multiplier calculation
+  + assign points to each unit
+  + create combo and multiplier calculation
+  + add movement/idle point calculation
 ---
 * Highscore
-  - show highscore after death
+  + show highscore after death
   - enable player to enter name
   - keep list of top scores and compare with new score
   - save score to disk

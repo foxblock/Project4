@@ -14,9 +14,12 @@ public:
 	int update( Uint32 delta );
 	void render ( SDL_Surface *target );
 
+	void collisionResponse( UnitBase *const other );
+
 	void ai( Uint32 delta, UnitBase *player );
 
 	ShapeCircle shape;
+	Timer bombTimer;
 protected:
 
 private:
@@ -31,7 +34,6 @@ private:
 	bool isFlashing;
 	Timer flashTimer;
 	Timer evadeTimer;
-	Timer bombTimer;
 };
 
 

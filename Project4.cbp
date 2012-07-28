@@ -13,11 +13,15 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Winit-self" />
+					<Add option="-Wunreachable-code" />
 					<Add option="-g" />
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
 					<Add option="-D_DEBUG" />
+					<Add option="-DCORE_DEBUG" />
 					<Add directory="$(#mingw.include)" />
+					<Add directory="$(#mingw.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-lmingw32" />
@@ -40,6 +44,7 @@
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
 					<Add directory="$(#mingw.include)" />
+					<Add directory="$(#mingw.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -75,6 +80,7 @@
 					<Add option="-DPANDORA" />
 					<Add option="-DMOBILE_DEVICE" />
 					<Add directory="$(#pandora_sdk.include)" />
+					<Add directory="$(#pandora_sdk.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -113,6 +119,7 @@
 					<Add option="-DMOBILE_DEVICE" />
 					<Add option="-D_DEBUG" />
 					<Add directory="$(#pandora_sdk.include)" />
+					<Add directory="$(#pandora_sdk.include)\SDL" />
 				</Compiler>
 				<Linker>
 					<Add option="-static-libstdc++" />
@@ -169,6 +176,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowSprite.h" />
+		<Unit filename="..\sparrow3d\sparrowText.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowText.h" />
 		<Unit filename="..\sparrow3d\testsparrow.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
@@ -184,6 +195,10 @@
 		<Unit filename="src\Events.h" />
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
+		<Unit filename="src\ScoreBase.cpp" />
+		<Unit filename="src\ScoreBase.h" />
+		<Unit filename="src\ScoreNormal.cpp" />
+		<Unit filename="src\ScoreNormal.h" />
 		<Unit filename="src\ShapeBase.h" />
 		<Unit filename="src\ShapeCircle.cpp" />
 		<Unit filename="src\ShapeCircle.h" />
@@ -194,12 +209,18 @@
 		<Unit filename="src\SimpleDirection.cpp" />
 		<Unit filename="src\SimpleDirection.h" />
 		<Unit filename="src\SimpleFlags.h" />
+		<Unit filename="src\SpawnBase.cpp" />
+		<Unit filename="src\SpawnBase.h" />
+		<Unit filename="src\SpawnNormal.cpp" />
+		<Unit filename="src\SpawnNormal.h" />
 		<Unit filename="src\StateBase.cpp" />
 		<Unit filename="src\StateBase.h" />
 		<Unit filename="src\StateCollision.cpp" />
 		<Unit filename="src\StateCollision.h" />
 		<Unit filename="src\StateLevel.cpp" />
 		<Unit filename="src\StateLevel.h" />
+		<Unit filename="src\StateScore.cpp" />
+		<Unit filename="src\StateScore.h" />
 		<Unit filename="src\Timer.cpp" />
 		<Unit filename="src\Timer.h" />
 		<Unit filename="src\UnitBase.cpp" />

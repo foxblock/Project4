@@ -15,6 +15,21 @@ ShapeRay::ShapeRay() :
 	//
 }
 
+ShapeRay::ShapeRay( const Vector2d<float> &start ) :
+	ShapeBase( start ),
+	infiniteLength( true )
+{
+	//
+}
+
+ShapeRay::ShapeRay( const Vector2d<float> &start, const Vector2d<float> &newTarget ) :
+	ShapeBase( start ),
+	target( newTarget ),
+	infiniteLength( false )
+{
+	//
+}
+
 ShapeRay::~ShapeRay()
 {
 	//

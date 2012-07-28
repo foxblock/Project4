@@ -4,16 +4,20 @@
 #include <time.h>
 
 #include "gameDefines.h"
+
 #include "StateLevel.h"
 #include "StateCollision.h"
+#include "StateScore.h"
 
+#ifdef _DEBUG
 #define STARTING_STATE StateCollision
+#else
+#define STARTING_STATE StateLevel
+#endif
 
 Application::Application()
 {
-#ifdef _DEBUG
 	SDL_putenv("SDL_VIDEO_WINDOW_POS=500,200");
-#endif
 
 	spInitCore();
 
@@ -68,13 +72,17 @@ int Application::update( Uint32 delta )
 			return -1;
 		case 0: // keep using current state
 			break;
-		case 1: // StateLevel
+		case StateBase::stLevel:
 			prevState = activeState;
 			activeState = new StateLevel();
 			break;
-		case 2: // StateCollision
+		case StateBase::stCollision:
 			prevState = activeState;
 			activeState = new StateCollision();
+			break;
+		case StateBase::stScore:
+			prevState = activeState;
+			activeState = new StateScore( (StateLevel*)prevState );
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );
@@ -88,7 +96,6 @@ int Application::update( Uint32 delta )
 void Application::render()
 {
 	//spResetZBuffer();
-	spClearTarget( spGetRGB( 128, 0, 0 ) );
 
 	if ( prevState ) // Transition
 	{

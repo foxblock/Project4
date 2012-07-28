@@ -12,6 +12,8 @@ class ShapeRay : public ShapeBase
 {
 public:
 	ShapeRay();
+	ShapeRay( const Vector2d<float> &start );
+	ShapeRay( const Vector2d<float> &start, const Vector2d<float> &newTarget );
 	virtual ~ShapeRay();
 
 	float length() const { return (target - pos).length(); }

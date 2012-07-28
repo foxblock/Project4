@@ -20,6 +20,7 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	y = &( shape.pos.y );
 	maxVel = PLAYER_MAX_VELOCITY;
 	maxAccel = PLAYER_ACCEL;
+	type = utPlayer;
 }
 
 UnitPlayer::~UnitPlayer()

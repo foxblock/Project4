@@ -15,10 +15,8 @@ template <class T>
 std::string numToStr( T number )
 {
 	std::stringstream str;
-	std::string out;
 	str << number;
-	str >> out;
-	return out;
+	return str.str();
 };
 
 template <class T>

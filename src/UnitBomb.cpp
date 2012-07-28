@@ -2,6 +2,8 @@
 
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
+#include "Events.h"
+#include "StateLevel.h"
 
 #define BOMB_RADIUS 12
 #define BOMB_PRESSURE_RADIUS_SQR_HI  22500.0f
@@ -50,6 +52,10 @@ UnitBomb::UnitBomb( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	maxAccel = BOMB_IDLE_MAX_ACCEL;
 	friction = BOMB_IDLE_FRICTION;
 	isFlashing = false;
+	type = utBomb;
+	timers.push_back( &bombTimer );
+	timers.push_back( &flashTimer );
+	timers.push_back( &evadeTimer );
 }
 
 UnitBomb::~UnitBomb()
@@ -76,7 +82,7 @@ int UnitBomb::update( Uint32 delta )
 
 void UnitBomb::render( SDL_Surface *target )
 {
-	if ( bombTimer.getStatus() != -1 )
+	if ( !bombTimer.isStopped() )
 	{
 		float radius = BOMB_EXPLOSION_RADIUS * (float)(BOMB_EXPLOSION_TIME - bombTimer.getTime()) / (float)BOMB_EXPLOSION_TIME;
 		spEllipse( *x, *y, -1, radius, radius, spGetFastRGB( 255, 0, 0 ) );
@@ -85,13 +91,36 @@ void UnitBomb::render( SDL_Surface *target )
 	}
 	UnitBase::render( target );
 
-	if ( bombTimer.getMode() != -1 && bombTimer.getStatus() == -1 )
+	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
+	{
 		toBeRemoved = true;
+		EventUnitDeath *event = new EventUnitDeath( this, NULL );
+		parent->addEvent( event );
+	}
+}
+
+void UnitBomb::collisionResponse( UnitBase *const other )
+{
+	if ( other->type == utBomb )
+	{
+		if ( props.hasFlag( ufDeadlyOnTouch ) && !other->props.hasFlag( ufInvincible ) )
+		{
+			((UnitBomb*)other)->bombTimer.start( BOMB_EXPLOSION_TIME );
+			other->accel = Vector2d<float>(0,0);
+			other->vel = Vector2d<float>(0,0);
+			other->props.addFlag( UnitBase::ufDeadlyOnTouch );
+			other->props.addFlag( UnitBase::ufInvincible );
+			EventBombCascade *event = new EventBombCascade( this, other );
+			parent->addEvent( event );
+		}
+	}
+	else
+		UnitBase::collisionResponse( other );
 }
 
 void UnitBomb::ai( Uint32 delta, UnitBase *player )
 {
-	if ( bombTimer.getMode() != -1 )
+	if ( bombTimer.wasStarted() )
 		return;
 
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
@@ -156,11 +185,12 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 		bombTimer.start( BOMB_EXPLOSION_TIME );
 		accel = Vector2d<float>(0,0);
 		vel = Vector2d<float>(0,0);
-		props.addFlag( UnitBase::ufDeadlyOnTouch );
+		props.addFlag( ufDeadlyOnTouch );
+		props.addFlag( ufInvincible );
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_3 )
 	{
-		if ( flashTimer.getStatus() == -1 )
+		if ( flashTimer.isStopped() )
 		{
 			flashTimer.start( BOMB_PRESSURE_TIMER_3 );
 			isFlashing = !isFlashing;
@@ -168,7 +198,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_2 )
 	{
-		if ( flashTimer.getStatus() == -1 )
+		if ( flashTimer.isStopped() )
 		{
 			flashTimer.start( BOMB_PRESSURE_TIMER_2 );
 			isFlashing = !isFlashing;
@@ -176,7 +206,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_1 )
 	{
-		if ( flashTimer.getStatus() == -1 )
+		if ( flashTimer.isStopped() )
 		{
 			flashTimer.start( BOMB_PRESSURE_TIMER_1 );
 			isFlashing = !isFlashing;

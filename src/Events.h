@@ -15,7 +15,8 @@ public:
 	{
 		etNone=0,
 		etUnitDeath,
-		etUnitSpawn
+		etUnitSpawn,
+		etBombCascade
 	};
 	EventType type;
 };
@@ -44,6 +45,15 @@ public:
 	}
 
 	UnitBase *unit;
+};
+
+class EventBombCascade : public EventUnitDeath
+{
+public:
+	EventBombCascade( UnitBase *unit, UnitBase *killer ) : EventUnitDeath( unit, killer )
+	{
+		type = etBombCascade;
+	}
 };
 
 #endif // EVENT_BASE_H

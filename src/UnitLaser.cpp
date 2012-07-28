@@ -33,6 +33,8 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	projectile = NULL;
 	hasCharged = false;
 	maxAccel = 0.01f;
+	type = utLaser;
+	timers.push_back( &charge );
 }
 
 UnitLaser::~UnitLaser()
@@ -46,10 +48,17 @@ UnitLaser::~UnitLaser()
 
 int UnitLaser::update( Uint32 delta )
 {
-	if ( angleVel > LASER_IDLE_MAX_SPEED )
-		angleVel = LASER_IDLE_MAX_SPEED;
-	angle += angleVel * Utility::sqr( delta );
-	if ( !projectile && charge.getStatus() == -1 && hasCharged )
+	angle += angleVel * delta;
+
+	if ( angle < -M_PI )
+			angle += 2 * M_PI;
+		else if ( angle > M_PI )
+			angle -= 2 * M_PI;
+#ifdef _DEBUG
+	debugString += Utility::numToStr( angle ) + "\n" + Utility::numToStr( angleVel );
+#endif
+
+	if ( !projectile && charge.isStopped() && hasCharged )
 	{
 		if ( parent )
 		{
@@ -86,8 +95,8 @@ void UnitLaser::render( SDL_Surface *target )
 	}
 	else
 	{
-		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, spGetRGB( 255, 255, 255 ) );
-		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetRGB( 0, 0, 255 ) );
+		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, -1 );
+		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetFastRGB( 0, 0, 255 ) );
 	}
 }
 
@@ -121,16 +130,13 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 			hasCharged = true;
 			angleVel = 0;
 		}
-		angle += ( newAngle - angle ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
-
-		if ( angle < -M_PI )
-			angle += 2 * M_PI;
-		else if ( angle > M_PI )
-			angle -= 2 * M_PI;
+		angleVel = ( newAngle - angle ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
 	}
 	else if ( !hasCharged )
 	{
 		angleVel += (rand() % 3 - 1) * LASER_IDLE_SPEED;
+		if ( angleVel > LASER_IDLE_MAX_SPEED )
+			angleVel = LASER_IDLE_MAX_SPEED;
 	}
 }
 

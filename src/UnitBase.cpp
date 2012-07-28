@@ -26,13 +26,14 @@ UnitBase::UnitBase( StateLevel *newParent, ShapeBase *newShape )
 	maxVel = UNIT_DEFAULT_MAX_VEL;
 	maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 	friction = UNIT_DEFAULT_FRICTION;
+	type = utNone;
 
 #ifdef _DEBUG
 	debugString = "";
 	if ( !debugFont )
 	{
 		debugFont = spFontLoad( GAME_FONT, 10 );
-		spFontAddRange( debugFont, ' ', '~', spGetRGB( 255, 0, 0 ) );
+		spFontAdd( debugFont, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 	}
 #endif
 }
@@ -58,6 +59,8 @@ int UnitBase::update( Uint32 delta )
 		accel = accel.unit() * maxAccel;
 	*x += vel.x * delta;
 	*y += vel.y * delta;
+	for ( std::vector< Timer* >::iterator I = timers.begin(); I != timers.end(); ++I )
+		(*I)->update( delta );
 #ifdef _DEBUG
 	debugString += Utility::vecToStr( accel ) + "\n" + Utility::vecToStr( vel ) + "\n";
 #endif
@@ -71,15 +74,15 @@ void UnitBase::render( SDL_Surface *target )
 #ifdef _DEBUG
 	shape->render( target, spGetRGB( 228, 0, 228 ) );
 	spLine( *x, *y, -1, *x + vel.x * DEBUG_VELOCITY_LINE,
-			*y + vel.y * DEBUG_VELOCITY_LINE, -1, spGetRGB( 0, 255, 0 ) );
+			*y + vel.y * DEBUG_VELOCITY_LINE, -1, spGetFastRGB( 0, 255, 0 ) );
 	spLine( *x, *y, -1, *x + accel.x * DEBUG_ACCELERATION_LINE,
-			*y + accel.y * DEBUG_ACCELERATION_LINE, -1, spGetRGB( 0, 0, 255 ) );
+			*y + accel.y * DEBUG_ACCELERATION_LINE, -1, spGetFastRGB( 0, 0, 255 ) );
 	spEllipseBorder( *x, *y, -1, maxVel * DEBUG_VELOCITY_LINE,
-					maxVel * DEBUG_VELOCITY_LINE, 1, 1, spGetRGB( 0, 255, 0 ) );
+					maxVel * DEBUG_VELOCITY_LINE, 1, 1, spGetFastRGB( 0, 255, 0 ) );
 	spEllipseBorder( *x, *y, -1, maxAccel * DEBUG_ACCELERATION_LINE,
-					maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetRGB( 0, 0, 255 ) );
+					maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 0, 255 ) );
 	spEllipseBorder( *x, *y, -1, friction * DEBUG_ACCELERATION_LINE,
-					friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetRGB( 0, 255, 255 ) );
+					friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 255, 255 ) );
 	spFontDraw( *x, *y, -1, debugString.c_str(), debugFont );
 	debugString = "";
 #endif

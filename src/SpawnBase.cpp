@@ -1,12 +1,11 @@
-#include "StateBase.h"
+#include "SpawnBase.h"
 
-StateBase::StateBase()
+SpawnBase::SpawnBase( StateLevel *newParent )
 {
-	errorString = "";
-	type = stNone;
+	parent = newParent;
 }
 
-StateBase::~StateBase()
+SpawnBase::~SpawnBase()
 {
 	//
 }
@@ -14,9 +13,9 @@ StateBase::~StateBase()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int StateBase::update(Uint32 delta)
+int SpawnBase::update( Uint32 delta )
 {
-	for ( std::vector< Timer* >::iterator I = timers.begin(); I != timers.end(); ++I )
+	for (std::vector< Timer* >::iterator I = timers.begin(); I != timers.end(); ++I)
 		(*I)->update( delta );
 	return 0;
 }

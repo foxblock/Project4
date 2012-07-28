@@ -3,7 +3,7 @@
 
 #include "Vector2d.h"
 #include <cstdio>
-#include "SDL/SDL.h"
+#include "SDL.h"
 
 class ShapeRect;
 class ShapeRay;
@@ -13,6 +13,7 @@ class ShapeBase
 {
 public:
 	ShapeBase() : pos(0,0) { };
+	ShapeBase( const Vector2d<float> &newPos ) : pos(newPos) { };
 	virtual ~ShapeBase() { };
 
 	virtual bool checkCollision( ShapeBase const * const other ) const = 0;
