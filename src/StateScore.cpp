@@ -93,7 +93,8 @@ int StateScore::update( Uint32 delta )
 				run->info.score = score;
 				run->info.timecode = timecode;
 				run->info.version = REPLAY_VERSION;
-				run->saveToFile( "replays/" + Utility::numToStr( timecode ) + ".txt" );
+				run->saveToFile( FOLDER_REPLAY "/" + Utility::numToStr( timecode ) +
+									EXTENSION_REPLAY );
 			}
 
 		}
