@@ -16,8 +16,6 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface* target );
 
-	std::string filename;
-
 protected:
 	spFontPointer font;
 	bool caret;

@@ -18,10 +18,15 @@ public:
 
 protected:
 	HighscoreFile file;
-	spFontPointer font;
-	int offset;
+	spFontPointer fontW;
+	spFontPointer fontB;
+	int drawOffset;
+	int selOffset;
 	HighscoreFile::scoreIter offsetIter;
+	HighscoreFile::scoreIter selectionIter;
 	Timer inputLag;
+	Timer inputLagSwitch;
+	int lagTime;
 
 private:
 

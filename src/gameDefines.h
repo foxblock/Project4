@@ -26,6 +26,7 @@
 
 #define FOLDER_REPLAY "replays"
 #define FOLDER_DATA "data"
+#define EXTENSION_REPLAY ".txt"
 
 #define VERSION_STRING "0.0.2.2"
 

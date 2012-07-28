@@ -101,7 +101,7 @@ int Application::update( Uint32 delta )
 			break;
 		case StateBase::stReplay:
 			prevState = activeState;
-			activeState = new StateLevel( ((StateReplayLoader*)prevState)->filename );
+			activeState = new StateLevel( prevState->getLastError() );
 			break;
 		case StateBase::stMenu:
 			prevState = activeState;
