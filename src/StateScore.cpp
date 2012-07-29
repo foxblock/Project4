@@ -81,7 +81,7 @@ int StateScore::update( Uint32 delta )
 	{
 		if ( state == 0 )
 		{
-			spGetInput()->button[SP_BUTTON_START] = 0;
+			spResetButtonsState();
 			spStopKeyboardInput( );
 			state = 1;
 			caret = false;
@@ -97,7 +97,7 @@ int StateScore::update( Uint32 delta )
 		}
 		else
 		{
-			spGetInput()->button[SP_BUTTON_START] = 0;
+			spResetButtonsState();
 			return stMenu;
 		}
 	}

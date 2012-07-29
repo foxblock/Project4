@@ -38,7 +38,8 @@ StateLevel::StateLevel( const std::string &filename ) :
 	run = new Replay();
 	if ( filename[0] != 0 )
 	{
-		run->loadFromFile( filename );
+		if (!run->loadFromFile( filename ) )
+			errorString = "Could not open replay file!";
 		timecode = run->info.timecode;
 	}
 	else

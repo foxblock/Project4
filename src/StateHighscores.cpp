@@ -6,9 +6,9 @@
 #include "gameDefines.h"
 
 #define HIGHS_FONT_SIZE 36
-#define HIGHS_MAX_INPUT_LAG 70
+#define HIGHS_MAX_INPUT_LAG 150
 #define HIGHS_MIN_INPUT_LAG 20
-#define HIGHS_STEP_INPUT_LAG 10
+#define HIGHS_STEP_INPUT_LAG 20
 #define HIGHS_LAG_TIMER 200
 
 const int HIGHS_ENTRIES_ON_SCREEN = ( APP_SCREEN_HEIGHT - 20 ) / HIGHS_FONT_SIZE;
@@ -76,7 +76,10 @@ int StateHighscores::update(Uint32 delta)
 	}
 
 	if ( spGetInput()->axis[1] == 0 )
+	{
 		inputLagSwitch.stop();
+		inputLag.stop();
+	}
 	else
 	{
 		if ( inputLagSwitch.isStopped() )

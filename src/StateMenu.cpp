@@ -5,6 +5,7 @@
 #include "gameDefines.h"
 
 #define MENU_FONT_SIZE 48
+#define MENU_INPUT_LAG 150
 
 StateMenu::StateMenu() : StateBase()
 {
@@ -23,6 +24,7 @@ StateMenu::StateMenu() : StateBase()
 	addMenuEntry( "collision test", stCollision );
 #endif
 	addMenuEntry( "exit", -1 );
+	timers.push_back( &inputLag );
 
 	type = stMenu;
 }
@@ -41,15 +43,22 @@ int StateMenu::update(Uint32 delta)
 {
 	StateBase::update( delta );
 
-	if ( spGetInput()->axis[1] < 0 )
-		choice = std::min( --choice, entries.size()-1 );
-	else if ( spGetInput()->axis[1] > 0 )
+	if ( inputLag.isStopped() )
 	{
-		++choice;
-		if ( choice > entries.size()-1 )
-			choice = 0;
+		if ( spGetInput()->axis[1] < 0 )
+			choice = std::min( --choice, entries.size()-1 );
+		else if ( spGetInput()->axis[1] > 0 )
+		{
+			++choice;
+			if ( choice > entries.size()-1 )
+				choice = 0;
+		}
+		inputLag.start( MENU_INPUT_LAG );
 	}
-	spGetInput()->axis[1] = 0;
+	if ( spGetInput()->axis[1] == 0 )
+	{
+		inputLag.stop();
+	}
 
 	if ( spGetInput()->button[SP_BUTTON_B] ||
 		 spGetInput()->button[SP_BUTTON_Y] ||
