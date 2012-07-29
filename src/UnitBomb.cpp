@@ -4,7 +4,6 @@
 #include "UtilityFunctions.h"
 #include "Events.h"
 #include "StateLevel.h"
-#include "Random.h"
 
 #define BOMB_RADIUS 12
 #define BOMB_PRESSURE_RADIUS_SQR_HI  22500.0f
@@ -88,15 +87,14 @@ int UnitBomb::update( Uint32 delta )
 		parent->addEvent( event );
 	}
 
-#ifdef _DEBUG
-	debugString += Utility::numToStr( pressure ) + "\n" + Utility::numToStr( status ) + "\n";
-#endif
-
 	return UnitBase::update( delta );
 }
 
 void UnitBomb::render( SDL_Surface *target )
 {
+#ifdef _DEBUG
+	debugString += Utility::numToStr( pressure ) + "\n" + Utility::numToStr( status ) + "\n";
+#endif
 	if ( !bombTimer.isStopped() )
 	{
 		spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 255, 0, 0 ) );
@@ -175,7 +173,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 			accel = Vector2d<float>(0,0);
 		}
 		maxVel = BOMB_IDLE_MAX_VEL;
-		Vector2d<float> temp( RANDOM->getNumber( -1, 1 ), RANDOM->getNumber( -1, 1 ) );
+		Vector2d<float> temp( Utility::randomRange( -1, 1 ), Utility::randomRange( -1, 1 ) );
 		accel += temp.unit() * BOMB_IDLE_ACCEL * delta;
 		if ( ( *x < shape.radius && accel.x < 0 ) ||
 		( *x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )

@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <vector>
-#include "Random.h"
 #include "UtilityFunctions.h"
 
 #define FILE_REPLAY_DELIMITER "|"
@@ -11,8 +10,10 @@
 
 Replay::Replay()
 {
-	frameCount = 0;
+	frameCounter = 0;
+	totalFrames = 0;
 	playing = false;
+	info.version = REPLAY_VERSION;
 }
 
 Replay::~Replay()
@@ -23,34 +24,58 @@ Replay::~Replay()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-void Replay::addEntry( Uint32 delta )
+void Replay::update( const bool &forceAdd )
 {
-	ReplayEntry entry;
-	entry.delta = delta;
-	getReplayButtons( entry.frameInput );
-	RANDOM->copyCache( entry.numbers );
-	entries.push_back( entry );
+	++frameCounter;
+	if ( entries.empty() )
+	{
+		ReplayEntry entry;
+		getReplayButtons( lastInput );
+		entry.frameInput = lastInput;
+		entry.ms = frameCounter;
+		entries.push_back( entry );
+	}
+	else
+	{
+		ReplayEntry entry;
+		SspInput temp;
+		getReplayButtons( temp );
+		if ( forceAdd || !compareReplayButtons( temp, lastInput ) )
+		{
+			entry.frameInput = temp;
+			entry.ms = frameCounter;
+			entries.push_back( entry );
+			lastInput = temp;
+		}
+	}
 	playing = false;
 }
 
-int Replay::playEntry()
+bool Replay::play()
 {
-	if ( entries.empty() )
+	++frameCounter;
+
+	if ( frameCounter == 1 )
 	{
-		return -1;
+		spResetButtonsState();
+		spResetAxisState();
+		getReplayButtons( lastInput );
 	}
 
 	ReplayEntry entry = entries.front();
-	entries.pop_front();
-	setReplayButtons( entry.frameInput );
-	RANDOM->loadCache( entry.numbers );
+	if ( frameCounter == entry.ms )
+	{
+		lastInput = entry.frameInput;
+		entries.pop_front();
+	}
+	setReplayButtons( lastInput );
 	playing = true;
-	return entry.delta;
-}
 
-int Replay::getFrameCount()
-{
-	return frameCount;
+	if ( entries.empty() )
+	{
+		return false;
+	}
+	return true;
 }
 
 bool Replay::loadFromFile(const std::string& filename)
@@ -86,29 +111,18 @@ bool Replay::loadFromFile(const std::string& filename)
 
 		std::vector< std::string > tokens;
 		Utility::tokenize( line, tokens, FILE_REPLAY_DELIMITER, REPLAY_ENTRY_SIZE );
-		if ( tokens.size() < 2 )
+		if ( tokens.size() < REPLAY_ENTRY_SIZE )
 			continue;
 		ReplayEntry temp;
 
-		temp.delta = Utility::strToNum<int>( tokens[0] );
-		if ( temp.delta <= 0 )
-			continue;
+		temp.ms = Utility::strToNum<int>( tokens[0] );
 		stringToButtons( tokens[1], temp.frameInput );
-		if ( tokens.size() > 2 )
-		{
-			std::vector< std::string > numbers;
-			Utility::tokenize( tokens[2], numbers, FILE_REPLAY_SUB_DELIMITER );
-			for ( std::vector< std::string >::const_iterator I = numbers.begin(); I != numbers.end(); ++I )
-			{
-				temp.numbers.push_back( Utility::strToNum<int>( *I ) );
-			}
-		}
 
 		entries.push_back( temp );
 	}
 
 	file.close();
-	frameCount = entries.size();
+	totalFrames = entries.back().ms;
 
 	playing = !entries.empty();
 	return playing;
@@ -128,11 +142,8 @@ void Replay::saveToFile(const std::string& filename)
 
 	for ( std::list< ReplayEntry >::const_iterator I = entries.begin(); I != entries.end() && file.good(); ++I )
 	{
-		file << I->delta << FILE_REPLAY_DELIMITER
-			<< buttonsToString( I->frameInput ) << FILE_REPLAY_DELIMITER;
-		for ( std::list< int >::const_iterator K = I->numbers.begin(); K != I->numbers.end(); ++K )
-			file << *K << FILE_REPLAY_SUB_DELIMITER;
-		file << "\n";
+		file << I->ms << FILE_REPLAY_DELIMITER
+			<< buttonsToString( I->frameInput ) << "\n";
 	}
 
 	file.close();
@@ -150,6 +161,11 @@ void Replay::setReplayButtons(const SspInput& buttons)
 {
 	spGetInput()->axis[0] = buttons.axis[0];
 	spGetInput()->axis[1] = buttons.axis[1];
+}
+
+bool Replay::compareReplayButtons( const SspInput &a, const SspInput &b )
+{
+	return ( ( a.axis[0] == b.axis[0] ) && ( a.axis[1] == b.axis[1] ) );
 }
 
 std::string Replay::buttonsToString(const SspInput& buttons)

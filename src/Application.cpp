@@ -76,7 +76,13 @@ int Application::update( Uint32 delta )
 	}
 	else
 	{
-		int result = activeState->update( delta );
+		int result = 0;
+		for ( int I = 0; I < delta; ++I )
+		{
+			result = activeState->update( 1 );
+			if ( result != 0 )
+				break;
+		}
 
 		switch ( result )
 		{

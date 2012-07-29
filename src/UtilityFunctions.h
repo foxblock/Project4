@@ -14,7 +14,7 @@
 namespace Utility
 {
 template <class T>
-std::string numToStr( T number )
+inline std::string numToStr( T number )
 {
 	std::stringstream str;
 	str << number;
@@ -22,7 +22,7 @@ std::string numToStr( T number )
 };
 
 template <class T>
-T strToNum( std::string str )
+inline T strToNum( std::string str )
 {
 	std::stringstream ss;
 	T out;
@@ -32,26 +32,26 @@ T strToNum( std::string str )
 };
 
 template <class T>
-std::string vecToStr( Vector2d<T> vec )
+inline std::string vecToStr( Vector2d<T> vec )
 {
 	std::string result = numToStr( vec.x ) + VEC_DELIMIT_CHAR + numToStr( vec.y );
 	return result;
 }
 
 template <class T>
-int sign( T number )
+inline int sign( T number )
 {
 	return ( ( number > 0 ) - ( 0 > number ) );
 }
 
 template <class T>
-T sqr( T number )
+inline T sqr( T number )
 {
 	return number * number;
 }
 
 template <class T>
-T clamp( T number, T minV, T maxV )
+inline T clamp( T number, T minV, T maxV )
 {
 	return std::min( std::max( minV, number ), maxV );
 }
@@ -80,6 +80,21 @@ inline void tokenize( const std::string &str,
 	{
 		tokens.push_back( str.substr( lastPos, str.size() - lastPos ) );
 	}
+}
+
+inline int randomRange( int lower = 0, int upper = RAND_MAX )
+{
+	if ( upper < lower )
+	{
+		int temp = lower;
+		lower = upper;
+		upper = temp;
+	}
+
+	if ( lower < 0 && upper < 0 )
+		return -( rand() % ( -lower + upper + 1 ) - upper );
+	else
+		return rand() % ( upper - lower + 1 ) + lower;
 }
 };
 

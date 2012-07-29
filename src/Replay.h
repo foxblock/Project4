@@ -5,17 +5,16 @@
 #include <list>
 #include "sparrowCore.h"
 
-#define REPLAY_ENTRY_SIZE 3
-#define REPLAY_VERSION 2
+#define REPLAY_ENTRY_SIZE 2
+#define REPLAY_VERSION 4
 
 class Replay
 {
 public:
 	struct ReplayEntry
 	{
-		Uint32 delta;
+		Uint32 ms;
 		SspInput frameInput;
-		std::list< int > numbers;
 	};
 	struct ReplayInfo
 	{
@@ -29,9 +28,8 @@ public:
 	Replay( );
 	virtual ~Replay();
 
-	void addEntry( Uint32 delta );
-	int playEntry();
-	int getFrameCount();
+	void update( const bool &forceAdd = false );
+	bool play();
 
 	bool loadFromFile( const std::string &filename );
 	void saveToFile( const std::string &filename );
@@ -39,15 +37,18 @@ public:
 	ReplayInfo info;
 
 	bool playing;
+	int frameCounter;
+	int totalFrames;
 
 protected:
 	void getReplayButtons( SspInput &buttons );
 	void setReplayButtons( const SspInput &buttons );
+	bool compareReplayButtons( const SspInput &a, const SspInput &b );
 	std::string buttonsToString( const SspInput &buttons );
 	void stringToButtons( const std::string &str, SspInput &buttons );
 
 	std::list< ReplayEntry > entries;
-	int frameCount;
+	SspInput lastInput;
 
 private:
 

@@ -258,8 +258,6 @@
 		<Unit filename="src\HighscoreFile.h" />
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
-		<Unit filename="src\Random.cpp" />
-		<Unit filename="src\Random.h" />
 		<Unit filename="src\Replay.cpp" />
 		<Unit filename="src\Replay.h" />
 		<Unit filename="src\ScoreBase.cpp" />
