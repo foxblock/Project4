@@ -7,6 +7,7 @@
 #include "Vector2d.h"
 
 #define FLOAT_ACCURACY 1e-10
+#define MY_RAND_MAX 32767
 #define VEC_DELIMIT_CHAR ((std::string)",")
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
@@ -82,7 +83,25 @@ inline void tokenize( const std::string &str,
 	}
 }
 
-inline int randomRange( int lower = 0, int upper = RAND_MAX )
+static unsigned int next = 1;
+
+inline int my_rand_r(unsigned int *seed)
+{
+	*seed = *seed * 1103515245 + 12345;
+	return (*seed % ((unsigned int)MY_RAND_MAX + 1));
+}
+
+inline int my_rand(void)
+{
+	return (my_rand_r(&next));
+}
+
+inline void my_srand(unsigned int seed)
+{
+	next = seed;
+}
+
+inline int randomRange( int lower = 0, int upper = MY_RAND_MAX )
 {
 	if ( upper < lower )
 	{
@@ -92,10 +111,11 @@ inline int randomRange( int lower = 0, int upper = RAND_MAX )
 	}
 
 	if ( lower < 0 && upper < 0 )
-		return -( rand() % ( -lower + upper + 1 ) - upper );
+		return -( my_rand() % ( -lower + upper + 1 ) - upper );
 	else
-		return rand() % ( upper - lower + 1 ) + lower;
+		return my_rand() % ( upper - lower + 1 ) + lower;
 }
+
 };
 
 #endif // _UTILITY_FUNCTIONS_H
