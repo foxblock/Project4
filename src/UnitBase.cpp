@@ -61,9 +61,6 @@ int UnitBase::update( Uint32 delta )
 	*y += vel.y * delta;
 	for ( std::vector< Timer* >::iterator I = timers.begin(); I != timers.end(); ++I )
 		(*I)->update( delta );
-#ifdef _DEBUG
-	debugString += Utility::vecToStr( accel ) + "\n" + Utility::vecToStr( vel ) + "\n";
-#endif
 	return 0;
 }
 
@@ -72,6 +69,7 @@ void UnitBase::render( SDL_Surface *target )
 	if ( activeSprite )
 		spBlitSurface( *x, *y, -1, activeSprite );
 #ifdef _DEBUG
+	debugString += Utility::vecToStr( accel ) + "\n" + Utility::vecToStr( vel ) + "\n";
 	shape->render( target, spGetRGB( 228, 0, 228 ) );
 	spLine( *x, *y, -1, *x + vel.x * DEBUG_VELOCITY_LINE,
 			*y + vel.y * DEBUG_VELOCITY_LINE, -1, spGetFastRGB( 0, 255, 0 ) );

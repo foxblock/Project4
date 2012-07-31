@@ -31,7 +31,7 @@ public:
 	SpawnNormal spawnHandler;
 
 	Replay *run;
-	int frameCounter;
+	int timecode;
 
 #ifdef _DEBUG
 	std::string debugString;

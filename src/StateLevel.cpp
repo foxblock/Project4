@@ -5,7 +5,6 @@
 
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
-#include "Random.h"
 
 #include "UnitPlayer.h"
 
@@ -39,9 +38,16 @@ StateLevel::StateLevel( const std::string &filename ) :
 	run = new Replay();
 	if ( filename[0] != 0 )
 	{
-		run->loadFromFile( filename );
+		if (!run->loadFromFile( filename ) )
+			errorString = "Could not open replay file!";
+		timecode = run->info.timecode;
 	}
-	frameCounter = 0;
+	else
+	{
+		timecode = time( NULL );
+		run->info.timecode = timecode;
+	}
+	Utility::my_srand( timecode );
 
 	type = stLevel;
 }
@@ -68,15 +74,11 @@ StateLevel::~StateLevel()
 
 int StateLevel::update( Uint32 delta )
 {
-	RANDOM->clearCache();
 	if ( run->playing )
 	{
-		int temp = run->playEntry();
-		if ( temp < 0 )
+		if ( !run->play() )
 			return stScore;
-		delta = temp;
 	}
-	++frameCounter;
 
 	StateBase::update( delta );
 
@@ -84,12 +86,6 @@ int StateLevel::update( Uint32 delta )
 		return stMenu;
 
 	delta = std::min( ( int )delta, MAX_DELTA );
-
-#ifdef _DEBUG
-	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr( delta ) + ")\n";
-	if ( run->playing )
-		debugString += "frame: " + Utility::numToStr( frameCounter ) + " / " + Utility::numToStr( run->getFrameCount() ) + "\n";
-#endif
 
 	// Unit update, collision checking (creates events)
 	if ( player )
@@ -147,11 +143,7 @@ int StateLevel::update( Uint32 delta )
 
 	// Replay recording
 	if ( !run->playing )
-		run->addEntry( delta );
-
-#ifdef _DEBUG
-	debugString += Utility::numToStr( units.size() ) + " units\n";
-#endif
+		run->update( player->toBeRemoved );
 
 	if ( player && player->toBeRemoved )
 	{
@@ -202,6 +194,11 @@ void StateLevel::render( SDL_Surface *target )
 	scoreKeeper.render( target );
 
 #ifdef _DEBUG
+	debugString = Utility::numToStr( spGetFPS() ) + " fps\n";
+	if ( run->playing )
+		debugString += "frame: " + Utility::numToStr( run->frameCounter ) + " / " + Utility::numToStr( run->totalFrames ) + "\n";
+
+	debugString += Utility::numToStr( units.size() ) + " units\n";
 	if ( debugText )
 		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
 	spawnHandler.render( target );

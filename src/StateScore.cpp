@@ -53,7 +53,6 @@ StateScore::StateScore( StateLevel *level ) :
 
 	caretTimer.start( SCORE_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );
-	timecode = time( NULL );
 
 	type = stScore;
 }
@@ -82,25 +81,23 @@ int StateScore::update( Uint32 delta )
 	{
 		if ( state == 0 )
 		{
-			spGetInput()->button[SP_BUTTON_START] = 0;
+			spResetButtonsState();
 			spStopKeyboardInput( );
 			state = 1;
 			caret = false;
-			file.addScore( name, score, timecode );
+			file.addScore( name, score, run->info.timecode );
 			if ( run )
 			{
 				run->info.name = name;
 				run->info.score = score;
-				run->info.timecode = timecode;
-				run->info.version = REPLAY_VERSION;
-				run->saveToFile( FOLDER_REPLAY "/" + Utility::numToStr( timecode ) +
+				run->saveToFile( FOLDER_REPLAY "/" + Utility::numToStr( run->info.timecode ) +
 									EXTENSION_REPLAY );
 			}
 
 		}
 		else
 		{
-			spGetInput()->button[SP_BUTTON_START] = 0;
+			spResetButtonsState();
 			return stMenu;
 		}
 	}

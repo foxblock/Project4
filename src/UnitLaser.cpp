@@ -5,7 +5,6 @@
 
 #include "UtilityFunctions.h"
 #include "StateLevel.h"
-#include "Random.h"
 
 #define EYE_DISTANCE 15.0f
 // Radians per millisecond
@@ -55,9 +54,6 @@ int UnitLaser::update( Uint32 delta )
 			angle += 2 * M_PI;
 		else if ( angle > M_PI )
 			angle -= 2 * M_PI;
-#ifdef _DEBUG
-	debugString += Utility::numToStr( angle ) + "\n" + Utility::numToStr( angleVel );
-#endif
 
 	if ( !projectile && charge.isStopped() && hasCharged )
 	{
@@ -84,6 +80,9 @@ int UnitLaser::update( Uint32 delta )
 
 void UnitLaser::render( SDL_Surface *target )
 {
+#ifdef _DEBUG
+	debugString += Utility::numToStr( angle ) + "\n" + Utility::numToStr( angleVel );
+#endif
 	UnitBase::render( target );
 
 	Vector2d<float> eyePos( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) * EYE_DISTANCE );
@@ -135,7 +134,7 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 	}
 	else if ( !hasCharged )
 	{
-		angleVel += ( RANDOM->getNumber( -1, 1 ) ) * LASER_IDLE_SPEED * delta;
+		angleVel += ( Utility::randomRange( -1, 1 ) ) * LASER_IDLE_SPEED * delta;
 		if ( angleVel > LASER_IDLE_MAX_SPEED )
 			angleVel = LASER_IDLE_MAX_SPEED;
 	}

@@ -22,7 +22,6 @@ public:
 protected:
 	SDL_Surface *killFrame;
 	int score;
-	int timecode;
 	spFontPointer scoreText;
 	char name[100];
 	int state;

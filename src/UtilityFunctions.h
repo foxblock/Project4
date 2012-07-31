@@ -7,6 +7,7 @@
 #include "Vector2d.h"
 
 #define FLOAT_ACCURACY 1e-10
+#define MY_RAND_MAX 32767
 #define VEC_DELIMIT_CHAR ((std::string)",")
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
@@ -14,7 +15,7 @@
 namespace Utility
 {
 template <class T>
-std::string numToStr( T number )
+inline std::string numToStr( T number )
 {
 	std::stringstream str;
 	str << number;
@@ -22,7 +23,7 @@ std::string numToStr( T number )
 };
 
 template <class T>
-T strToNum( std::string str )
+inline T strToNum( std::string str )
 {
 	std::stringstream ss;
 	T out;
@@ -32,26 +33,26 @@ T strToNum( std::string str )
 };
 
 template <class T>
-std::string vecToStr( Vector2d<T> vec )
+inline std::string vecToStr( Vector2d<T> vec )
 {
 	std::string result = numToStr( vec.x ) + VEC_DELIMIT_CHAR + numToStr( vec.y );
 	return result;
 }
 
 template <class T>
-int sign( T number )
+inline int sign( T number )
 {
 	return ( ( number > 0 ) - ( 0 > number ) );
 }
 
 template <class T>
-T sqr( T number )
+inline T sqr( T number )
 {
 	return number * number;
 }
 
 template <class T>
-T clamp( T number, T minV, T maxV )
+inline T clamp( T number, T minV, T maxV )
 {
 	return std::min( std::max( minV, number ), maxV );
 }
@@ -81,6 +82,40 @@ inline void tokenize( const std::string &str,
 		tokens.push_back( str.substr( lastPos, str.size() - lastPos ) );
 	}
 }
+
+static unsigned int next = 1;
+
+inline int my_rand_r(unsigned int *seed)
+{
+	*seed = *seed * 1103515245 + 12345;
+	return (*seed % ((unsigned int)MY_RAND_MAX + 1));
+}
+
+inline int my_rand(void)
+{
+	return (my_rand_r(&next));
+}
+
+inline void my_srand(unsigned int seed)
+{
+	next = seed;
+}
+
+inline int randomRange( int lower = 0, int upper = MY_RAND_MAX )
+{
+	if ( upper < lower )
+	{
+		int temp = lower;
+		lower = upper;
+		upper = temp;
+	}
+
+	if ( lower < 0 && upper < 0 )
+		return -( my_rand() % ( -lower + upper + 1 ) - upper );
+	else
+		return my_rand() % ( upper - lower + 1 ) + lower;
+}
+
 };
 
 #endif // _UTILITY_FUNCTIONS_H
