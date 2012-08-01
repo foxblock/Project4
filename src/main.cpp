@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "sparrow3d.h"
+#include "UtilityFunctions.h"
 
 Application myApp;
 
@@ -25,6 +26,7 @@ int main( int argc, char **argv )
 	{
 		printf( "Application shut down gracefully.\n" );
 	}
+	fflush(stdout);
 
 	return 0;
 }

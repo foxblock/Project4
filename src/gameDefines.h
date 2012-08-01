@@ -28,7 +28,7 @@
 #define FOLDER_DATA "data"
 #define EXTENSION_REPLAY ".txt"
 
-#define VERSION_STRING "0.0.3.3"
+#define VERSION_STRING "0.1.1.5"
 
 #define COLOUR_BACKGROUND spGetRGB( 128, 0, 0 )
 

@@ -7,7 +7,7 @@
 #include "Vector2d.h"
 
 #define FLOAT_ACCURACY 1e-10
-#define MY_RAND_MAX 32767
+#define MY_RAND_MAX 4294967295
 #define VEC_DELIMIT_CHAR ((std::string)",")
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
@@ -83,22 +83,23 @@ inline void tokenize( const std::string &str,
 	}
 }
 
-static unsigned int next = 1;
+static unsigned int w = 1;
 
-inline int my_rand_r(unsigned int *seed)
+inline void seedRand(Uint32 seed)
 {
-	*seed = *seed * 1103515245 + 12345;
-	return (*seed % ((unsigned int)MY_RAND_MAX + 1));
+	w = seed;
 }
 
-inline int my_rand(void)
-{
-	return (my_rand_r(&next));
-}
+inline uint32_t rand() {
+	static uint32_t x = 123456789;
+	static uint32_t y = 362436069;
+	static uint32_t z = 521288629;
 
-inline void my_srand(unsigned int seed)
-{
-	next = seed;
+	uint32_t t = x ^ ( x << 11 );
+	x = y; y = z; z = w;
+	w ^= ( w >> 19 ) ^t ^ ( t >> 8 );
+
+	return w;
 }
 
 inline int randomRange( int lower = 0, int upper = MY_RAND_MAX )
@@ -111,9 +112,9 @@ inline int randomRange( int lower = 0, int upper = MY_RAND_MAX )
 	}
 
 	if ( lower < 0 && upper < 0 )
-		return -( my_rand() % ( -lower + upper + 1 ) - upper );
+		return -( rand() % ( -lower + upper + 1 ) - upper );
 	else
-		return my_rand() % ( upper - lower + 1 ) + lower;
+		return rand() % ( upper - lower + 1 ) + lower;
 }
 
 };

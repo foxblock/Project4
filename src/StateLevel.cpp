@@ -47,7 +47,7 @@ StateLevel::StateLevel( const std::string &filename ) :
 		timecode = time( NULL );
 		run->info.timecode = timecode;
 	}
-	Utility::my_srand( timecode );
+	Utility::seedRand( timecode );
 
 	type = stLevel;
 }
