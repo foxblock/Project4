@@ -45,9 +45,9 @@ int StateReplayLoader::update(Uint32 delta)
 	{
 		spResetButtonsState();
 		spStopKeyboardInput( );
-		errorString = FOLDER_REPLAY "/";
-		errorString += filenameBuffer;
-		errorString += EXTENSION_REPLAY;
+		message = FOLDER_REPLAY "/";
+		message += filenameBuffer;
+		message += EXTENSION_REPLAY;
 		return stReplay;
 	}
 

@@ -98,7 +98,7 @@ int StateHighscores::update(Uint32 delta)
 		spGetInput()->button[ SP_BUTTON_Y ]) &&
 		!file.scores.empty() )
 	{
-		errorString = FOLDER_REPLAY "/" + Utility::numToStr( selectionIter->timestamp ) +
+		message = FOLDER_REPLAY "/" + Utility::numToStr( selectionIter->timestamp ) +
 						EXTENSION_REPLAY;
 		return stReplay;
 	}

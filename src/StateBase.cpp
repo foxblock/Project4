@@ -3,6 +3,7 @@
 StateBase::StateBase()
 {
 	errorString = "";
+	message = "";
 	type = stNone;
 }
 

@@ -52,10 +52,10 @@ Legend:
   + look into delta=0 frames (need those or not?)
   + look into smoother playback (talk to Ziz - done talking)
   + create replays folder
-  - spit out error when replay not found instead of starting a game
+  + spit out error when replay not found instead of starting a game
   - encrypt replay files
 ---
-- Menus, navigation
++ Menus, navigation
 - Help screen
 - Pause
 - Change to fit different resolutions

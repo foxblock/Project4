@@ -10,6 +10,7 @@
 #include "StateMenu.h"
 #include "StateReplayLoader.h"
 #include "StateHighscores.h"
+#include "StateError.h"
 
 #ifdef WIN32
 #include <direct.h>
@@ -84,6 +85,14 @@ int Application::update( Uint32 delta )
 				break;
 		}
 
+		if ( activeState->getLastError()[0] != 0 )
+		{
+			printf( "State %i returned error: %s\n", activeState->type, activeState->getLastError().c_str() );
+			prevState = activeState;
+			activeState = new StateError( prevState->getLastError(), (StateBase::StateType)result );
+			return 0;
+		}
+
 		switch ( result )
 		{
 		case ERROR_CODE: // exit with error
@@ -107,7 +116,7 @@ int Application::update( Uint32 delta )
 			break;
 		case StateBase::stReplay:
 			prevState = activeState;
-			activeState = new StateLevel( prevState->getLastError() );
+			activeState = new StateLevel( prevState->message );
 			break;
 		case StateBase::stMenu:
 			prevState = activeState;

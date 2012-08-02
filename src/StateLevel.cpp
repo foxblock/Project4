@@ -38,8 +38,8 @@ StateLevel::StateLevel( const std::string &filename ) :
 	run = new Replay();
 	if ( filename[0] != 0 )
 	{
-		if (!run->loadFromFile( filename ) )
-			errorString = "Could not open replay file!";
+		if ( !run->loadFromFile( filename ) )
+			errorString = "Could not open replay file!\n" + filename;
 		timecode = run->info.timecode;
 	}
 	else
@@ -78,6 +78,11 @@ int StateLevel::update( Uint32 delta )
 	{
 		if ( !run->play() )
 			return stScore;
+	}
+
+	if ( errorString[0] != 0 )
+	{
+		return stMenu;
 	}
 
 	StateBase::update( delta );

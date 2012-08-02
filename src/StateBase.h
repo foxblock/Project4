@@ -29,9 +29,12 @@ public:
 		stReplay,
 		stMenu,
 		stHighscores,
-		stReplayLoader
+		stReplayLoader,
+		stError
 	};
 	StateType type;
+
+	std::string message;
 
 protected:
 	std::string errorString;
