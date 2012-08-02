@@ -1,7 +1,6 @@
 #include "Application.h"
 
 #include "sparrow3d.h"
-#include "UtilityFunctions.h"
 
 Application myApp;
 

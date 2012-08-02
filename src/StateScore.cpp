@@ -10,6 +10,8 @@
 #define SCORE_FONT_SIZE 32
 #define SCORE_CARET_BLINK_TIME 600
 
+char StateScore::name[100] = "player";
+
 StateScore::StateScore( StateLevel *level ) :
 	StateBase(),
 	file( FOLDER_DATA "/" FILE_HIGHSCORE_NORMAL )
@@ -43,7 +45,6 @@ StateScore::StateScore( StateLevel *level ) :
 	{
 		caret = true;
 		state = 0;
-		strcpy( name, "player" );
 		spPollKeyboardInput( name, 100, NULL );
 		run = level->run;
 		level->run = NULL;

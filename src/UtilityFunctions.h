@@ -83,38 +83,29 @@ inline void tokenize( const std::string &str,
 	}
 }
 
-static unsigned int w = 1;
+static uint32_t w;
+static uint32_t x;
+static uint32_t y;
+static uint32_t z;
 
-inline void seedRand(Uint32 seed)
-{
-	w = seed;
-}
+void seedRand( const uint32_t &a = 88675123, const uint32_t &b = 123456789,
+				const uint32_t &c = 362436069, const uint32_t &d = 521288629);
 
-inline uint32_t rand() {
-	static uint32_t x = 123456789;
-	static uint32_t y = 362436069;
-	static uint32_t z = 521288629;
+uint32_t rand();
 
-	uint32_t t = x ^ ( x << 11 );
-	x = y; y = z; z = w;
-	w ^= ( w >> 19 ) ^t ^ ( t >> 8 );
-
-	return w;
-}
-
-inline int randomRange( int lower = 0, int upper = MY_RAND_MAX )
+inline int64_t randomRange( int64_t lower = 0, int64_t upper = MY_RAND_MAX )
 {
 	if ( upper < lower )
 	{
-		int temp = lower;
+		int64_t temp = lower;
 		lower = upper;
 		upper = temp;
 	}
 
 	if ( lower < 0 && upper < 0 )
-		return -( rand() % ( -lower + upper + 1 ) - upper );
+		return -( (int64_t)Utility::rand() % ( -lower + upper + 1 ) - upper );
 	else
-		return rand() % ( upper - lower + 1 ) + lower;
+		return (int64_t)Utility::rand() % ( upper - lower + 1 ) + lower;
 }
 
 };

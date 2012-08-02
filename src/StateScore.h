@@ -23,7 +23,7 @@ protected:
 	SDL_Surface *killFrame;
 	int score;
 	spFontPointer scoreText;
-	char name[100];
+	static char name[100];
 	int state;
 	bool caret;
 	Timer caretTimer;

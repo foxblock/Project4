@@ -308,6 +308,7 @@
 		<Unit filename="src\UnitPlayer.h" />
 		<Unit filename="src\UnitSpike.cpp" />
 		<Unit filename="src\UnitSpike.h" />
+		<Unit filename="src\UtilityFunctions.cpp" />
 		<Unit filename="src\UtilityFunctions.h" />
 		<Unit filename="src\Vector2d.h" />
 		<Unit filename="src\gameDefines.h" />
