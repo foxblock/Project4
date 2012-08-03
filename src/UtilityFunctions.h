@@ -57,31 +57,8 @@ inline T clamp( T number, T minV, T maxV )
 	return std::min( std::max( minV, number ), maxV );
 }
 
-inline void tokenize( const std::string &str,
-					  std::vector<std::string> &tokens,
-					  const std::string &delimiters,
-					  const int &maxParts = -1 )
-{
-	tokens.clear();
-	// Skip delimiters at beginning.
-	std::string::size_type lastPos = str.find_first_not_of( delimiters, 0 );
-	// Find first "non-delimiter".
-	std::string::size_type pos     = str.find_first_of( delimiters, lastPos );
-
-	while ( ( ( maxParts <= 0 ) || tokens.size() < maxParts - 1 ) && ( std::string::npos != pos || std::string::npos != lastPos ) )
-	{
-		// Found a token, add it to the vector.
-		tokens.push_back( str.substr( lastPos, pos - lastPos ) );
-		// Skip delimiters.  Note the "not_of"
-		lastPos = str.find_first_not_of( delimiters, pos );
-		// Find next "non-delimiter"
-		pos = str.find_first_of( delimiters, lastPos );
-	}
-	if ( lastPos < str.size() )
-	{
-		tokens.push_back( str.substr( lastPos, str.size() - lastPos ) );
-	}
-}
+void tokenize( const std::string &str, std::vector<std::string> &tokens,
+				const std::string &delimiters, const int &maxParts = -1 );
 
 static uint32_t w;
 static uint32_t x;
