@@ -128,6 +128,8 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
+
+	// player close -> +pressure
 	if ( dist < BOMB_PRESSURE_RADIUS_SQR_HI )
 	{
 		pressure += BOMB_PRESSURE_ADD_1 * delta;
@@ -141,6 +143,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 		pressure -= BOMB_PRESSURE_REL * delta;
 
 	bool idleRoaming = true;
+	// evasion
 	if ( dist < BOMB_EVASION_RADIUS_SQR )
 	{
 		Vector2d<float> playerAcc = player->accel.unit();
@@ -156,6 +159,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 			idleRoaming = false;
 		}
 	}
+	// min evade - when exiting evasion radius (to prevent immediate re-enter)
 	if ( idleRoaming && status == 1 )
 	{
 		idleRoaming = false;
@@ -165,8 +169,10 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 	if ( evadeTimer.getStatus() == 1 )
 		idleRoaming = false;
 
+	// idle movement
 	if ( idleRoaming )
 	{
+		// reset evasion status
 		if ( status > 0 )
 		{
 			status = 0;
@@ -183,6 +189,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 			accel.y *= -1;
 	}
 
+	// pressure levels - flashing and explosion
 	if ( pressure > BOMB_PRESSURE_LEVEL_4 )
 	{
 		bombTimer.start( BOMB_EXPLOSION_TIME );

@@ -55,6 +55,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 {
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
+	// waiting for charge -> charging
 	if ( chargeTimer.isStopped() && chargeState == 1 )
 	{
 		maxVel = UNIT_DEFAULT_MAX_VEL;
@@ -65,11 +66,15 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		chargeState = 2;
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
+	// prevent charging unit from going off screen
 	if ( !chargeTimer.isStopped() && chargeState == 2 &&
 		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_HEIGHT)) )
 	{
 		chargeTimer.stop();
+		*x = Utility::clamp( *x, 0.0f, (float)APP_SCREEN_WIDTH );
+		*y = Utility::clamp( *y, 0.0f, (float)APP_SCREEN_HEIGHT );
 	}
+	// charging -> idle movement
 	if ( chargeTimer.isStopped() && chargeState == 2 )
 	{
 		chargeState = 0;
@@ -78,8 +83,10 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		vel = Vector2d<float>( 0, 0 );
 		accel = Vector2d<float>( 0, 0 );
 	}
+	// idle
 	if ( chargeState == 0 )
 	{
+		// idle -> charging
 		if ( dist < SPIKE_CHARGE_RADIUS_SQR )
 		{
 			chargeTimer.start( SPIKE_WAIT_TIME );
@@ -87,13 +94,14 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 			vel = Vector2d<float>( 0, 0 );
 			accel = Vector2d<float>( 0, 0 );
 		}
+		// idle -> following
 		else if ( dist < SPIKE_ATTACK_RADIUS_SQR )
 		{
 			maxVel = SPIKE_MOVEMENT_MAX_VEL;
 			friction = UNIT_DEFAULT_FRICTION;
 			maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 			accel = diff.unit() * SPIKE_ATTACK_ACCEL;
-		}
+		}// idle movement
 		else
 		{
 			maxVel = SPIKE_IDLE_MAX_VEL;

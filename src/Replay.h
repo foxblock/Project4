@@ -6,7 +6,7 @@
 #include "sparrowCore.h"
 
 #define REPLAY_ENTRY_SIZE 2
-#define REPLAY_VERSION 4
+#define REPLAY_VERSION 5
 
 class Replay
 {
@@ -39,6 +39,8 @@ public:
 	bool playing;
 	int frameCounter;
 	int totalFrames;
+
+	std::string errorString;
 
 protected:
 	void getReplayButtons( SspInput &buttons );

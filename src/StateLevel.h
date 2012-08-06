@@ -7,6 +7,9 @@
 #include "ScoreNormal.h"
 #include "SpawnNormal.h"
 #include "Replay.h"
+#include "ShapeCircle.h"
+#include <vector>
+#include <string>
 
 #define PLAYER_CLASS UnitPlayer
 
@@ -48,8 +51,9 @@ protected:
 		float r,g,b,intensity;
 	};
 	colour bgcol;
-	colour fadecol;
-	Timer bgFadeTimer;
+//	colour fadecol;
+//	Timer bgFadeTimer;
+	std::vector< std::pair<ShapeCircle, colour> > bgEffects;
 	ScoreNormal::ScoreMode scoreMode;
 
 #ifdef _DEBUG

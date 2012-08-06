@@ -15,7 +15,7 @@
 #include "ShapeCircle.h"
 
 // Actual value: 200
-#define SPAWN_PLAYER_SAFE_RADIUS_SQR 40000.0f
+#define SPAWN_PLAYER_SAFE_RADIUS_SQR 30000.0f
 
 #define UNIT_TYPE_COUNT 2
 
@@ -111,7 +111,7 @@ int SpawnNormal::update( Uint32 delta )
 		unitType = (*I)->checkSpawn( parent->player );
 	}
 
-	spawnUnit( unitType, newUnit );
+	newUnit = spawnUnit( unitType );
 
 	if ( !newUnit )
 		return 0;
@@ -125,8 +125,9 @@ int SpawnNormal::update( Uint32 delta )
 	return 0;
 }
 
-void SpawnNormal::spawnUnit(const int& type, UnitBase * &unit)
+UnitBase * SpawnNormal::spawnUnit(const int& type) const
 {
+	UnitBase *unit = NULL;
 	switch ( type )
 	{
 	case UnitBase::utSpike:
@@ -139,12 +140,12 @@ void SpawnNormal::spawnUnit(const int& type, UnitBase * &unit)
 		break;
 	case UnitBase::utBomb:
 		unit = new UnitBomb( parent );
-		unit->shape->pos = getLaserPosition();
+		unit->shape->pos = getBombPosition();
 		break;
 	default:
-		unit = NULL;
 		break;
 	}
+	return unit;
 }
 
 void SpawnNormal::render( SDL_Surface *target )
@@ -190,6 +191,21 @@ Vector2d<float> SpawnNormal::getLaserPosition() const
 		++count;
 	}
 	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR && count < SPAWN_POSITION_MAX_TRIES );
+	return result;
+}
+
+Vector2d<float> SpawnNormal::getBombPosition() const
+{
+	Vector2d<float> result;
+	result.x = Utility::randomRange( APP_SCREEN_WIDTH * 0.25f, APP_SCREEN_WIDTH * 0.75f );
+	float temp = 0;
+	do
+	{
+		result.y = Utility::randomRange( APP_SCREEN_HEIGHT * 0.25f, APP_SCREEN_HEIGHT * 0.75f );
+		temp = Utility::sqr( result.x - *parent->player->x ) +
+				Utility::sqr( result.y - * parent->player->y );
+	}
+	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR );
 	return result;
 }
 

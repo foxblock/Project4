@@ -111,6 +111,7 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 {
 	float diffX = *player->x - *x;
 	float diffY = *y - *player->y;
+	// target player
 	if ( !hasCharged && (Utility::sqr(diffX) + Utility::sqr(diffY) < LASER_ATTACK_RADIUS_SQR || projectile))
 	{
 		float newAngle = 0;
@@ -132,6 +133,7 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 		}
 		angleVel = ( newAngle - angle ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
 	}
+	// idle: random rotation
 	else if ( !hasCharged )
 	{
 		angleVel += ( Utility::randomRange( -1, 1 ) ) * LASER_IDLE_SPEED * delta;

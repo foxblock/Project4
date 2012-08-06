@@ -147,7 +147,7 @@ void Application::render()
 	{
 
 	}
-	else
+	else if ( activeState )
 	{
 		activeState->render( screen );
 	}

@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <time.h>
+#include <utility>
 
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
@@ -32,14 +33,14 @@ StateLevel::StateLevel( const std::string &filename ) :
 	bgcol.g = 0;
 	bgcol.b = 255;
 	bgcol.intensity = 0.5;
-	timers.push_back( &bgFadeTimer );
+//	timers.push_back( &bgFadeTimer );
 	scoreMode = ScoreNormal::smNone;
 
 	run = new Replay();
 	if ( filename[0] != 0 )
 	{
 		if ( !run->loadFromFile( filename ) )
-			errorString = "Could not open replay file!\n" + filename;
+			errorString = "Could not load replay file!\n" + run->errorString;
 		timecode = run->info.timecode;
 	}
 	else
@@ -124,11 +125,54 @@ int StateLevel::update( Uint32 delta )
 
 	// Score (reads events)
 	scoreKeeper.update( delta );
+
+	// Background effects
 	if ( scoreKeeper.getMode() != scoreMode )
 	{
-		bgFadeTimer.start( LEVEL_BG_FADE_TIME );
+		//bgFadeTimer.start( LEVEL_BG_FADE_TIME );
+		//fadecol = bgcol;
 		scoreMode = scoreKeeper.getMode();
-		fadecol = bgcol;
+		ShapeCircle temp( player->shape.pos, player->shape.radius );
+		colour tempCol;
+		switch ( scoreMode )
+		{
+		case ScoreNormal::smNone:
+			tempCol.r = 0;
+			tempCol.g = 0;
+			tempCol.b = 255;
+			break;
+		case ScoreNormal::smPeace:
+			tempCol.r = 0;
+			tempCol.g = 255;
+			tempCol.b = 0;
+			break;
+		case ScoreNormal::smAggression:
+			tempCol.r = 255;
+			tempCol.g = 0;
+			tempCol.b = 0;
+			break;
+		}
+		tempCol.intensity = 0.5;
+		bgEffects.push_back( std::make_pair(temp,tempCol) );
+	}
+	for ( std::vector< std::pair<ShapeCircle, colour> >::iterator I = bgEffects.begin(); I != bgEffects.end();  )
+	{
+		Vector2d<float> temp(0,0);
+		if ( I->first.pos.x < APP_SCREEN_WIDTH / 2 )
+			temp.x = APP_SCREEN_WIDTH;
+		if ( I->first.pos.y < APP_SCREEN_HEIGHT / 2 )
+			temp.y = APP_SCREEN_HEIGHT;
+		temp -= I->first.pos;
+		if ( temp.lengthSquared() <= Utility::sqr( I->first.radius ) )
+		{
+			bgcol = I->second;
+			bgEffects.erase( I );
+		}
+		else
+		{
+			I->first.radius += 1;
+			I++;
+		}
 	}
 
 	// Events (reads and removes events)
@@ -161,34 +205,44 @@ int StateLevel::update( Uint32 delta )
 
 void StateLevel::render( SDL_Surface *target )
 {
-	if ( bgFadeTimer.wasStarted() )
-	{
-		float timerFactor = (float)bgFadeTimer.getTime() / (float)LEVEL_BG_FADE_TIME;
-		switch ( scoreMode )
-		{
-		case ScoreNormal::smNone:
-			bgcol.r = 0 + fadecol.r * timerFactor;
-			bgcol.g = 0 + fadecol.g * timerFactor;
-			bgcol.b = 255 + ( fadecol.b - 255 ) * timerFactor;
-			break;
-		case ScoreNormal::smPeace:
-			bgcol.r = 0 + fadecol.r * timerFactor;
-			bgcol.g = 255 + ( fadecol.g - 255 ) * timerFactor;
-			bgcol.b = 0 + fadecol.b * timerFactor;
-			break;
-		case ScoreNormal::smAggression:
-			bgcol.r = 255 + ( fadecol.r - 255 ) * timerFactor;
-			bgcol.g = 0 + fadecol.g * timerFactor;
-			bgcol.b = 0 + fadecol.b * timerFactor;
-			break;
-		}
-		if ( bgFadeTimer.isStopped() )
-			bgFadeTimer.stop();
-	}
+//	if ( bgFadeTimer.wasStarted() )
+//	{
+//		float timerFactor = (float)bgFadeTimer.getTime() / (float)LEVEL_BG_FADE_TIME;
+//		switch ( scoreMode )
+//		{
+//		case ScoreNormal::smNone:
+//			bgcol.r = 0 + fadecol.r * timerFactor;
+//			bgcol.g = 0 + fadecol.g * timerFactor;
+//			bgcol.b = 255 + ( fadecol.b - 255 ) * timerFactor;
+//			break;
+//		case ScoreNormal::smPeace:
+//			bgcol.r = 0 + fadecol.r * timerFactor;
+//			bgcol.g = 255 + ( fadecol.g - 255 ) * timerFactor;
+//			bgcol.b = 0 + fadecol.b * timerFactor;
+//			break;
+//		case ScoreNormal::smAggression:
+//			bgcol.r = 255 + ( fadecol.r - 255 ) * timerFactor;
+//			bgcol.g = 0 + fadecol.g * timerFactor;
+//			bgcol.b = 0 + fadecol.b * timerFactor;
+//			break;
+//		}
+//		if ( bgFadeTimer.isStopped() )
+//			bgFadeTimer.stop();
+//	}
+	if ( errorString[0] != 0 )
+		return;
 
 	spClearTarget( spGetRGB( bgcol.r * bgcol.intensity,
 							 bgcol.g * bgcol.intensity,
 							 bgcol.b * bgcol.intensity ) );
+
+	for ( std::vector< std::pair< ShapeCircle, colour> >::const_iterator I = bgEffects.begin(); I != bgEffects.end(); ++I )
+	{
+		spEllipse( I->first.pos.x, I->first.pos.y, -1, I->first.radius, I->first.radius,
+					spGetRGB( I->second.r * I->second.intensity,
+							I->second.g * I->second.intensity,
+							I->second.b * I->second.intensity ) );
+	}
 
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 		( *I )->render( target );

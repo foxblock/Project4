@@ -16,6 +16,8 @@ public:
 	void render( SDL_Surface *target );
 
 	ShapeCircle shape;
+
+	int chargeState; // -1 - out of screen, 0 - idle/chasing, 1 - waiting for charge, 2 - charging
 protected:
 
 private:
@@ -25,7 +27,6 @@ private:
 	static SDL_Surface *idle;
 	static SDL_Surface *attack;
 	Timer chargeTimer;
-	int chargeState; // 0 - idle/chasing, 1 - waiting for charge, 2 - charging
 };
 
 

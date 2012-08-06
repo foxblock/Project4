@@ -15,7 +15,7 @@
 namespace Utility
 {
 template <class T>
-inline std::string numToStr( T number )
+inline std::string numToStr( const T &number )
 {
 	std::stringstream str;
 	str << number;
@@ -23,7 +23,7 @@ inline std::string numToStr( T number )
 };
 
 template <class T>
-inline T strToNum( std::string str )
+inline T strToNum( const std::string &str )
 {
 	std::stringstream ss;
 	T out;
@@ -33,26 +33,26 @@ inline T strToNum( std::string str )
 };
 
 template <class T>
-inline std::string vecToStr( Vector2d<T> vec )
+inline std::string vecToStr( const Vector2d<T> &vec )
 {
 	std::string result = numToStr( vec.x ) + VEC_DELIMIT_CHAR + numToStr( vec.y );
 	return result;
 }
 
 template <class T>
-inline int sign( T number )
+inline int sign( const T &number )
 {
 	return ( ( number > 0 ) - ( 0 > number ) );
 }
 
 template <class T>
-inline T sqr( T number )
+inline T sqr( const T &number )
 {
 	return number * number;
 }
 
 template <class T>
-inline T clamp( T number, T minV, T maxV )
+inline T clamp( const T &number, const T &minV, const T &maxV )
 {
 	return std::min( std::max( minV, number ), maxV );
 }
@@ -60,10 +60,10 @@ inline T clamp( T number, T minV, T maxV )
 void tokenize( const std::string &str, std::vector<std::string> &tokens,
 				const std::string &delimiters, const int &maxParts = -1 );
 
-static uint32_t w;
-static uint32_t x;
-static uint32_t y;
-static uint32_t z;
+extern uint32_t w;
+extern uint32_t x;
+extern uint32_t y;
+extern uint32_t z;
 
 void seedRand( const uint32_t &a = 88675123, const uint32_t &b = 123456789,
 				const uint32_t &c = 362436069, const uint32_t &d = 521288629);
