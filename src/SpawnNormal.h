@@ -27,6 +27,7 @@ protected:
 
 	Timer spawnTimer;
 	std::vector< SpawnRegion* > regions;
+	int maxUnits;
 
 private:
 

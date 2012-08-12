@@ -84,6 +84,16 @@ inline int64_t randomRange( int64_t lower = 0, int64_t upper = MY_RAND_MAX )
 		return (int64_t)Utility::rand() % ( upper - lower + 1 ) + lower;
 }
 
+inline bool floatComp( const float &a, const float &b )
+{
+	return ( abs( a - b ) < FLOAT_ACCURACY );
+}
+
+inline bool floatComp( const Vector2d<float> &a, const Vector2d<float> &b )
+{
+	return ( floatComp(a.x, b.x) && floatComp(a.y, b.y) );
+}
+
 };
 
 #endif // _UTILITY_FUNCTIONS_H

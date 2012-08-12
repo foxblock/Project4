@@ -34,6 +34,7 @@
 
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
+	maxUnits = SPAWN_MAX_START;
 	Vector2d<float> tempVec;
 	std::map< int, int > tempMat;
 	SpawnRegion *tempRegion;
@@ -99,7 +100,7 @@ int SpawnNormal::update( Uint32 delta )
 	SpawnBase::update( delta );
 
 	if ( !spawnTimer.isStopped() ||
-			parent->countUnits() >= SPAWN_MAX_START )
+			parent->countUnits() >= maxUnits )
 		return 0;
 
 	UnitBase *newUnit = NULL;
@@ -125,7 +126,7 @@ int SpawnNormal::update( Uint32 delta )
 	return 0;
 }
 
-UnitBase * SpawnNormal::spawnUnit(const int& type) const
+UnitBase * SpawnNormal::spawnUnit( const int& type ) const
 {
 	UnitBase *unit = NULL;
 	switch ( type )
