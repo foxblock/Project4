@@ -4,6 +4,7 @@
 #include "UnitBase.h"
 #include "ShapeCircle.h"
 #include "Timer.h"
+#include "Vector2d.h"
 
 class UnitSpike : public UnitBase
 {
@@ -18,6 +19,7 @@ public:
 	ShapeCircle shape;
 
 	int chargeState; // -1 - out of screen, 0 - idle/chasing, 1 - waiting for charge, 2 - charging
+	Vector2d<float> target; // movement target - spike will move to this without thought
 protected:
 
 private:

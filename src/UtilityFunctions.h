@@ -69,19 +69,20 @@ void seedRand( const uint32_t &a = 88675123, const uint32_t &b = 123456789,
 
 uint32_t rand();
 
-inline int64_t randomRange( int64_t lower = 0, int64_t upper = MY_RAND_MAX )
+// TODO: Fix negative range
+inline Sint64 randomRange( Sint64 lower = 0, Sint64 upper = MY_RAND_MAX )
 {
 	if ( upper < lower )
 	{
-		int64_t temp = lower;
+		Sint64 temp = lower;
 		lower = upper;
 		upper = temp;
 	}
 
 	if ( lower < 0 && upper < 0 )
-		return -( (int64_t)Utility::rand() % ( -lower + upper + 1 ) - upper );
+		return -( (Sint64)Utility::rand() % ( -lower + upper + 1 ) - upper );
 	else
-		return (int64_t)Utility::rand() % ( upper - lower + 1 ) + lower;
+		return (Sint64)Utility::rand() % ( upper - lower + 1 ) + lower;
 }
 
 inline bool floatComp( const float &a, const float &b )
