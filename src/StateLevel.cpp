@@ -32,7 +32,7 @@ StateLevel::StateLevel( const std::string &filename ) :
 	bgcol.r = 0;
 	bgcol.g = 0;
 	bgcol.b = 255;
-	bgcol.intensity = 0.5;
+	bgcol.intensity = 0.50;
 //	timers.push_back( &bgFadeTimer );
 	scoreMode = ScoreNormal::smNone;
 
@@ -152,7 +152,7 @@ int StateLevel::update( Uint32 delta )
 			tempCol.b = 0;
 			break;
 		}
-		tempCol.intensity = 0.5;
+		tempCol.intensity = bgcol.intensity;
 		bgEffects.push_back( std::make_pair(temp,tempCol) );
 	}
 	for ( std::vector< std::pair<ShapeCircle, colour> >::iterator I = bgEffects.begin(); I != bgEffects.end();  )
@@ -178,6 +178,16 @@ int StateLevel::update( Uint32 delta )
 	// Events (reads and removes events)
 	handleEvents( delta );
 
+	// Replay recording
+	if ( !run->playing )
+		run->update( player->toBeRemoved );
+
+	if ( player && player->toBeRemoved )
+	{
+		printf( "Score: %i\n", scoreKeeper.getScore() );
+		return stScore;
+	}
+
 	// Unit handling (adding, removing)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
 	{
@@ -188,16 +198,6 @@ int StateLevel::update( Uint32 delta )
 		}
 		else
 			++I;
-	}
-
-	// Replay recording
-	if ( !run->playing )
-		run->update( player->toBeRemoved );
-
-	if ( player && player->toBeRemoved )
-	{
-		printf( "Score: %i\n", scoreKeeper.getScore() );
-		return stScore;
 	}
 
 	return 0;

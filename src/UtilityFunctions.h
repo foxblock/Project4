@@ -17,7 +17,7 @@ namespace Utility
 template <class T>
 inline std::string numToStr( const T &number )
 {
-	std::stringstream str;
+	std::ostringstream str;
 	str << number;
 	return str.str();
 };
@@ -25,9 +25,8 @@ inline std::string numToStr( const T &number )
 template <class T>
 inline T strToNum( const std::string &str )
 {
-	std::stringstream ss;
+	std::istringstream ss (str);
 	T out;
-	ss << str;
 	ss >> out;
 	return out;
 };
@@ -35,7 +34,7 @@ inline T strToNum( const std::string &str )
 template <class T>
 inline std::string vecToStr( const Vector2d<T> &vec )
 {
-	std::string result = numToStr( vec.x ) + VEC_DELIMIT_CHAR + numToStr( vec.y );
+	std::string result = numToStr<T>( vec.x ) + VEC_DELIMIT_CHAR + numToStr<T>( vec.y );
 	return result;
 }
 

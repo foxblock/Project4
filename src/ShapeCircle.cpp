@@ -46,8 +46,8 @@ bool ShapeCircle::checkCollision( ShapeRay const *const other ) const
 
 bool ShapeCircle::checkCollision( ShapeCircle const *const other ) const
 {
-	if ( Utility::sqr( other->pos.x - pos.x ) + Utility::sqr( other->pos.y - pos.y ) <
-			Utility::sqr( radius + other->radius ) )
+	if ( Utility::sqr<float>( other->pos.x - pos.x ) + Utility::sqr<float>( other->pos.y - pos.y ) <
+			Utility::sqr<float>( radius + other->radius ) )
 		return true;
 	return false;
 }
