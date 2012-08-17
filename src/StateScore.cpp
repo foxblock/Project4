@@ -88,7 +88,7 @@ int StateScore::update( Uint32 delta )
 		if ( state == 0 && name[0] != 0 )
 		{
 			spResetButtonsState();
-			spStopKeyboardInput( );
+			spStopKeyboardInput();
 			state = 1;
 			caret = false;
 			file.addScore( name, score, run->info.timecode );
@@ -99,7 +99,6 @@ int StateScore::update( Uint32 delta )
 				run->saveToFile( FOLDER_REPLAY "/" + Utility::numToStr( run->info.timecode ) +
 									EXTENSION_REPLAY );
 			}
-
 		}
 		else
 		{

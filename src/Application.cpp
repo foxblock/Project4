@@ -63,6 +63,7 @@ Application::~Application()
 
 bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) )
 {
+	printf( "Starting application... Version: %s\n", VERSION_STRING );
 	if ( spLoop( spDraw, spCalc, 2, NULL, NULL ) != ERROR_CODE )
 		return true;
 	return false;
