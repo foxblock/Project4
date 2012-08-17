@@ -5,7 +5,7 @@
 #include "gameDefines.h"
 
 #define MENU_FONT_SIZE 48
-#define MENU_INPUT_LAG 150
+#define MENU_INPUT_LAG 250
 
 StateMenu::StateMenu() : StateBase()
 {
@@ -37,6 +37,7 @@ StateMenu::~StateMenu()
 	spFontDelete( fontDark );
 	spFontDelete( fontBright );
 	spResetAxisState();
+	spResetButtonsState();
 }
 
 

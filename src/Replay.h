@@ -6,7 +6,7 @@
 #include "sparrowCore.h"
 
 #define REPLAY_ENTRY_SIZE 2
-#define REPLAY_VERSION 6
+#define REPLAY_VERSION 7
 
 class Replay
 {
