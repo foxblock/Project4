@@ -12,7 +12,10 @@ StateMenu::StateMenu() : StateBase()
 	choice = 0;
 	fontDark = spFontLoad( FONT_GENERAL, MENU_FONT_SIZE );
 	if ( fontDark )
+	{
 		spFontAdd( fontDark, SP_FONT_GROUP_ASCII, spGetFastRGB( 0, 0, 0 ) );
+		spFontAdd( fontDark, SP_FONT_GROUP_GERMAN, spGetFastRGB( 0, 0, 0 ) );
+	}
 	fontBright = spFontLoad( FONT_GENERAL, MENU_FONT_SIZE );
 	if ( fontBright )
 		spFontAdd( fontBright, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 255, 255 ) );
@@ -74,6 +77,9 @@ int StateMenu::update(Uint32 delta)
 void StateMenu::render(SDL_Surface* target)
 {
 	spClearTarget( spGetRGB(128,0,0) );
+
+	spFontDraw( 20, 10, -1, "A game by", fontDark );
+	spFontDraw( 20, 10 + MENU_FONT_SIZE, -1, "Janek Schäfer", fontDark );
 
 	for ( int I = entries.size()-1; I >= 0; --I )
 	{

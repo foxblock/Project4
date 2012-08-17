@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "gameDefines.h"
-#include "UtilityFunctions.h"
 
 #include "UnitPlayer.h"
 
@@ -133,7 +132,7 @@ int StateLevel::update( Uint32 delta )
 		//fadecol = bgcol;
 		scoreMode = scoreKeeper.getMode();
 		ShapeCircle temp( player->shape.pos, player->shape.radius );
-		colour tempCol;
+		Utility::colour tempCol;
 		switch ( scoreMode )
 		{
 		case ScoreNormal::smNone:
@@ -155,7 +154,7 @@ int StateLevel::update( Uint32 delta )
 		tempCol.intensity = bgcol.intensity;
 		bgEffects.push_back( std::make_pair(temp,tempCol) );
 	}
-	for ( std::vector< std::pair<ShapeCircle, colour> >::iterator I = bgEffects.begin(); I != bgEffects.end();  )
+	for ( std::vector< std::pair<ShapeCircle, Utility::colour> >::iterator I = bgEffects.begin(); I != bgEffects.end(); )
 	{
 		Vector2d<float> temp(0,0);
 		if ( I->first.pos.x < APP_SCREEN_WIDTH / 2 )
@@ -194,7 +193,7 @@ int StateLevel::update( Uint32 delta )
 		if ( ( *I )->toBeRemoved )
 		{
 			delete *I;
-			units.erase( I );
+			I = units.erase( I );
 		}
 		else
 			++I;
@@ -236,7 +235,7 @@ void StateLevel::render( SDL_Surface *target )
 							 bgcol.g * bgcol.intensity,
 							 bgcol.b * bgcol.intensity ) );
 
-	for ( std::vector< std::pair< ShapeCircle, colour> >::const_iterator I = bgEffects.begin(); I != bgEffects.end(); ++I )
+	for ( std::vector< std::pair< ShapeCircle, Utility::colour> >::const_iterator I = bgEffects.begin(); I != bgEffects.end(); ++I )
 	{
 		spEllipse( I->first.pos.x, I->first.pos.y, -1, I->first.radius, I->first.radius,
 					spGetRGB( I->second.r * I->second.intensity,

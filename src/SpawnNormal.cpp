@@ -232,13 +232,19 @@ Vector2d<float> SpawnNormal::getLaserPosition() const
 Vector2d<float> SpawnNormal::getBombPosition() const
 {
 	Vector2d<float> result;
-	result.x = Utility::randomRange( APP_SCREEN_WIDTH * 0.25f, APP_SCREEN_WIDTH * 0.75f );
+	int count = SPAWN_POSITION_MAX_TRIES;
 	float temp = 0;
 	do
 	{
+		if ( count == SPAWN_POSITION_MAX_TRIES )
+		{
+			result.x = Utility::randomRange( APP_SCREEN_WIDTH * 0.25f, APP_SCREEN_WIDTH * 0.75f );
+			count = 0;
+		}
 		result.y = Utility::randomRange( APP_SCREEN_HEIGHT * 0.25f, APP_SCREEN_HEIGHT * 0.75f );
 		temp = Utility::sqr( result.x - *parent->player->x ) +
 				Utility::sqr( result.y - * parent->player->y );
+		++count;
 	}
 	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR );
 	return result;

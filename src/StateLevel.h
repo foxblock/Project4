@@ -8,6 +8,7 @@
 #include "SpawnNormal.h"
 #include "Replay.h"
 #include "ShapeCircle.h"
+#include "UtilityFunctions.h"
 #include <vector>
 #include <string>
 
@@ -46,14 +47,10 @@ protected:
 	std::vector<UnitBase *> unitQueue;
 	std::vector<EventBase *> eventQueue;
 
-	struct colour
-	{
-		float r,g,b,intensity;
-	};
-	colour bgcol;
-//	colour fadecol;
+	Utility::colour bgcol;
+//	Utility::colour fadecol;
 //	Timer bgFadeTimer;
-	std::vector< std::pair<ShapeCircle, colour> > bgEffects;
+	std::vector< std::pair<ShapeCircle, Utility::colour> > bgEffects;
 	ScoreNormal::ScoreMode scoreMode;
 
 #ifdef _DEBUG

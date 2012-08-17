@@ -26,13 +26,13 @@ void tokenize(const std::string& str, std::vector<std::string>& tokens,
 	}
 }
 
-uint32_t w = 88675123;
-uint32_t x = 123456789;
-uint32_t y = 362436069;
-uint32_t z = 521288629;
+Uint32 w = 88675123;
+Uint32 x = 123456789;
+Uint32 y = 362436069;
+Uint32 z = 521288629;
 
-void seedRand( const uint32_t &a, const uint32_t &b,
-				const uint32_t &c, const uint32_t &d )
+void seedRand( const Uint32 &a, const Uint32 &b,
+				const Uint32 &c, const Uint32 &d )
 {
 	w = a;
 	x = b;
@@ -40,9 +40,9 @@ void seedRand( const uint32_t &a, const uint32_t &b,
 	z = d;
 }
 
-uint32_t rand()
+Uint32 rand()
 {
-	uint32_t t = x ^ ( x << 11 );
+	Uint32 t = x ^ ( x << 11 );
 	x = y; y = z; z = w;
 	w ^= ( w >> 19 ) ^t ^ ( t >> 8 );
 
