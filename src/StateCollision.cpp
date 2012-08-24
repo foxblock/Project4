@@ -113,11 +113,11 @@ void StateCollision::handleInput( Uint32 delta )
 	{
 		player->vel.x = 0;
 	}
-	if ( spGetInput()->axis[1] < 0 )
+	if ( spGetInput()->axis[1] > 0 )
 	{
 		player->vel.y = PLAYER_VELOCITY;
 	}
-	else if ( spGetInput()->axis[1] > 0 )
+	else if ( spGetInput()->axis[1] < 0 )
 	{
 		player->vel.y = -PLAYER_VELOCITY;
 	}

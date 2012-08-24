@@ -33,7 +33,7 @@ UnitPlayer::~UnitPlayer()
 
 int UnitPlayer::update( Uint32 delta )
 {
-	Vector2d<float> dir(spGetInput()->axis[0],-spGetInput()->axis[1]);
+	Vector2d<float> dir(spGetInput()->axis[0],spGetInput()->axis[1]);
 	accel = dir.unit() * PLAYER_ACCEL;
 
 	if ( *x < 0 )

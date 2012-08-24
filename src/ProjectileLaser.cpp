@@ -1,5 +1,7 @@
 #include "ProjectileLaser.h"
 
+#define PROJECTILE_LASER_BLINK_TIME 75
+
 ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :
 	UnitBase( newParent, &shape )
 {
@@ -23,6 +25,11 @@ int ProjectileLaser::update( Uint32 delta )
 {
 	if ( life.isStopped() )
 		toBeRemoved = true;
+	if ( blink.isStopped() )
+	{
+		blinkStatus = !blinkStatus;
+		blink.start( PROJECTILE_LASER_BLINK_TIME );
+	}
 	return UnitBase::update( delta );
 }
 

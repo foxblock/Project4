@@ -45,9 +45,9 @@ int StateMenu::update(Uint32 delta)
 
 	if ( inputLag.isStopped() )
 	{
-		if ( spGetInput()->axis[1] < 0 )
+		if ( spGetInput()->axis[1] > 0 )
 			choice = std::min( --choice, entries.size()-1 );
-		else if ( spGetInput()->axis[1] > 0 )
+		else if ( spGetInput()->axis[1] < 0 )
 		{
 			++choice;
 			if ( choice > entries.size()-1 )
