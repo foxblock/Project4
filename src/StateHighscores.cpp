@@ -52,7 +52,7 @@ int StateHighscores::update(Uint32 delta)
 
 	if ( inputLag.isStopped() )
 	{
-		if ( spGetInput()->axis[1] < 0 && selOffset > 0 )
+		if ( spGetInput()->axis[1] > 0 && selOffset > 0 )
 		{
 			--selOffset;
 			--selectionIter;
@@ -62,7 +62,7 @@ int StateHighscores::update(Uint32 delta)
 				--offsetIter;
 			}
 		}
-		else if ( spGetInput()->axis[1] > 0 && selOffset < (int)file.scores.size()-1 )
+		else if ( spGetInput()->axis[1] < 0 && selOffset < (int)file.scores.size()-1 )
 		{
 			++selOffset;
 			++selectionIter;
