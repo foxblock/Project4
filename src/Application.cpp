@@ -64,6 +64,11 @@ Application::~Application()
 bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) )
 {
 	printf( "Starting application... Version: %s\n", VERSION_STRING );
+
+	Utility::seedRand( 987654321 );
+	printf("Random test: %i %i %i %i\n",Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100));
+	printf("Control group: %i %i %i %i\n",-3, -4, 37, -81);
+
 	if ( spLoop( spDraw, spCalc, 2, NULL, NULL ) != ERROR_CODE )
 		return true;
 	return false;
