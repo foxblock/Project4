@@ -10,7 +10,7 @@
 #define SCORE_FONT_SIZE 32
 #define SCORE_CARET_BLINK_TIME 600
 
-char StateScore::name[100] = "player";
+char StateScore::name[100] = "";
 
 StateScore::StateScore( StateLevel *level ) :
 	StateBase(),
@@ -50,8 +50,6 @@ StateScore::StateScore( StateLevel *level ) :
 		level->run = NULL;
 	}
 
-	spGetInput()->button[SP_BUTTON_START] = 0;
-
 	caretTimer.start( SCORE_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );
 
@@ -62,6 +60,8 @@ StateScore::~StateScore()
 {
 	spDeleteSurface( killFrame );
 	spFontDelete( scoreText );
+	spResetAxisState();
+	spResetButtonsState();
 	delete run;
 }
 
@@ -78,12 +78,17 @@ int StateScore::update( Uint32 delta )
 		caretTimer.start( SCORE_CARET_BLINK_TIME );
 	}
 
-	if ( spGetInput()->button[SP_BUTTON_START] )
+	if ( spGetInput()->button[SP_BUTTON_START]
+#ifdef MOBILE_DEVICE
+		|| spGetInput()->button[SP_BUTTON_B]
+		|| spGetInput()->button[SP_BUTTON_Y]
+#endif
+		)
 	{
-		if ( state == 0 )
+		if ( state == 0 && name[0] != 0 )
 		{
 			spResetButtonsState();
-			spStopKeyboardInput( );
+			spStopKeyboardInput();
 			state = 1;
 			caret = false;
 			file.addScore( name, score, run->info.timecode );
@@ -94,7 +99,6 @@ int StateScore::update( Uint32 delta )
 				run->saveToFile( FOLDER_REPLAY "/" + Utility::numToStr( run->info.timecode ) +
 									EXTENSION_REPLAY );
 			}
-
 		}
 		else
 		{

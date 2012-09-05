@@ -41,6 +41,7 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	friction = SPIKE_IDLE_FRICTION;
 	type = utSpike;
 	timers.push_back( &chargeTimer );
+	target = Vector2d<float>(-1,-1);
 }
 
 UnitSpike::~UnitSpike()
@@ -53,6 +54,26 @@ UnitSpike::~UnitSpike()
 
 void UnitSpike::ai( Uint32 delta, UnitBase *player )
 {
+	if ( !shape.pos.isInRect( Vector2d<int>(0,0), Vector2d<int>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) ) &&
+		target.x < 0 && target.y < 0 )
+	{
+		target = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
+		float dist = std::sqrt( Utility::sqr( shape.pos.x - Utility::clamp( (int)shape.pos.x, 0, APP_SCREEN_WIDTH ) ) +
+								Utility::sqr( shape.pos.y - Utility::clamp( (int)shape.pos.y, 0, APP_SCREEN_HEIGHT ) ) );
+		target = shape.pos + (target - shape.pos).unit() * ( dist + shape.radius );
+	}
+	if ( target.x > 0 && target.y > 0 )
+	{
+		maxVel = SPIKE_IDLE_MAX_VEL;
+		maxAccel = SPIKE_IDLE_MAX_ACCEL;
+		friction = SPIKE_IDLE_FRICTION;
+		accel = (target - shape.pos).unit() * SPIKE_IDLE_MAX_ACCEL * delta;
+		if ( Utility::floatComp( target, shape.pos ) )
+			target = Vector2d<float>(-1,-1);
+		else
+			return;
+	}
+
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
 	// waiting for charge -> charging

@@ -8,6 +8,7 @@
 #include "SpawnNormal.h"
 #include "Replay.h"
 #include "ShapeCircle.h"
+#include "UtilityFunctions.h"
 #include <vector>
 #include <string>
 

@@ -28,9 +28,13 @@
 #define SPAWN_SIDE_OFFSET_V 15.0f
 
 #define SPAWN_TIME_START 1000
-#define SPAWN_MAX_START 10
+#define SPAWN_MAX_START 20
+#define SPAWN_POINTS_PER_UNIT 1000
 
 #define SPAWN_POSITION_MAX_TRIES 100
+
+#define SPAWN_SPIKE_OUTSIDE_CHANCE 25
+#define SPAWN_SPIKE_OUTSIDE_RADIUS 50
 
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
@@ -99,6 +103,8 @@ int SpawnNormal::update( Uint32 delta )
 {
 	SpawnBase::update( delta );
 
+	maxUnits = SPAWN_MAX_START + parent->scoreKeeper.getScore() / SPAWN_POINTS_PER_UNIT;
+
 	if ( !spawnTimer.isStopped() ||
 			parent->countUnits() >= maxUnits )
 		return 0;
@@ -160,21 +166,49 @@ void SpawnNormal::render( SDL_Surface *target )
 Vector2d<float> SpawnNormal::getSpikePosition() const
 {
 	Vector2d<float> result;
-	int count = 0;
-	result.x = Utility::randomRange( -APP_SCREEN_WIDTH * 0.4f, APP_SCREEN_WIDTH * 0.4f );
-	if ( result.x < 0 )
-		result.x += APP_SCREEN_WIDTH;
-	float temp = 0;
-	do
+	int method = Utility::randomRange( 1, 100 );
+	if ( method < SPAWN_SPIKE_OUTSIDE_CHANCE )
 	{
-		result.y = Utility::randomRange(-APP_SCREEN_HEIGHT * 0.4f, APP_SCREEN_HEIGHT * 0.4f);
-		if ( result.y < 0 )
-			result.y += APP_SCREEN_HEIGHT;
-		temp = Utility::sqr( result.x - *parent->player->x ) +
-				Utility::sqr( result.y - * parent->player->y );
-		++count;
+		int temp = Utility::randomRange( 1, APP_SCREEN_HEIGHT * 2 + APP_SCREEN_WIDTH * 2 );
+		if ( temp > APP_SCREEN_WIDTH * 2 + APP_SCREEN_HEIGHT )
+		{
+			result.x = 0 - SPAWN_SPIKE_OUTSIDE_RADIUS;
+			result.y = temp % ( APP_SCREEN_WIDTH * 2 + APP_SCREEN_HEIGHT );
+		}
+		else if ( temp > APP_SCREEN_WIDTH + APP_SCREEN_HEIGHT )
+		{
+			result.x = temp % ( APP_SCREEN_WIDTH + APP_SCREEN_HEIGHT );
+			result.y = APP_SCREEN_HEIGHT + SPAWN_SPIKE_OUTSIDE_RADIUS;
+		}
+		else if ( temp > APP_SCREEN_WIDTH )
+		{
+			result.x = APP_SCREEN_WIDTH + SPAWN_SPIKE_OUTSIDE_RADIUS;
+			result.y = temp % APP_SCREEN_WIDTH;
+		}
+		else
+		{
+			result.x = temp;
+			result.y = 0 - SPAWN_SPIKE_OUTSIDE_RADIUS;
+		}
 	}
-	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR && count < SPAWN_POSITION_MAX_TRIES );
+	else
+	{
+		int count = 0;
+		result.x = Utility::randomRange( -APP_SCREEN_WIDTH * 0.4f, APP_SCREEN_WIDTH * 0.4f );
+		if ( result.x < 0 )
+			result.x += APP_SCREEN_WIDTH;
+		float temp = 0;
+		do
+		{
+			result.y = Utility::randomRange(-APP_SCREEN_HEIGHT * 0.4f, APP_SCREEN_HEIGHT * 0.4f);
+			if ( result.y < 0 )
+				result.y += APP_SCREEN_HEIGHT;
+			temp = Utility::sqr( result.x - *parent->player->x ) +
+					Utility::sqr( result.y - * parent->player->y );
+			++count;
+		}
+		while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR && count < SPAWN_POSITION_MAX_TRIES );
+	}
 	return result;
 }
 
@@ -198,13 +232,19 @@ Vector2d<float> SpawnNormal::getLaserPosition() const
 Vector2d<float> SpawnNormal::getBombPosition() const
 {
 	Vector2d<float> result;
-	result.x = Utility::randomRange( APP_SCREEN_WIDTH * 0.25f, APP_SCREEN_WIDTH * 0.75f );
+	int count = SPAWN_POSITION_MAX_TRIES;
 	float temp = 0;
 	do
 	{
+		if ( count == SPAWN_POSITION_MAX_TRIES )
+		{
+			result.x = Utility::randomRange( APP_SCREEN_WIDTH * 0.25f, APP_SCREEN_WIDTH * 0.75f );
+			count = 0;
+		}
 		result.y = Utility::randomRange( APP_SCREEN_HEIGHT * 0.25f, APP_SCREEN_HEIGHT * 0.75f );
 		temp = Utility::sqr( result.x - *parent->player->x ) +
 				Utility::sqr( result.y - * parent->player->y );
+		++count;
 	}
 	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR );
 	return result;

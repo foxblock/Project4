@@ -7,13 +7,16 @@
 #include "Vector2d.h"
 
 #define FLOAT_ACCURACY 1e-10
-#define MY_RAND_MAX 4294967295
+#define MY_RAND_MAX 2147483647
 #define VEC_DELIMIT_CHAR ((std::string)",")
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 namespace Utility
 {
+
+// -------- FUNCTIONS ----------------------------------------------------------
+
 template <class T>
 inline std::string numToStr( const T &number )
 {
@@ -59,29 +62,29 @@ inline T clamp( const T &number, const T &minV, const T &maxV )
 void tokenize( const std::string &str, std::vector<std::string> &tokens,
 				const std::string &delimiters, const int &maxParts = -1 );
 
-extern uint32_t w;
-extern uint32_t x;
-extern uint32_t y;
-extern uint32_t z;
+extern Uint32 w;
+extern Uint32 x;
+extern Uint32 y;
+extern Uint32 z;
 
-void seedRand( const uint32_t &a = 88675123, const uint32_t &b = 123456789,
-				const uint32_t &c = 362436069, const uint32_t &d = 521288629);
+void seedRand( const Uint32 &a = 88675123, const Uint32 &b = 123456789,
+				const Uint32 &c = 362436069, const Uint32 &d = 521288629);
 
-uint32_t rand();
+Uint32 rand();
 
-inline int64_t randomRange( int64_t lower = 0, int64_t upper = MY_RAND_MAX )
+inline Sint32 randomRange( Sint32 lower = 0, Sint32 upper = MY_RAND_MAX )
 {
 	if ( upper < lower )
 	{
-		int64_t temp = lower;
+		Sint32 temp = lower;
 		lower = upper;
 		upper = temp;
 	}
 
 	if ( lower < 0 && upper < 0 )
-		return -( (int64_t)Utility::rand() % ( -lower + upper + 1 ) - upper );
+		return -( Utility::rand() % ( -lower + upper + 1 ) - upper );
 	else
-		return (int64_t)Utility::rand() % ( upper - lower + 1 ) + lower;
+		return Utility::rand() % ( upper - lower + 1 ) + lower;
 }
 
 inline bool floatComp( const float &a, const float &b )
@@ -93,6 +96,13 @@ inline bool floatComp( const Vector2d<float> &a, const Vector2d<float> &b )
 {
 	return ( floatComp(a.x, b.x) && floatComp(a.y, b.y) );
 }
+
+// -------- STRUCTS ------------------------------------------------------------
+
+struct colour
+{
+	float r,g,b,intensity;
+};
 
 };
 

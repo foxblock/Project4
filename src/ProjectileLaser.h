@@ -18,6 +18,8 @@ public:
 	ShapeRay shape;
 	Timer life;
 protected:
+	Timer blink;
+	int blinkStatus;
 
 private:
 
