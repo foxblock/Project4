@@ -6,6 +6,7 @@
 #include "gameDefines.h"
 
 #define HIGHS_FONT_SIZE 36
+#define HIGHS_FONT_SIZE_SMALL 24
 #define HIGHS_MAX_INPUT_LAG 150
 #define HIGHS_MIN_INPUT_LAG 20
 #define HIGHS_STEP_INPUT_LAG 20
@@ -19,10 +20,13 @@ StateHighscores::StateHighscores() :
 {
 	fontW = spFontLoad( FONT_GENERAL, HIGHS_FONT_SIZE );
 	fontB = spFontLoad( FONT_GENERAL, HIGHS_FONT_SIZE );
+	fontHint = spFontLoad( FONT_GENERAL, HIGHS_FONT_SIZE_SMALL );
 	if ( fontW )
 		spFontAdd( fontW, SP_FONT_GROUP_ALPHABET SP_FONT_GROUP_GERMAN ".:!\"_" SP_FONT_GROUP_NUMBERS, -1 );
 	if ( fontB )
 		spFontAdd( fontB, SP_FONT_GROUP_ALPHABET SP_FONT_GROUP_GERMAN ".:!\"_" SP_FONT_GROUP_NUMBERS, 0 );
+	if ( fontHint )
+		spFontAdd( fontHint, SP_FONT_GROUP_ALPHABET SP_FONT_GROUP_GERMAN ".:!\"_" SP_FONT_GROUP_NUMBERS, 0 );
 
 	drawOffset = 0;
 	selOffset = 0;
@@ -112,7 +116,7 @@ void StateHighscores::render(SDL_Surface* target)
 
 	int posOffset = spFontWidth( Utility::numToStr( file.scores.size() ).c_str(), fontB );
 	int numEntries = std::min( HIGHS_ENTRIES_ON_SCREEN, (int)file.scores.size() );
-	int vertOffset = ( APP_SCREEN_HEIGHT - numEntries * HIGHS_FONT_SIZE ) / 2;
+	int vertOffset = ( APP_SCREEN_HEIGHT - numEntries * HIGHS_FONT_SIZE );
 
 	int I = drawOffset;
 	for ( HighscoreFile::scoreIter iter = offsetIter; I < drawOffset + numEntries && iter != file.scores.end(); ++iter )
@@ -134,6 +138,11 @@ void StateHighscores::render(SDL_Surface* target)
 	{
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2, -1,
 						"No highscores set yet, go play the game!", fontB );
+	}
+	else
+	{
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT - HIGHS_FONT_SIZE, -1,
+						"Press \""SP_BUTTON_B_NAME"\" to load the replay for a score. Press \""SP_BUTTON_START_NAME"\" to exit.", fontHint );
 	}
 }
 

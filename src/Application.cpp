@@ -80,7 +80,10 @@ int Application::update( Uint32 delta )
 		int result = 0;
 		for ( int I = 0; I < delta; ++I )
 		{
-			result = activeState->update( 1 );
+			if ( activeState->paused )
+				result = activeState->pauseUpdate( 1 );
+			else
+				result = activeState->update( 1 );
 			if ( result != 0 )
 				break;
 		}
@@ -149,7 +152,10 @@ void Application::render()
 	}
 	else if ( activeState )
 	{
-		activeState->render( screen );
+		if ( activeState->paused )
+			activeState->pauseRender( screen );
+		else
+			activeState->render( screen );
 	}
 
 	spFlip();

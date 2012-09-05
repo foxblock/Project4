@@ -2,7 +2,7 @@
 
 #include "gameDefines.h"
 
-#define ERROR_FONT_SIZE 36
+#define ERROR_FONT_SIZE 32
 
 StateError::StateError( const std::string &message, const StateType &returnState )
 {

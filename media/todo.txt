@@ -32,6 +32,7 @@ Legend:
   - create event system checking wave spawning criteria
   + create spawn class
   + create region class for single spawns
+  - power-ups
 ---
 * Scoring system
   + assign points to each unit

@@ -13,9 +13,10 @@
 #define CHARGE_TIME 500
 // Actual value: 300
 #define LASER_ATTACK_RADIUS_SQR 90000.0f
-#define LASER_IDLE_SPEED 0.000002f
-#define LASER_IDLE_MAX_SPEED 0.00002f
+#define LASER_IDLE_SPEED 2e-6
+#define LASER_IDLE_MAX_SPEED 2e-5
 #define LASER_RADIUS 32
+
 
 SDL_Surface* UnitLaser::idle = NULL;
 
@@ -137,7 +138,7 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 	else if ( !hasCharged )
 	{
 		angleVel += ( Utility::randomRange( -1, 1 ) ) * LASER_IDLE_SPEED * delta;
-		if ( angleVel > LASER_IDLE_MAX_SPEED )
+		if ( abs(angleVel) > LASER_IDLE_MAX_SPEED )
 			angleVel = LASER_IDLE_MAX_SPEED;
 	}
 }

@@ -22,7 +22,9 @@ public:
 	virtual ~StateLevel();
 
 	int update( Uint32 delta );
+	int pauseUpdate( Uint32 delta );
 	void render( SDL_Surface *target );
+	void pauseRender( SDL_Surface *target );
 
 	void addUnit( UnitBase *newUnit );
 	size_t countUnits() const { return units.size(); }
@@ -46,15 +48,11 @@ protected:
 	std::vector<UnitBase *> unitQueue;
 	std::vector<EventBase *> eventQueue;
 
-	struct colour
-	{
-		float r,g,b,intensity;
-	};
-	colour bgcol;
-//	colour fadecol;
-//	Timer bgFadeTimer;
-	std::vector< std::pair<ShapeCircle, colour> > bgEffects;
+	Utility::colour bgcol;
+	std::vector< std::pair<ShapeCircle, Utility::colour> > bgEffects;
 	ScoreNormal::ScoreMode scoreMode;
+	SDL_Surface *pauseScreen;
+	spFontPointer pauseText;
 
 #ifdef _DEBUG
 	spFontPointer debugText;

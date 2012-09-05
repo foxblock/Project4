@@ -10,6 +10,7 @@
 #include "UnitPlayer.h"
 
 #define LEVEL_BG_FADE_TIME 2500
+#define LEVEL_PAUSE_FONT_SIZE 32
 
 StateLevel::StateLevel( const std::string &filename ) :
 	StateBase(),
@@ -26,6 +27,9 @@ StateLevel::StateLevel( const std::string &filename ) :
 	if ( debugText )
 		spFontAdd( debugText, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
 #endif
+	pauseText = spFontLoad( FONT_GENERAL, LEVEL_PAUSE_FONT_SIZE );
+	if ( pauseText )
+		spFontAdd( pauseText, SP_FONT_GROUP_ASCII, -1 );
 
 	spGetInput()->button[SP_BUTTON_START] = 0;
 
@@ -33,8 +37,9 @@ StateLevel::StateLevel( const std::string &filename ) :
 	bgcol.g = 0;
 	bgcol.b = 255;
 	bgcol.intensity = 0.50;
-//	timers.push_back( &bgFadeTimer );
 	scoreMode = ScoreNormal::smNone;
+
+	pauseScreen = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 
 	run = new Replay();
 	if ( filename[0] != 0 )
@@ -65,6 +70,7 @@ StateLevel::~StateLevel()
 	delete run;
 	spResetButtonsState();
 	spResetAxisState();
+	spDeleteSurface( pauseScreen );
 #ifdef _DEBUG
 	spFontDelete( debugText );
 #endif
@@ -75,6 +81,22 @@ StateLevel::~StateLevel()
 
 int StateLevel::update( Uint32 delta )
 {
+	if ( spGetInput()->button[SP_BUTTON_START] )
+	{
+		SDL_Surface *temp = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
+		spSelectRenderTarget( temp );
+		render( temp );
+		SDL_SetAlpha( temp, SDL_SRCALPHA, 128 );
+		SDL_FillRect( pauseScreen, NULL, 0 );
+		SDL_BlitSurface( temp, NULL, pauseScreen, NULL );
+		spSelectRenderTarget( spGetWindowSurface() );
+		spDeleteSurface( temp );
+		paused = true;
+		spResetAxisState();
+		spResetButtonsState();
+		return 0;
+	}
+
 	if ( run->playing )
 	{
 		if ( !run->play() )
@@ -87,9 +109,6 @@ int StateLevel::update( Uint32 delta )
 	}
 
 	StateBase::update( delta );
-
-	if ( spGetInput()->button[SP_BUTTON_START] )
-		return stMenu;
 
 	delta = std::min( ( int )delta, MAX_DELTA );
 
@@ -203,32 +222,24 @@ int StateLevel::update( Uint32 delta )
 	return 0;
 }
 
+int StateLevel::pauseUpdate( Uint32 delta )
+{
+	if ( spGetInput()->button[SP_BUTTON_START] )
+	{
+		return stMenu;
+	}
+	if ( spGetInput()->button[SP_BUTTON_B] ||
+		spGetInput()->button[SP_BUTTON_Y] ||
+		spGetInput()->axis[0] != 0 ||
+		spGetInput()->axis[1] != 0 )
+	{
+		paused = false;
+	}
+	return 0;
+}
+
 void StateLevel::render( SDL_Surface *target )
 {
-//	if ( bgFadeTimer.wasStarted() )
-//	{
-//		float timerFactor = (float)bgFadeTimer.getTime() / (float)LEVEL_BG_FADE_TIME;
-//		switch ( scoreMode )
-//		{
-//		case ScoreNormal::smNone:
-//			bgcol.r = 0 + fadecol.r * timerFactor;
-//			bgcol.g = 0 + fadecol.g * timerFactor;
-//			bgcol.b = 255 + ( fadecol.b - 255 ) * timerFactor;
-//			break;
-//		case ScoreNormal::smPeace:
-//			bgcol.r = 0 + fadecol.r * timerFactor;
-//			bgcol.g = 255 + ( fadecol.g - 255 ) * timerFactor;
-//			bgcol.b = 0 + fadecol.b * timerFactor;
-//			break;
-//		case ScoreNormal::smAggression:
-//			bgcol.r = 255 + ( fadecol.r - 255 ) * timerFactor;
-//			bgcol.g = 0 + fadecol.g * timerFactor;
-//			bgcol.b = 0 + fadecol.b * timerFactor;
-//			break;
-//		}
-//		if ( bgFadeTimer.isStopped() )
-//			bgFadeTimer.stop();
-//	}
 	if ( errorString[0] != 0 )
 		return;
 
@@ -262,6 +273,14 @@ void StateLevel::render( SDL_Surface *target )
 		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
 	spawnHandler.render( target );
 #endif
+}
+
+void StateLevel::pauseRender( SDL_Surface *target )
+{
+	SDL_BlitSurface( pauseScreen, NULL, spGetWindowSurface(), NULL );
+	spFontDrawMiddle( APP_SCREEN_WIDTH / 2, 200, -1, "Game paused.", pauseText );
+	spFontDrawMiddle( APP_SCREEN_WIDTH / 2, 200 + LEVEL_PAUSE_FONT_SIZE, -1,
+					"Press any key to resume or \""SP_BUTTON_START_NAME"\" to exit.", pauseText );
 }
 
 void StateLevel::addUnit( UnitBase *newUnit )
