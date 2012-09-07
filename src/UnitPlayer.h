@@ -11,14 +11,13 @@ public:
 	virtual ~UnitPlayer();
 
 	int update( Uint32 delta );
+	void render( SDL_Surface *target );
 
 	ShapeCircle shape;
 protected:
 
 private:
-	static void generateIdleImage();
-
-	static SDL_Surface *idle;
+	Vector2d<float> lastVel;
 };
 
 

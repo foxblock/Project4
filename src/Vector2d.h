@@ -20,7 +20,16 @@ public:
 	T dot( const Vector2d<T> &v ) const {return ( x * v.x + y * v.y );}
 	T length() const {return sqrt( lengthSquared() );}
 	T lengthSquared() const {return ( x * x + y * y );}
-	float angle() const {return atan( y / x );}
+	float angle() const {
+		if ( x >= 0 && y >= 0 )
+			return atan( y / x );
+		else if ( x < 0 && y > 0 )
+			return M_PI_2 + atan( fabs( x ) / y );
+		else if ( x < 0 && y < 0 )
+			return M_PI + atan( y / x );
+		else
+			return M_PI + M_PI_2 + atan( x / fabs( y ) );
+	}
 
 	Vector2d<T> unit()
 	{

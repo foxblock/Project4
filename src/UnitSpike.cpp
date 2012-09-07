@@ -170,7 +170,7 @@ void UnitSpike::generateAttackImage()
 	SDL_FillRect( attack, NULL, SP_ALPHA_COLOR );
 	spSelectRenderTarget( attack );
 	spEllipse( SPIKE_ATTACK_RADIUS, SPIKE_ATTACK_RADIUS, -1, SPIKE_IDLE_RADIUS, SPIKE_IDLE_RADIUS, spGetFastRGB(255,0,0) );
-	float spikeRadSize = 2.0f * M_PI / SPIKE_SPIKE_COUNT;
+	const float spikeRadSize = 2.0f * M_PI / SPIKE_SPIKE_COUNT;
 	for ( int I = 0; I < SPIKE_SPIKE_COUNT; ++I )
 	{
 		spTriangle( SPIKE_ATTACK_RADIUS + SPIKE_ATTACK_RADIUS * sin( spikeRadSize * I ),

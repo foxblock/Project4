@@ -116,7 +116,7 @@ void StateHighscores::render(SDL_Surface* target)
 
 	int posOffset = spFontWidth( Utility::numToStr( file.scores.size() ).c_str(), fontB );
 	int numEntries = std::min( HIGHS_ENTRIES_ON_SCREEN, (int)file.scores.size() );
-	int vertOffset = ( APP_SCREEN_HEIGHT - numEntries * HIGHS_FONT_SIZE );
+	int vertOffset = ( APP_SCREEN_HEIGHT + 40 - numEntries * HIGHS_FONT_SIZE ) / 2;
 
 	int I = drawOffset;
 	for ( HighscoreFile::scoreIter iter = offsetIter; I < drawOffset + numEntries && iter != file.scores.end(); ++iter )
