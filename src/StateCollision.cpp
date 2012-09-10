@@ -73,7 +73,7 @@ int StateCollision::update( Uint32 delta )
 		debugString += "Projectile right\n";
 
 	float angle = (player->shape->pos - Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 )).angle();
-	debugString += "Angle" + Utility::numToStr( angle * 180 / M_PI ) + "\n";
+	debugString += "Angle: " + Utility::numToStr( angle * 180 / M_PI ) + "\n";
 
 	return 0;
 }
@@ -93,6 +93,8 @@ void StateCollision::render( SDL_Surface *target )
 			APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 1.2f, -1, -1 );
 	spLine( APP_SCREEN_WIDTH / 2 * 0.8f, APP_SCREEN_HEIGHT / 2, -1,
 			APP_SCREEN_WIDTH / 2 * 1.2f, APP_SCREEN_HEIGHT / 2, -1, -1 );
+	spLine( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2, -1,
+			*player->x, *player->y, -1, spGetRGB( 228, 228, 288 ) );
 }
 
 void StateCollision::handleInput( Uint32 delta )

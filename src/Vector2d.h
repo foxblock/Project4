@@ -20,6 +20,8 @@ public:
 	T dot( const Vector2d<T> &v ) const {return ( x * v.x + y * v.y );}
 	T length() const {return sqrt( lengthSquared() );}
 	T lengthSquared() const {return ( x * x + y * y );}
+	// Returns the angle between a line drawn in the direction of the vector and
+	// the coordinate-space (range: 0 to 2*M_PI)
 	float angle() const {
 		if ( x >= 0 && y >= 0 )
 			return atan( y / x );
@@ -49,6 +51,10 @@ public:
 	bool isInRect( const Vector2d<float> &topLeft, const Vector2d<float> &bottomRight ) const
 	{
 		return ( x >= topLeft.x && y >= topLeft.y && x <= bottomRight.x && y <= bottomRight.y );
+	}
+	bool isInRect( const float &left, const float &top, const float &right, const float &bottom ) const
+	{
+		return ( x >= left && y >= top && x <= right && y <= bottom );
 	}
 
 	/// Operators

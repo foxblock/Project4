@@ -86,6 +86,7 @@
 					<Add option="-lz" />
 					<Add option="-lts" />
 					<Add option="-lsparrow3d" />
+					<Add option="-lmad" />
 					<Add directory="$(#pandora_sdk.lib)" />
 					<Add directory="..\sparrow3d\bin\Pandora" />
 				</Linker>
@@ -121,6 +122,7 @@
 					<Add option="-lpng" />
 					<Add option="-lz" />
 					<Add option="-lts" />
+					<Add option="-lmad" />
 					<Add directory="$(#pandora_sdk.lib)" />
 					<Add directory="..\sparrow3d\bin\Pandora" />
 				</Linker>
@@ -135,6 +137,7 @@
 			<Add option="-lSDL" />
 			<Add option="-lSDL_image" />
 			<Add option="-lSDL_ttf" />
+			<Add option="-lSDL_mixer" />
 		</Linker>
 		<Unit filename="..\sparrow3d\sparrow3d.h">
 			<Option target="W32 Debug" />
@@ -269,6 +272,8 @@
 		<Unit filename="src\SpawnBase.h" />
 		<Unit filename="src\SpawnNormal.cpp" />
 		<Unit filename="src\SpawnNormal.h" />
+		<Unit filename="src\SpawnWaves.cpp" />
+		<Unit filename="src\SpawnWaves.h" />
 		<Unit filename="src\StateBase.cpp" />
 		<Unit filename="src\StateBase.h" />
 		<Unit filename="src\StateCollision.cpp" />

@@ -116,6 +116,8 @@ int SpawnNormal::update( Uint32 delta )
 			I != regions.end() && unitType == UnitBase::utNone; ++I )
 	{
 		unitType = (*I)->checkSpawn( parent->player );
+		if ( unitType != UnitBase::utNone )
+			break;
 	}
 
 	newUnit = spawnUnit( unitType );
