@@ -36,6 +36,8 @@
 #define SPAWN_SPIKE_OUTSIDE_CHANCE 25
 #define SPAWN_SPIKE_OUTSIDE_RADIUS 50
 
+#define SPAWN_WAVE_MAX_PROBABILITY 2500
+
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
 	maxUnits = SPAWN_MAX_START;
@@ -87,12 +89,18 @@ SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT / 2.0f ), Vector2d<float>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) );
 	regions.push_back( tempRegion );
 
+	// Waves
+	waves.push_back( new WaveBomb() );
+	waves.push_back( new WaveSpikeStar() );
+
 	timers.push_back( &spawnTimer );
 }
 
 SpawnNormal::~SpawnNormal()
 {
 	for ( std::vector< SpawnRegion * >::iterator I = regions.begin(); I != regions.end(); ++I )
+		delete (*I);
+	for ( std::vector< WaveBase * >::iterator I = waves.begin(); I != waves.end(); ++I )
 		delete (*I);
 }
 
@@ -105,6 +113,16 @@ int SpawnNormal::update( Uint32 delta )
 
 	maxUnits = SPAWN_MAX_START + parent->scoreKeeper.getScore() / SPAWN_POINTS_PER_UNIT;
 
+	for ( std::vector< WaveBase* >::iterator I = waves.begin(); I != waves.end(); ++I )
+	{
+		if ( (*I)->checkConditions( parent, this, delta ) > SPAWN_WAVE_MAX_PROBABILITY )
+		{
+			(*I)->spawn( parent, this );
+			spawnTimer.start( SPAWN_TIME_START );
+			return 0;
+		}
+	}
+
 	if ( !spawnTimer.isStopped() ||
 			parent->countUnits() >= maxUnits )
 		return 0;
@@ -116,8 +134,6 @@ int SpawnNormal::update( Uint32 delta )
 			I != regions.end() && unitType == UnitBase::utNone; ++I )
 	{
 		unitType = (*I)->checkSpawn( parent->player );
-		if ( unitType != UnitBase::utNone )
-			break;
 	}
 
 	newUnit = spawnUnit( unitType );

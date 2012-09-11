@@ -37,6 +37,7 @@ void WaveBomb::spawn( StateLevel *level, SpawnBase *spawn )
 	{
 		level->addUnit( spawn->spawnUnit( UnitBase::utBomb ) );
 	}
+	probability = 0;
 }
 
 // ----- WaveSpikeStar ---------------------------------------------------------
@@ -55,7 +56,7 @@ int WaveSpikeStar::checkConditions( StateLevel const *const level, SpawnBase con
 	else
 		probability = 0;
 
-	return 0;
+	return probability;
 }
 
 void WaveSpikeStar::spawn( StateLevel *level, SpawnBase *spawn )
@@ -74,4 +75,5 @@ void WaveSpikeStar::spawn( StateLevel *level, SpawnBase *spawn )
 
 		angle += 2 * M_PI / WAVE_SPIKESTAR_AMOUNT;
 	}
+	probability = 0;
 }

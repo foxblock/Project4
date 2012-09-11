@@ -8,8 +8,6 @@
 
 #include "UnitPlayer.h"
 
-#include "SpawnWaves.h"
-
 #define LEVEL_BG_FADE_TIME 2500
 #define LEVEL_PAUSE_FONT_SIZE 32
 
@@ -21,7 +19,7 @@ StateLevel::StateLevel( const std::string &filename ) :
 	player = new PLAYER_CLASS( this );
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
 	*( player->y ) = APP_SCREEN_HEIGHT / 2;
-	player->props.addFlag( UnitBase::ufInvincible );
+	//player->props.addFlag( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
 	debugText = spFontLoad( FONT_GENERAL, 12 );
@@ -96,12 +94,6 @@ int StateLevel::update( Uint32 delta )
 		spResetAxisState();
 		spResetButtonsState();
 		return 0;
-	}
-	if ( spGetInput()->button[SP_BUTTON_B] )
-	{
-		spGetInput()->button[SP_BUTTON_B] = 0;
-		WaveBomb temp;
-		temp.spawn( this, &spawnHandler );
 	}
 
 	if ( run->playing )

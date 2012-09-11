@@ -4,6 +4,7 @@
 #include "UnitBase.h"
 #include "SpawnBase.h"
 #include "ShapeBase.h"
+#include "SpawnWaves.h"
 #include <vector>
 #include <map>
 
@@ -27,6 +28,7 @@ protected:
 
 	Timer spawnTimer;
 	std::vector< SpawnRegion* > regions;
+	std::vector< WaveBase* > waves;
 	int maxUnits;
 
 private:
