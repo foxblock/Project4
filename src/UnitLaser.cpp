@@ -5,6 +5,7 @@
 
 #include "UtilityFunctions.h"
 #include "StateLevel.h"
+#include "gameDefines.h"
 
 #define EYE_DISTANCE 15.0f
 // Radians per millisecond
@@ -16,6 +17,10 @@
 #define LASER_IDLE_SPEED 2e-6
 #define LASER_IDLE_MAX_SPEED 2e-5
 #define LASER_RADIUS 32
+#define LASER_TIME_MOVEMENT 2500
+#define LASER_MAX_MOVEMENT_SPEED 0.04f
+#define LASER_MOVEMENT_ACCEL 0.003f
+#define LASER_MOVEMENT_FRICTION 0.001f
 
 
 SDL_Surface* UnitLaser::idle = NULL;
@@ -35,7 +40,12 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	hasCharged = false;
 	maxAccel = 0.01f;
 	type = utLaser;
+	life.start( LASER_TIME_MOVEMENT );
+	maxVel = LASER_MAX_MOVEMENT_SPEED;
+	maxAccel = LASER_MOVEMENT_ACCEL;
+	friction = LASER_MOVEMENT_FRICTION;
 	timers.push_back( &charge );
+	timers.push_back( &life );
 }
 
 UnitLaser::~UnitLaser()
@@ -51,6 +61,7 @@ int UnitLaser::update( Uint32 delta )
 {
 	angle += angleVel * delta;
 
+	// rotation
 	if ( angle < -M_PI )
 			angle += 2 * M_PI;
 		else if ( angle > M_PI )
@@ -76,6 +87,21 @@ int UnitLaser::update( Uint32 delta )
 			projectile->shape.target = shape.pos + rot * 1000;
 		}
 	}
+
+	// movement
+	if ( life.isStopped() && life.wasStarted() )
+	{
+		life.stop();
+		float angle = Utility::randomRange( 0, 359 ) * M_PI / 180;
+		accel.x = cos( angle ) * LASER_MOVEMENT_ACCEL;
+		accel.y = sin( angle ) * LASER_MOVEMENT_ACCEL;
+	}
+	if ( (*x < shape.radius && accel.x < 0) ||
+			(*x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )
+		accel.x *= -1;
+	if ( ( *y < shape.radius && accel.y < 0 ) ||
+			(*y > APP_SCREEN_HEIGHT - shape.radius && accel.y > 0 ) )
+		accel.y *= -1;
 	return UnitBase::update( delta );
 }
 

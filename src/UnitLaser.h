@@ -32,6 +32,7 @@ private:
 	float angleVel;
 	bool hasCharged;
 	Timer charge;
+	Timer life;
 };
 
 

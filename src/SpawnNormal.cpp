@@ -113,6 +113,9 @@ int SpawnNormal::update( Uint32 delta )
 
 	maxUnits = SPAWN_MAX_START + parent->scoreKeeper.getScore() / SPAWN_POINTS_PER_UNIT;
 
+	if ( parent->countUnits() >= maxUnits )
+		return 0;
+
 	for ( std::vector< WaveBase* >::iterator I = waves.begin(); I != waves.end(); ++I )
 	{
 		if ( (*I)->checkConditions( parent, this, delta ) > SPAWN_WAVE_MAX_PROBABILITY )
@@ -123,8 +126,7 @@ int SpawnNormal::update( Uint32 delta )
 		}
 	}
 
-	if ( !spawnTimer.isStopped() ||
-			parent->countUnits() >= maxUnits )
+	if ( !spawnTimer.isStopped() )
 		return 0;
 
 	UnitBase *newUnit = NULL;
