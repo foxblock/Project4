@@ -15,3 +15,5 @@ media/*.pnd
 media/*.tar.gz
 build/replays/*
 build/data/scores*
+copy_sparrow.bat
+build/libsparrow3d.so

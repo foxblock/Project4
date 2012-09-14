@@ -4,7 +4,7 @@ Janek Schäfer 2012
 
 Controls: [Pandora/PC]
 
-Press [Start/Enter] to navigate menus
+Press [Start/Enter] to navigate menus and pause game
 You can load replays on the highscore screen with [B/W] or [Y/D]
 Control with D-Pad
 

@@ -27,9 +27,9 @@ Legend:
   + Create abstract event system
 ---
 * Spawning system
-  - create a class/definition of a wave
-  - create different wave data
-  - create event system checking wave spawning criteria
+  + create a class/definition of a wave
+  + create different wave data
+  + create event system checking wave spawning criteria
   + create spawn class
   + create region class for single spawns
   - power-ups
@@ -58,7 +58,7 @@ Legend:
 ---
 + Menus, navigation
 - Help screen
-- Pause
++ Pause
 - Change to fit different resolutions
 - Draw menu elements (buttons, icons, etc.)
 ---
