@@ -86,6 +86,7 @@
 					<Add option="-lz" />
 					<Add option="-lts" />
 					<Add option="-lmad" />
+					<Add option="-lsparrow3d" />
 					<Add directory="$(#pandora_sdk.lib)" />
 					<Add directory="..\sparrow3d\bin\Pandora" />
 				</Linker>
@@ -147,7 +148,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowCore.h">
 			<Option target="W32 Debug" />
@@ -163,7 +163,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowFile.h">
 			<Option target="W32 Debug" />
@@ -174,7 +173,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowFont.h">
 			<Option target="W32 Debug" />
@@ -185,7 +183,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMath.h">
 			<Option target="W32 Debug" />
@@ -196,7 +193,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMesh.h">
 			<Option target="W32 Debug" />
@@ -207,7 +203,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowPrimitives.h">
 			<Option target="W32 Debug" />
@@ -218,13 +213,11 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowRenderer.c">
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowRenderer.h">
 			<Option target="W32 Debug" />
@@ -235,7 +228,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowSprite.h">
 			<Option target="W32 Debug" />
@@ -246,7 +238,6 @@
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowText.h">
 			<Option target="W32 Debug" />
