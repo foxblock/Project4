@@ -18,6 +18,7 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	maxVel = PLAYER_MAX_VELOCITY;
 	maxAccel = PLAYER_ACCEL;
 	type = utPlayer;
+	flags.add( ufIsPlayer );
 	lastVel = Vector2d<float>(0,-1);
 }
 
@@ -29,7 +30,7 @@ UnitPlayer::~UnitPlayer()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int UnitPlayer::update( Uint32 delta )
+int UnitPlayer::update( const Uint32 &delta )
 {
 	Vector2d<float> dir(spGetInput()->axis[0],spGetInput()->axis[1]);
 	accel = dir.unit() * PLAYER_ACCEL;
@@ -51,7 +52,7 @@ int UnitPlayer::update( Uint32 delta )
 	return 0;
 }
 
-void UnitPlayer::render(SDL_Surface *target)
+void UnitPlayer::render( SDL_Surface *const target )
 {
 	float angle = lastVel.angle();
 	spTriangle( *x + PLAYER_DRAW_RADIUS * cos( angle ),

@@ -27,7 +27,7 @@ public:
 	void render( SDL_Surface *target );
 	void pauseRender( SDL_Surface *target );
 
-	void addUnit( UnitBase *newUnit );
+	void addUnit( UnitBase *newUnit, const bool &generateEvent );
 	size_t countUnits() const { return units.size(); }
 	// This function takes ownership of the event passed!
 	void addEvent( EventBase *newEvent );

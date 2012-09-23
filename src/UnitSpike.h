@@ -12,9 +12,9 @@ public:
 	UnitSpike( StateLevel *newParent );
 	virtual ~UnitSpike();
 
-	void ai( Uint32 delta, UnitBase* player );
+	void ai( const Uint32 &delta, UnitBase *const player );
 
-	void render( SDL_Surface *target );
+	void render( SDL_Surface *const target );
 
 	ShapeCircle shape;
 

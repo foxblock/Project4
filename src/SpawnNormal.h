@@ -19,7 +19,7 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
-	UnitBase * spawnUnit( const int &type ) const;
+	UnitBase * getUnit( const int &type ) const;
 
 protected:
 	Vector2d<float> getSpikePosition( ) const;

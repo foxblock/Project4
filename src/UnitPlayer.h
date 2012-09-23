@@ -10,8 +10,8 @@ public:
 	UnitPlayer( StateLevel *newParent );
 	virtual ~UnitPlayer();
 
-	int update( Uint32 delta );
-	void render( SDL_Surface *target );
+	int update( const Uint32 &delta );
+	void render( SDL_Surface *const target );
 
 	ShapeCircle shape;
 protected:

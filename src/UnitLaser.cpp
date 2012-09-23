@@ -7,11 +7,11 @@
 #include "StateLevel.h"
 #include "gameDefines.h"
 
-#define EYE_DISTANCE 15.0f
+#define LASER_EYE_DISTANCE 15.0f
 // Radians per millisecond
-#define ROTATION_SPEED 0.01f
-#define ROTATION_THESHOLD 0.05f
-#define CHARGE_TIME 500
+#define LASER_ROTATION_SPEED 0.01f
+#define LASER_ROTATION_THESHOLD 0.05f
+#define LASER_CHARGE_TIME 500
 // Actual value: 300
 #define LASER_ATTACK_RADIUS_SQR 90000.0f
 #define LASER_IDLE_SPEED 2e-6
@@ -57,7 +57,7 @@ UnitLaser::~UnitLaser()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int UnitLaser::update( Uint32 delta )
+int UnitLaser::update( const Uint32 &delta )
 {
 	angle += angleVel * delta;
 
@@ -72,7 +72,7 @@ int UnitLaser::update( Uint32 delta )
 		if ( parent )
 		{
 			projectile = new ProjectileLaser( parent, 500 );
-			parent->addUnit( projectile );
+			parent->addUnit( projectile, false );
 		}
 		hasCharged = false;
 	}
@@ -83,7 +83,7 @@ int UnitLaser::update( Uint32 delta )
 		else
 		{
 			Vector2d<float> rot( cos( angle ), sin( angle ) );
-			projectile->shape.pos = shape.pos + rot * EYE_DISTANCE;
+			projectile->shape.pos = shape.pos + rot * LASER_EYE_DISTANCE;
 			projectile->shape.target = shape.pos + rot * 1000;
 		}
 	}
@@ -105,18 +105,18 @@ int UnitLaser::update( Uint32 delta )
 	return UnitBase::update( delta );
 }
 
-void UnitLaser::render( SDL_Surface *target )
+void UnitLaser::render( SDL_Surface *const target )
 {
 #ifdef _DEBUG
 	debugString += Utility::numToStr( angle ) + "\n" + Utility::numToStr( angleVel );
 #endif
 	UnitBase::render( target );
 
-	Vector2d<float> eyePos( *x + cos( angle ) * EYE_DISTANCE, *y + sin( angle ) * EYE_DISTANCE );
+	Vector2d<float> eyePos( *x + cos( angle ) * LASER_EYE_DISTANCE, *y + sin( angle ) * LASER_EYE_DISTANCE );
 
 	if ( hasCharged )
 	{
-		float factor = (float)charge.getTime() / (float)CHARGE_TIME;
+		float factor = (float)charge.getTime() / (float)LASER_CHARGE_TIME;
 		spEllipse( eyePos.x, eyePos.y, -1, 8, 8, spGetRGB( 255, 255 * factor, 255 * factor ) );
 		spEllipse( eyePos.x, eyePos.y, -1, 4, 4, spGetRGB( 255.0f * (1.0f - factor), 0, 255.0f * factor ) );
 	}
@@ -134,7 +134,7 @@ bool UnitLaser::checkCollision( UnitBase const *const other ) const
 	return false;
 }
 
-void UnitLaser::ai( Uint32 delta, UnitBase *player )
+void UnitLaser::ai( const Uint32 &delta, UnitBase *const player )
 {
 	float diffX = *player->x - *x;
 	float diffY = *y - *player->y;
@@ -152,13 +152,13 @@ void UnitLaser::ai( Uint32 delta, UnitBase *player )
 		else if ( newAngle > M_PI_2 && angle < -M_PI_2 )
 			newAngle -= 2 * M_PI;
 
-		if ( !projectile && fabs( newAngle - angle ) < ROTATION_THESHOLD )
+		if ( !projectile && fabs( newAngle - angle ) < LASER_ROTATION_THESHOLD )
 		{
-			charge.start( CHARGE_TIME );
+			charge.start( LASER_CHARGE_TIME );
 			hasCharged = true;
 			angleVel = 0;
 		}
-		angleVel = ( newAngle - angle ) / ( 2 * M_PI ) * ROTATION_SPEED * delta;
+		angleVel = ( newAngle - angle ) / ( 2 * M_PI ) * LASER_ROTATION_SPEED * delta;
 	}
 	// idle: random rotation
 	else if ( !hasCharged )

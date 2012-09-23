@@ -35,7 +35,7 @@ void WaveBomb::spawn( StateLevel *level, SpawnBase *spawn )
 {
 	for ( int I = 0; I < WAVE_BOMB_AMOUNT; ++I )
 	{
-		level->addUnit( spawn->spawnUnit( UnitBase::utBomb ) );
+		level->addUnit( spawn->getUnit( UnitBase::utBomb ), false );
 	}
 	probability = 0;
 }
@@ -71,7 +71,7 @@ void WaveSpikeStar::spawn( StateLevel *level, SpawnBase *spawn )
 		temp->shape.pos += Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
 		temp->vel = Vector2d<float>( cos( angle ), sin( angle ) ) * 0.1f;
 		temp->accel = Vector2d<float>( cos( angle ), sin( angle ) ) * 0.005f;
-		level->addUnit( temp );
+		level->addUnit( temp, false );
 
 		angle += 2 * M_PI / WAVE_SPIKESTAR_AMOUNT;
 	}

@@ -46,7 +46,7 @@ UnitBase::~UnitBase()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int UnitBase::update( Uint32 delta )
+int UnitBase::update( const Uint32 &delta )
 {
 	vel += accel * delta;
 	if ( vel.lengthSquared() > Utility::sqr( friction ) * delta * delta )
@@ -64,7 +64,7 @@ int UnitBase::update( Uint32 delta )
 	return 0;
 }
 
-void UnitBase::render( SDL_Surface *target )
+void UnitBase::render( SDL_Surface *const target )
 {
 	if ( activeSprite )
 		spBlitSurface( *x, *y, -1, activeSprite );
@@ -95,7 +95,7 @@ bool UnitBase::checkCollision( UnitBase const *const other ) const
 
 void UnitBase::collisionResponse( UnitBase *const other )
 {
-	if ( props.hasFlag( ufDeadlyOnTouch ) && !other->props.hasFlag( ufInvincible ) )
+	if ( flags.has( ufDeadlyOnTouch ) && !other->flags.has( ufInvincible ) )
 	{
 		other->toBeRemoved = true;
 		EventUnitDeath *event = new EventUnitDeath( other, this );
@@ -103,7 +103,7 @@ void UnitBase::collisionResponse( UnitBase *const other )
 	}
 }
 
-void UnitBase::ai( Uint32 delta, UnitBase *player )
+void UnitBase::ai( const Uint32 &delta, UnitBase *const player )
 {
 	//
 }

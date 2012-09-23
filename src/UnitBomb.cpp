@@ -66,7 +66,7 @@ UnitBomb::~UnitBomb()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int UnitBomb::update( Uint32 delta )
+int UnitBomb::update( const Uint32 &delta )
 {
 	if ( isFlashing )
 		activeSprite = flashing;
@@ -90,7 +90,7 @@ int UnitBomb::update( Uint32 delta )
 	return UnitBase::update( delta );
 }
 
-void UnitBomb::render( SDL_Surface *target )
+void UnitBomb::render( SDL_Surface *const target )
 {
 #ifdef _DEBUG
 	debugString += Utility::numToStr( pressure ) + "\n" + Utility::numToStr( status ) + "\n";
@@ -106,13 +106,13 @@ void UnitBomb::collisionResponse( UnitBase *const other )
 {
 	if ( other->type == utBomb )
 	{
-		if ( props.hasFlag( ufDeadlyOnTouch ) && !other->props.hasFlag( ufInvincible ) )
+		if ( flags.has( ufDeadlyOnTouch ) && !other->flags.has( ufInvincible ) )
 		{
 			((UnitBomb*)other)->bombTimer.start( BOMB_EXPLOSION_TIME );
 			other->accel = Vector2d<float>(0,0);
 			other->vel = Vector2d<float>(0,0);
-			other->props.addFlag( UnitBase::ufDeadlyOnTouch );
-			other->props.addFlag( UnitBase::ufInvincible );
+			other->flags.add( UnitBase::ufDeadlyOnTouch );
+			other->flags.add( UnitBase::ufInvincible );
 			EventBombCascade *event = new EventBombCascade( this, other );
 			parent->addEvent( event );
 		}
@@ -121,7 +121,7 @@ void UnitBomb::collisionResponse( UnitBase *const other )
 		UnitBase::collisionResponse( other );
 }
 
-void UnitBomb::ai( Uint32 delta, UnitBase *player )
+void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 {
 	if ( bombTimer.wasStarted() )
 		return;
@@ -195,8 +195,8 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 		bombTimer.start( BOMB_EXPLOSION_TIME );
 		accel = Vector2d<float>(0,0);
 		vel = Vector2d<float>(0,0);
-		props.addFlag( ufDeadlyOnTouch );
-		props.addFlag( ufInvincible );
+		flags.add( ufDeadlyOnTouch );
+		flags.add( ufInvincible );
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_3 )
 	{

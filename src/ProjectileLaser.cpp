@@ -7,8 +7,8 @@ ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :
 {
 	x = &(shape.target.x);
 	y = &(shape.target.y);
-	props.addFlag(ufDeadlyOnTouch);
-	props.addFlag(ufInvincible);
+	flags.add(ufDeadlyOnTouch);
+	flags.add(ufInvincible);
 	life.start( duration );
 	blink.start( PROJECTILE_LASER_BLINK_TIME );
 	blinkStatus = 0;
@@ -24,7 +24,7 @@ ProjectileLaser::~ProjectileLaser()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int ProjectileLaser::update( Uint32 delta )
+int ProjectileLaser::update( const Uint32 &delta )
 {
 	if ( life.isStopped() )
 		toBeRemoved = true;
@@ -36,7 +36,7 @@ int ProjectileLaser::update( Uint32 delta )
 	return UnitBase::update( delta );
 }
 
-void ProjectileLaser::render( SDL_Surface *target )
+void ProjectileLaser::render( SDL_Surface *const target )
 {
 	if ( blinkStatus )
 	{

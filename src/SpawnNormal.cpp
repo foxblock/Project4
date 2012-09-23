@@ -129,7 +129,6 @@ int SpawnNormal::update( Uint32 delta )
 	if ( !spawnTimer.isStopped() )
 		return 0;
 
-	UnitBase *newUnit = NULL;
 	int unitType = UnitBase::utNone;
 
 	for ( std::vector< SpawnRegion* >::iterator I = regions.begin();
@@ -138,21 +137,18 @@ int SpawnNormal::update( Uint32 delta )
 		unitType = (*I)->checkSpawn( parent->player );
 	}
 
-	newUnit = spawnUnit( unitType );
-
-	if ( !newUnit )
-		return 0;
-
-	parent->addUnit( newUnit );
-
-	spawnTimer.start( SPAWN_TIME_START );
-	EventUnitSpawn *event = new EventUnitSpawn( newUnit );
-	parent->addEvent( event );
+	// create the actual unit
+	UnitBase* newUnit = getUnit( unitType );
+	if ( newUnit )
+	{
+		spawnTimer.start( SPAWN_TIME_START );
+		parent->addUnit( newUnit, true );
+	}
 
 	return 0;
 }
 
-UnitBase * SpawnNormal::spawnUnit( const int& type ) const
+UnitBase * SpawnNormal::getUnit( const int& type ) const
 {
 	UnitBase *unit = NULL;
 	switch ( type )
@@ -172,6 +168,7 @@ UnitBase * SpawnNormal::spawnUnit( const int& type ) const
 	default:
 		break;
 	}
+
 	return unit;
 }
 

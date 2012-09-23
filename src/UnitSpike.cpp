@@ -52,7 +52,7 @@ UnitSpike::~UnitSpike()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-void UnitSpike::ai( Uint32 delta, UnitBase *player )
+void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 {
 	if ( !shape.pos.isInRect( Vector2d<int>(0,0), Vector2d<int>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) ) &&
 		target.x < 0 && target.y < 0 )
@@ -83,7 +83,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 		vel = diff.unit() * SPIKE_CHARGE_MAX_VEL;
 		friction = 0;
 		activeSprite = attack;
-		props.addFlag( ufDeadlyOnTouch );
+		flags.add( ufDeadlyOnTouch );
 		chargeState = 2;
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
@@ -100,7 +100,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 	{
 		chargeState = 0;
 		activeSprite = idle;
-		props.removeFlag( ufDeadlyOnTouch );
+		flags.remove( ufDeadlyOnTouch );
 		vel = Vector2d<float>( 0, 0 );
 		accel = Vector2d<float>( 0, 0 );
 	}
@@ -140,7 +140,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 	}
 }
 
-void UnitSpike::render( SDL_Surface *target )
+void UnitSpike::render( SDL_Surface *const target )
 {
 	UnitBase::render( target );
 	if ( chargeState == 1 )

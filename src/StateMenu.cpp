@@ -41,7 +41,7 @@ StateMenu::StateMenu() : StateBase()
 	lines.push_back( std::make_pair( "Use the arrow keys", "to navigate" ) );
 	lines.push_back( std::make_pair( "Hint: Bombs explode,", "Spikes and Lasers don't" ) );
 	lines.push_back( std::make_pair( "Hint: Not entering a name,", "will not add a highscore or replay" ) );
-	lines.push_back( std::make_pair( "Hint: Waves may exceed,", "the unit maximum" ) );
+	lines.push_back( std::make_pair( "Hint: Waves may exceed,", "the max unit limit" ) );
 
 	type = stMenu;
 }

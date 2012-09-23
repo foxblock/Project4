@@ -19,7 +19,8 @@ StateLevel::StateLevel( const std::string &filename ) :
 	player = new PLAYER_CLASS( this );
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
 	*( player->y ) = APP_SCREEN_HEIGHT / 2;
-	//player->props.addFlag( UnitBase::ufInvincible );
+	addUnit( player, false );
+	//player->flags.add( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
 	debugText = spFontLoad( FONT_GENERAL, 12 );
@@ -65,7 +66,6 @@ StateLevel::~StateLevel()
 	for ( std::vector<UnitBase *>::iterator I = unitQueue.begin(); I != unitQueue.end(); ++I )
 		delete *I;
 	unitQueue.clear();
-	delete player;
 	delete run;
 	spResetButtonsState();
 	spResetAxisState();
@@ -112,9 +112,6 @@ int StateLevel::update( Uint32 delta )
 	delta = std::min( ( int )delta, MAX_DELTA );
 
 	// Unit update, collision checking (creates events)
-	if ( player )
-		player->update( delta );
-
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 	{
 		if ( player )
@@ -127,11 +124,6 @@ int StateLevel::update( Uint32 delta )
 				( *I )->collisionResponse( *K );
 				( *K )->collisionResponse( *I );
 			}
-		}
-		if ( player && ( *I )->checkCollision( player ) )
-		{
-			( *I )->collisionResponse( player );
-			player->collisionResponse( *I );
 		}
 	}
 
@@ -282,8 +274,13 @@ void StateLevel::pauseRender( SDL_Surface *target )
 					"Press any key to resume or \""SP_BUTTON_START_NAME"\" to exit.", pauseText );
 }
 
-void StateLevel::addUnit( UnitBase *newUnit )
+void StateLevel::addUnit( UnitBase *newUnit, const bool &generateEvent )
 {
+	if ( generateEvent )
+	{
+		EventUnitSpawn *event = new EventUnitSpawn( newUnit );
+		addEvent( event );
+	}
 	unitQueue.push_back( newUnit );
 }
 
