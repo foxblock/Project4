@@ -34,8 +34,6 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	angle = 0;
 	angleVel = 0;
 	shape.radius = LASER_RADIUS;
-	x = &( shape.pos.x );
-	y = &( shape.pos.y );
 	projectile = NULL;
 	hasCharged = false;
 	maxAccel = 0.01f;

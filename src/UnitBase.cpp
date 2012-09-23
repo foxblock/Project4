@@ -20,8 +20,16 @@ UnitBase::UnitBase( StateLevel *newParent, ShapeBase *newShape )
 	parent = newParent;
 	shape = newShape;
 	toBeRemoved = false;
-	x = NULL;
-	y = NULL;
+	if ( shape )
+	{
+		x = &( shape->pos.x );
+		y = &( shape->pos.y );
+	}
+	else
+	{
+		x = NULL;
+		y = NULL;
+	}
 	activeSprite = NULL;
 	maxVel = UNIT_DEFAULT_MAX_VEL;
 	maxAccel = UNIT_DEFAULT_MAX_ACCEL;

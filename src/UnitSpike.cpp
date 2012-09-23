@@ -33,8 +33,6 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 		generateAttackImage();
 	activeSprite = idle;
 	shape.radius = SPIKE_IDLE_RADIUS;
-	x = &( shape.pos.x );
-	y = &( shape.pos.y );
 	chargeState = 0;
 	maxVel = SPIKE_IDLE_MAX_VEL;
 	maxAccel = SPIKE_IDLE_MAX_ACCEL;

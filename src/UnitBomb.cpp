@@ -43,8 +43,6 @@ UnitBomb::UnitBomb( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	activeSprite = idle;
 
 	shape.radius = BOMB_RADIUS;
-	x = &( shape.pos.x );
-	y = &( shape.pos.y );
 
 	pressure = 0;
 	status = 0;

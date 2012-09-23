@@ -103,6 +103,7 @@ int StateScore::update( Uint32 delta )
 		else
 		{
 			spResetButtonsState();
+			spStopKeyboardInput();
 			return stMenu;
 		}
 	}

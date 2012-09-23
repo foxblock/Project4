@@ -13,8 +13,6 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
 	activeSprite = NULL;
 	shape.radius = PLAYER_COLLISION_RADIUS;
-	x = &( shape.pos.x );
-	y = &( shape.pos.y );
 	maxVel = PLAYER_MAX_VELOCITY;
 	maxAccel = PLAYER_ACCEL;
 	type = utPlayer;
