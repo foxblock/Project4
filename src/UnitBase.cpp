@@ -105,6 +105,7 @@ void UnitBase::collisionResponse( UnitBase *const other )
 {
 	if ( flags.has( ufDeadlyOnTouch ) && !other->flags.has( ufInvincible ) )
 	{
+		LOG_MESSAGE("Unit beeing killed");
 		other->toBeRemoved = true;
 		EventUnitDeath *event = new EventUnitDeath( other, this );
 		parent->addEvent( event );

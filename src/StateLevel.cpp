@@ -112,6 +112,8 @@ int StateLevel::update( Uint32 delta )
 		return stMenu;
 	}
 
+	delta = std::min( ( int )delta, MAX_DELTA );
+
 	int deltaBkUp = delta;
 	if ( slowmo )
 	{
@@ -129,7 +131,7 @@ int StateLevel::update( Uint32 delta )
 
 	StateBase::update( delta );
 
-	delta = std::min( ( int )delta, MAX_DELTA );
+	LOG_MESSAGE("Unit update and checks");
 
 	// Unit update, collision checking (creates events)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
@@ -147,14 +149,20 @@ int StateLevel::update( Uint32 delta )
 		}
 	}
 
+	LOG_MESSAGE("Spawn checks");
+
 	// Spawning (creates events)
 	spawnHandler.update( delta );
 
 	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
 	unitQueue.clear();
 
+	LOG_MESSAGE("Score stuff");
+
 	// Score (reads events)
 	scoreKeeper.update( delta );
+
+	LOG_MESSAGE("Effects");
 
 	// Background effects
 	for ( std::vector< std::pair<ShapeCircle, Utility::colour> >::iterator I = bgEffects.begin(); I != bgEffects.end(); )
@@ -177,6 +185,8 @@ int StateLevel::update( Uint32 delta )
 		}
 	}
 
+	LOG_MESSAGE("Event checks");
+
 	// Events (reads and removes events)
 	handleEvents( delta );
 
@@ -189,6 +199,8 @@ int StateLevel::update( Uint32 delta )
 		printf( "Score: %i\n", scoreKeeper.getScore() );
 		return stScore;
 	}
+
+	LOG_MESSAGE("Final unit handling");
 
 	// Unit handling (adding, removing)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
@@ -268,6 +280,7 @@ void StateLevel::pauseRender( SDL_Surface *target )
 
 void StateLevel::addUnit( UnitBase *newUnit, const bool &generateEvent )
 {
+	printf("%s:%i\t\t%s, type: %i\n",__FILE__,__LINE__,"New unit is being added",newUnit->type);
 	if ( generateEvent )
 	{
 		EventUnitSpawn *event = new EventUnitSpawn( newUnit );
@@ -278,6 +291,7 @@ void StateLevel::addUnit( UnitBase *newUnit, const bool &generateEvent )
 
 void StateLevel::addEvent( EventBase *newEvent )
 {
+	printf("%s:%i\t\t%s, type: %i\n",__FILE__,__LINE__,"New event is being added",newEvent->type);
 	eventQueue.push_back( newEvent );
 }
 
@@ -285,7 +299,10 @@ void StateLevel::addEvent( EventBase *newEvent )
 
 void StateLevel::handleEvents( Uint32 delta )
 {
-	for ( std::vector<EventBase *>::iterator event = eventQueue.begin(); event != eventQueue.end(); ++event )
+	std::vector<EventBase *> eventList = eventQueue;
+	eventQueue.clear();
+
+	for ( std::vector<EventBase *>::iterator event = eventList.begin(); event != eventList.end(); ++event )
 	{
 		scoreKeeper.handleEvent( *event );
 		spawnHandler.handleEvent( *event );
@@ -326,7 +343,7 @@ void StateLevel::handleEvents( Uint32 delta )
 		}
 		delete *event;
 	}
-	eventQueue.clear();
+	eventList.clear();
 }
 
 ///--- PRIVATE -----------------------------------------------------------------

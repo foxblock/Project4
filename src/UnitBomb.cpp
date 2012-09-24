@@ -80,6 +80,7 @@ int UnitBomb::update( const Uint32 &delta )
 
 	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
 	{
+		LOG_MESSAGE("Removing exploded bomb");
 		toBeRemoved = true;
 		EventUnitDeath *event = new EventUnitDeath( this, NULL );
 		parent->addEvent( event );
@@ -195,6 +196,7 @@ void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 		vel = Vector2d<float>(0,0);
 		flags.add( ufDeadlyOnTouch );
 		flags.add( ufInvincible );
+		LOG_MESSAGE("Bomb exploding");
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_3 )
 	{

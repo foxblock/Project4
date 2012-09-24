@@ -71,6 +71,7 @@ int UnitLaser::update( const Uint32 &delta )
 		{
 			projectile = new ProjectileLaser( parent, 500 );
 			parent->addUnit( projectile, false );
+			LOG_MESSAGE("Laser shooting");
 		}
 		hasCharged = false;
 	}

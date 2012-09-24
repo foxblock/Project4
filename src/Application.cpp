@@ -11,6 +11,7 @@
 #include "StateReplayLoader.h"
 #include "StateHighscores.h"
 #include "StateError.h"
+#include "UtilityFunctions.h"
 
 #ifdef WIN32
 #include <direct.h>
@@ -76,6 +77,8 @@ bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 s
 
 int Application::update( Uint32 delta )
 {
+	LOG_MESSAGE("Running state update...");
+
 	if ( prevState ) // Transition
 	{
 		delete prevState;
@@ -150,7 +153,7 @@ int Application::update( Uint32 delta )
 
 void Application::render()
 {
-	//spResetZBuffer();
+	LOG_MESSAGE("Rendering...");
 
 	if ( prevState ) // Transition
 	{

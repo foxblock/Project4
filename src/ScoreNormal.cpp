@@ -106,6 +106,7 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 			peaceTimer.stop();
 			multiplier = 1;
 		}
+		LOG_MESSAGE("Adding points for unit killed");
 		std::map<int,int>::iterator p = pointMatrix.find( ((EventUnitDeath*)event)->unit->type );
 		if ( p != pointMatrix.end() )
 		{

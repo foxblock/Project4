@@ -12,6 +12,12 @@
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
+#ifdef _DEBUG
+#define LOG_MESSAGE(x) printf("%s:%i\t\t%s\n",__FILE__,__LINE__,(x))
+#else
+#define LOG_MESSAGE(x)
+#endif
+
 namespace Utility
 {
 
