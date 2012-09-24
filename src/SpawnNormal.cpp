@@ -301,8 +301,8 @@ Vector2d<float> SpawnNormal::getBombPosition() const
 Vector2d<float> SpawnNormal::getItemPosition() const
 {
 	Vector2d<float> result;
-	result.x = APP_SCREEN_WIDTH - *parent->player->x;
-	result.y = APP_SCREEN_HEIGHT - *parent->player->y;
+	result.x = Utility::clamp<float>( APP_SCREEN_WIDTH - *parent->player->x, APP_SCREEN_WIDTH * 0.05, APP_SCREEN_WIDTH * 0.95 );
+	result.y = Utility::clamp<float>( APP_SCREEN_HEIGHT - *parent->player->y, APP_SCREEN_HEIGHT * 0.05, APP_SCREEN_HEIGHT * 0.95 );
 	return result;
 }
 
