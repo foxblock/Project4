@@ -9,6 +9,7 @@
 #include "Replay.h"
 #include "ShapeCircle.h"
 #include "UtilityFunctions.h"
+#include "Timer.h"
 #include <vector>
 #include <string>
 
@@ -39,6 +40,8 @@ public:
 	Replay *run;
 	int timecode;
 
+	bool slowmo;
+
 #ifdef _DEBUG
 	std::string debugString;
 #endif
@@ -54,6 +57,9 @@ protected:
 	ScoreNormal::ScoreMode scoreMode;
 	SDL_Surface *pauseScreen;
 	spFontPointer pauseText;
+
+	int slowmoCounter;
+	Timer slowmoTimer;
 
 #ifdef _DEBUG
 	spFontPointer debugText;

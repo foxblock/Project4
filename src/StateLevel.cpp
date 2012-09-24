@@ -11,6 +11,8 @@
 #define LEVEL_BG_FADE_TIME 2500
 #define LEVEL_PAUSE_FONT_SIZE 32
 
+#define LEVEL_SLOWMO_LEVEL 1
+
 StateLevel::StateLevel( const std::string &filename ) :
 	StateBase(),
 	scoreKeeper( this ),
@@ -54,6 +56,10 @@ StateLevel::StateLevel( const std::string &filename ) :
 		run->info.timecode = timecode;
 	}
 	Utility::seedRand( timecode );
+
+	slowmo = false;
+	slowmoCounter = LEVEL_SLOWMO_LEVEL;
+	timers.push_back( &slowmoTimer );
 
 	type = stLevel;
 }
@@ -107,6 +113,21 @@ int StateLevel::update( Uint32 delta )
 		return stMenu;
 	}
 
+	int deltaBkUp = delta;
+	if ( slowmo )
+	{
+		if ( slowmoCounter > 0 || ( Utility::sign( LEVEL_SLOWMO_LEVEL ) < 0 && slowmoCounter == 0 ) )
+		{
+			delta = 0;
+		}
+		if ( slowmoCounter == 0 )
+			slowmoCounter = LEVEL_SLOWMO_LEVEL;
+		else
+			slowmoCounter -= Utility::sign( slowmoCounter );
+	}
+	if ( slowmoTimer.isStopped() && slowmo )
+		slowmo = false;
+
 	StateBase::update( delta );
 
 	delta = std::min( ( int )delta, MAX_DELTA );
@@ -116,7 +137,7 @@ int StateLevel::update( Uint32 delta )
 	{
 		if ( player )
 			( *I )->ai( delta, player );
-		( *I )->update( delta );
+		( *I )->update( (*I)->flags.has( UnitBase::ufIsPlayer ) ? deltaBkUp : delta );
 		for ( std::vector<UnitBase *>::iterator K = I + 1; K != units.end(); ++K )
 		{
 			if ( ( *I )->checkCollision( *K ) )
@@ -298,6 +319,10 @@ void StateLevel::handleEvents( Uint32 delta )
 		scoreKeeper.handleEvent( *event );
 		switch ( ( *event )->type )
 		{
+		case EventBase::etSlowMotion:
+			slowmo = true;
+			slowmoTimer.start( ((EventSlowMotion*)*event)->duration );
+			break;
 		default:
 			break;
 		}
