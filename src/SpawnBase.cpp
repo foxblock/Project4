@@ -20,6 +20,11 @@ int SpawnBase::update( Uint32 delta )
 	return 0;
 }
 
+void SpawnBase::handleEvent( EventBase const*const event )
+{
+	//
+}
+
 ///--- PROTECTED ---------------------------------------------------------------
 
 ///--- PRIVATE -----------------------------------------------------------------

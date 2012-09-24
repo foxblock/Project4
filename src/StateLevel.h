@@ -54,7 +54,6 @@ protected:
 
 	Utility::colour bgcol;
 	std::vector< std::pair<ShapeCircle, Utility::colour> > bgEffects;
-	ScoreNormal::ScoreMode scoreMode;
 	SDL_Surface *pauseScreen;
 	spFontPointer pauseText;
 

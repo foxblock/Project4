@@ -17,7 +17,8 @@ public:
 		etUnitDeath,
 		etUnitSpawn,
 		etBombCascade,
-		etSlowMotion
+		etSlowMotion,
+		etScoreMode
 	};
 	EventType type;
 };
@@ -67,6 +68,19 @@ public:
 	}
 
 	int duration;
+};
+
+class EventScoreModeChange : public EventBase
+{
+public:
+	EventScoreModeChange( const int &newMode, const int &prevMode )
+	{
+		type = etScoreMode;
+		this->newMode = newMode;
+		this->prevMode = prevMode;
+	}
+
+	int newMode,prevMode;
 };
 
 #endif // EVENT_BASE_H

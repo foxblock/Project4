@@ -22,7 +22,7 @@ StateLevel::StateLevel( const std::string &filename ) :
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
 	*( player->y ) = APP_SCREEN_HEIGHT / 2;
 	addUnit( player, false );
-	//player->flags.add( UnitBase::ufInvincible );
+//	player->flags.add( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
 	debugText = spFontLoad( FONT_GENERAL, 12 );
@@ -39,7 +39,6 @@ StateLevel::StateLevel( const std::string &filename ) :
 	bgcol.g = 0;
 	bgcol.b = 255;
 	bgcol.intensity = 0.50;
-	scoreMode = ScoreNormal::smNone;
 
 	pauseScreen = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 
@@ -158,34 +157,6 @@ int StateLevel::update( Uint32 delta )
 	scoreKeeper.update( delta );
 
 	// Background effects
-	if ( scoreKeeper.getMode() != scoreMode )
-	{
-		//bgFadeTimer.start( LEVEL_BG_FADE_TIME );
-		//fadecol = bgcol;
-		scoreMode = scoreKeeper.getMode();
-		ShapeCircle temp( player->shape.pos, player->shape.radius );
-		Utility::colour tempCol;
-		switch ( scoreMode )
-		{
-		case ScoreNormal::smNone:
-			tempCol.r = 0;
-			tempCol.g = 0;
-			tempCol.b = 255;
-			break;
-		case ScoreNormal::smPeace:
-			tempCol.r = 0;
-			tempCol.g = 255;
-			tempCol.b = 0;
-			break;
-		case ScoreNormal::smAggression:
-			tempCol.r = 255;
-			tempCol.g = 0;
-			tempCol.b = 0;
-			break;
-		}
-		tempCol.intensity = bgcol.intensity;
-		bgEffects.push_back( std::make_pair(temp,tempCol) );
-	}
 	for ( std::vector< std::pair<ShapeCircle, Utility::colour> >::iterator I = bgEffects.begin(); I != bgEffects.end(); )
 	{
 		Vector2d<float> temp(0,0);
@@ -317,12 +288,39 @@ void StateLevel::handleEvents( Uint32 delta )
 	for ( std::vector<EventBase *>::iterator event = eventQueue.begin(); event != eventQueue.end(); ++event )
 	{
 		scoreKeeper.handleEvent( *event );
+		spawnHandler.handleEvent( *event );
 		switch ( ( *event )->type )
 		{
 		case EventBase::etSlowMotion:
 			slowmo = true;
 			slowmoTimer.start( ((EventSlowMotion*)*event)->duration );
 			break;
+		case EventBase::etScoreMode:
+		{
+			ShapeCircle temp( player->shape.pos, player->shape.radius );
+			Utility::colour tempCol;
+			switch ( ((EventScoreModeChange*)*event)->newMode )
+			{
+			case ScoreNormal::smNone:
+				tempCol.r = 0;
+				tempCol.g = 0;
+				tempCol.b = 255;
+				break;
+			case ScoreNormal::smPeace:
+				tempCol.r = 0;
+				tempCol.g = 255;
+				tempCol.b = 0;
+				break;
+			case ScoreNormal::smAggression:
+				tempCol.r = 255;
+				tempCol.g = 0;
+				tempCol.b = 0;
+				break;
+			}
+			tempCol.intensity = bgcol.intensity;
+			bgEffects.push_back( std::make_pair(temp,tempCol) );
+			break;
+		}
 		default:
 			break;
 		}

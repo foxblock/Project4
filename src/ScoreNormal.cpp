@@ -70,14 +70,25 @@ int ScoreNormal::update( Uint32 delta )
 		streak = 0;
 		comboTimer.stop();
 		peaceTimer.start( SCORE_PEACE_TIMER );
-		mode = smNone;
+		if ( mode != smNone )
+		{
+			EventScoreModeChange *modeEv = new EventScoreModeChange( smNone, mode );
+			parent->addEvent( modeEv );
+			mode = smNone;
+		}
 	}
 	if ( peaceTimer.isStopped() && peaceTimer.wasStarted() )
 	{
 		if ( parent->countUnits() >= SCORE_PEACE_MIN_UNITS )
 		{
 			points += SCORE_PEACE_POINTS * multiplier * delta;
-			mode = smPeace;
+
+			if ( mode != smPeace )
+			{
+				EventScoreModeChange *modeEv = new EventScoreModeChange( smPeace, mode );
+				parent->addEvent( modeEv );
+				mode = smPeace;
+			}
 		}
 	}
 
@@ -104,7 +115,12 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 			comboTimer.start( std::max( SCORE_COMBO_START_TIME - SCORE_COMBO_KILL_TIME * streak, SCORE_COMBO_MIN_TIME ) );
 			++streak;
 		}
-		mode = smAggression;
+		if ( mode != smAggression )
+		{
+			EventScoreModeChange *modeEv = new EventScoreModeChange( smAggression, mode );
+			parent->addEvent( modeEv );
+			mode = smAggression;
+		}
 		break;
 	}
 	case EventBase::etUnitSpawn:

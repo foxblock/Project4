@@ -3,6 +3,7 @@
 #include "Events.h"
 #include "gameDefines.h"
 #include "StateLevel.h"
+#include "ScoreNormal.h"
 #include "UtilityFunctions.h"
 
 // Unit classes
@@ -10,6 +11,7 @@
 #include "UnitSpike.h"
 #include "UnitLaser.h"
 #include "UnitBomb.h"
+#include "ItemSlowmo.h"
 
 #include "ShapeRect.h"
 #include "ShapeCircle.h"
@@ -37,6 +39,8 @@
 #define SPAWN_SPIKE_OUTSIDE_RADIUS 50
 
 #define SPAWN_WAVE_MAX_PROBABILITY 2500
+
+#define SPAWN_TIME_ITEM 3000
 
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
@@ -94,6 +98,7 @@ SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 	waves.push_back( new WaveSpikeStar() );
 
 	timers.push_back( &spawnTimer );
+	timers.push_back( &itemTimer );
 }
 
 SpawnNormal::~SpawnNormal()
@@ -110,6 +115,12 @@ SpawnNormal::~SpawnNormal()
 int SpawnNormal::update( Uint32 delta )
 {
 	SpawnBase::update( delta );
+
+	if ( itemTimer.isStopped() && itemTimer.wasStarted() )
+	{
+		parent->addUnit( getUnit( UnitBase::utItemSlowmo ), false );
+		itemTimer.start( SPAWN_TIME_ITEM );
+	}
 
 	maxUnits = SPAWN_MAX_START + parent->scoreKeeper.getScore() / SPAWN_POINTS_PER_UNIT;
 
@@ -148,6 +159,21 @@ int SpawnNormal::update( Uint32 delta )
 	return 0;
 }
 
+void SpawnNormal::handleEvent(EventBase const* const event)
+{
+	switch ( event->type )
+	{
+	case EventBase::etScoreMode:
+		if ( ((EventScoreModeChange*)event)->newMode == ScoreNormal::smPeace )
+			itemTimer.start( SPAWN_TIME_ITEM );
+		else
+			itemTimer.stop();
+		break;
+	default:
+		break;
+	}
+}
+
 UnitBase * SpawnNormal::getUnit( const int& type ) const
 {
 	UnitBase *unit = NULL;
@@ -164,6 +190,11 @@ UnitBase * SpawnNormal::getUnit( const int& type ) const
 	case UnitBase::utBomb:
 		unit = new UnitBomb( parent );
 		unit->shape->pos = getBombPosition();
+		break;
+
+	case UnitBase::utItemSlowmo:
+		unit = new ItemSlowmo( parent );
+		unit->shape->pos = getItemPosition();
 		break;
 	default:
 		break;
@@ -267,12 +298,19 @@ Vector2d<float> SpawnNormal::getBombPosition() const
 	return result;
 }
 
+Vector2d<float> SpawnNormal::getItemPosition() const
+{
+	Vector2d<float> result;
+	result.x = APP_SCREEN_WIDTH - *parent->player->x;
+	result.y = APP_SCREEN_HEIGHT - *parent->player->y;
+	return result;
+}
 
 ///--- PRIVATE -----------------------------------------------------------------
 
 
 
-///-----------------------------------------------------------------------------
+///--- SPAWN REGION ------------------------------------------------------------
 
 SpawnRegion::SpawnRegion(std::map< int, int > probMatrix) :
 	totalCount(0)

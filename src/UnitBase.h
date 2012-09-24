@@ -42,7 +42,7 @@ public:
 		ufInvincible = 2,
 		ufApplySlowmo = 4,
 		ufIsPlayer = 8,
-		ufEOL = 8
+		ufEOL = 16
 	};
 	enum UnitType
 	{
@@ -50,7 +50,10 @@ public:
 		utPlayer,
 		utSpike,
 		utLaser,
-		utBomb
+		utBomb,
+		utEOL,
+		utItemSlowmo,
+		utItemEOL
 	};
 	UnitType type;
 

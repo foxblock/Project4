@@ -4,7 +4,7 @@
 #include "gameDefines.h"
 #include "StateLevel.h"
 
-#define ITEM_SLOWMO_RADIUS 24
+#define ITEM_SLOWMO_RADIUS 20
 #define ITEM_SLOWMO_LIFE 5000
 #define ITEM_SLOWMO_DURATION 2000
 
@@ -20,7 +20,7 @@ ItemSlowmo::ItemSlowmo( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 
-	life.start( ITEM_SLOWMO_RADIUS );
+	life.start( ITEM_SLOWMO_LIFE );
 	timers.push_back( &life );
 }
 
@@ -35,6 +35,11 @@ ItemSlowmo::~ItemSlowmo()
 int ItemSlowmo::update( const Uint32 &delta )
 {
 	UnitBase::update( delta );
+
+	if ( life.isStopped() )
+	{
+		toBeRemoved = true;
+	}
 }
 
 void ItemSlowmo::ai(const Uint32& delta, UnitBase* const)
@@ -67,8 +72,9 @@ void ItemSlowmo::generateIdleImage()
 	idle = spCreateSurface( ITEM_SLOWMO_RADIUS * 2, ITEM_SLOWMO_RADIUS * 2 );
 	SDL_FillRect( idle, NULL, SP_ALPHA_COLOR );
 	spSelectRenderTarget( idle );
-	spEllipse( ITEM_SLOWMO_RADIUS, ITEM_SLOWMO_RADIUS, -1, ITEM_SLOWMO_RADIUS, ITEM_SLOWMO_RADIUS,
-			spGetFastRGB( 0, 0, 255 ) );
+	spEllipse( ITEM_SLOWMO_RADIUS, ITEM_SLOWMO_RADIUS, -1, ITEM_SLOWMO_RADIUS, ITEM_SLOWMO_RADIUS, -1);
+	spEllipse( ITEM_SLOWMO_RADIUS, ITEM_SLOWMO_RADIUS, -1, ITEM_SLOWMO_RADIUS-3, ITEM_SLOWMO_RADIUS-3,
+			spGetFastRGB( 0, 255, 0 ) );
 	spSelectRenderTarget( spGetWindowSurface() );
 }
 

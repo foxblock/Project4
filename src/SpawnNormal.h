@@ -19,14 +19,18 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
+	void handleEvent( EventBase const * const event );
+
 	UnitBase * getUnit( const int &type ) const;
 
 protected:
 	Vector2d<float> getSpikePosition( ) const;
 	Vector2d<float> getLaserPosition( ) const;
 	Vector2d<float> getBombPosition( ) const;
+	Vector2d<float> getItemPosition( ) const;
 
 	Timer spawnTimer;
+	Timer itemTimer;
 	std::vector< SpawnRegion* > regions;
 	std::vector< WaveBase* > waves;
 	int maxUnits;
