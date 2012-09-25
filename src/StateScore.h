@@ -8,6 +8,8 @@
 #include "HighscoreFile.h"
 #include "Replay.h"
 
+#define SCORE_MAX_NAME_LENGTH 20
+
 class StateLevel;
 
 class StateScore : public StateBase
@@ -23,7 +25,7 @@ protected:
 	SDL_Surface *killFrame;
 	int score;
 	spFontPointer scoreText;
-	static char name[100];
+	static char name[SCORE_MAX_NAME_LENGTH];
 	int state;
 	bool caret;
 	Timer caretTimer;

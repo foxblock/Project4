@@ -10,7 +10,7 @@
 #define SCORE_FONT_SIZE 32
 #define SCORE_CARET_BLINK_TIME 600
 
-char StateScore::name[100] = "";
+char StateScore::name[SCORE_MAX_NAME_LENGTH] = "";
 
 StateScore::StateScore( StateLevel *level ) :
 	StateBase(),
@@ -45,7 +45,7 @@ StateScore::StateScore( StateLevel *level ) :
 	{
 		caret = true;
 		state = 0;
-		spPollKeyboardInput( name, 100, NULL );
+		spPollKeyboardInput( name, SCORE_MAX_NAME_LENGTH, NULL );
 		run = level->run;
 		level->run = NULL;
 	}
