@@ -42,7 +42,7 @@ int ItemSlowmo::update( const Uint32 &delta )
 	}
 }
 
-void ItemSlowmo::ai(const Uint32& delta, UnitBase* const)
+void ItemSlowmo::ai( const Uint32& delta, UnitBase* const player )
 {
 	if ( (*x < shape.radius && accel.x < 0) ||
 			(*x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )

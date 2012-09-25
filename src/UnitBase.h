@@ -53,6 +53,7 @@ public:
 		utBomb,
 		utEOL,
 		utItemSlowmo,
+		utItemVortex,
 		utItemEOL
 	};
 	UnitType type;

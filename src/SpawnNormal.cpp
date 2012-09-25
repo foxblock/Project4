@@ -12,6 +12,7 @@
 #include "UnitLaser.h"
 #include "UnitBomb.h"
 #include "ItemSlowmo.h"
+#include "ItemVortex.h"
 
 #include "ShapeRect.h"
 #include "ShapeCircle.h"
@@ -196,7 +197,12 @@ UnitBase * SpawnNormal::getUnit( const int& type ) const
 		unit = new ItemSlowmo( parent );
 		unit->shape->pos = getItemPosition();
 		break;
+	case UnitBase::utItemVortex:
+		unit = new ItemVortex( parent );
+		unit->shape->pos = getItemPosition();
+		break;
 	default:
+		printf( "%s Passed type to SpawnNormal::getUnit is invalid: %i\n", WARNING_STRING, type );
 		break;
 	}
 
