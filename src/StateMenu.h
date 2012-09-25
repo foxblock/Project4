@@ -17,7 +17,7 @@ public:
 	void render( SDL_Surface *target );
 
 protected:
-	std::size_t choice;
+	static std::size_t choice;
 	spFontPointer fontDark;
 	spFontPointer fontBright;
 	Timer inputLag;

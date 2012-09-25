@@ -10,9 +10,10 @@
 #define MENU_TEXT_SHOW_TIME 3000
 #define MENU_TEXT_FADE_TIME 1000
 
+std::size_t StateMenu::choice = 0;
+
 StateMenu::StateMenu() : StateBase()
 {
-	choice = 0;
 	fontDark = spFontLoad( FONT_GENERAL, MENU_FONT_SIZE );
 	if ( fontDark )
 	{
