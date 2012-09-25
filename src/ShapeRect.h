@@ -63,6 +63,11 @@ public:
 	bool checkCollision( ShapeRay const * const other ) const;
 	bool checkCollision( ShapeCircle const * const other ) const;
 
+	bool checkCollision( ShapeBase const * const other, CollisionResponse &result ) const;
+	bool checkCollision( ShapeRect const * const other, CollisionResponse &result ) const;
+	bool checkCollision( ShapeRay const * const other, CollisionResponse &result ) const;
+	bool checkCollision( ShapeCircle const * const other, CollisionResponse &result ) const;
+
 	void render( SDL_Surface* screen, Uint32 colour );
 
 	Vector2d<float> size;

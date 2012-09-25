@@ -96,6 +96,23 @@ bool ShapeRay::checkCollision( ShapeCircle const *const other ) const
 	}
 }
 
+
+bool ShapeRay::checkCollision(ShapeBase const* const other, CollisionResponse& result) const
+{
+}
+
+bool ShapeRay::checkCollision(ShapeRect const* const other, CollisionResponse& result) const
+{
+}
+
+bool ShapeRay::checkCollision(ShapeRay const* const other, CollisionResponse& result) const
+{
+}
+
+bool ShapeRay::checkCollision(ShapeCircle const* const other, CollisionResponse& result) const
+{
+}
+
 void ShapeRay::render( SDL_Surface *target, Uint32 colour )
 {
 	spLine( pos.x, pos.y, -1, this->target.x, this->target.y, -1, colour );
