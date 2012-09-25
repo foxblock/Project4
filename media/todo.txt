@@ -12,6 +12,7 @@ Legend:
    + acceleration, deceleration
  + Change units to use SimpleFlags instead of boolean values
  + Add circle shape/collision class
+ - new collision system, no unit overlap
 ---
 * Small, random stuff
   + Create player character
@@ -57,7 +58,7 @@ Legend:
   - encrypt replay files
 ---
 + Menus, navigation
-- Help screen
+- Help screen / tutorial
 + Pause
 - Change to fit different resolutions
 - Draw menu elements (buttons, icons, etc.)

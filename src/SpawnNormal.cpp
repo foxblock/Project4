@@ -118,7 +118,7 @@ int SpawnNormal::update( Uint32 delta )
 
 	if ( itemTimer.isStopped() && itemTimer.wasStarted() )
 	{
-		parent->addUnit( getUnit( UnitBase::utItemSlowmo ), false );
+		parent->addUnit( getUnit( Utility::randomRange( UnitBase::utEOL + 1, UnitBase::utItemEOL - 1 ) ), false );
 		itemTimer.start( SPAWN_TIME_ITEM );
 	}
 
