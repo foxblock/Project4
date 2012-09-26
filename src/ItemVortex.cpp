@@ -46,9 +46,9 @@ int ItemVortex::update( const Uint32 &delta )
 	if ( vortex.wasStarted() && !vortex.isStopped() )
 	{
 		if( vortex.getTime() <= ITEM_VORTEX_SIZETIME )
-			shape.radius += ITEM_VORTEX_SIZERATE;
+			shape.radius += ITEM_VORTEX_SIZERATE * delta;
 		if( vortex.getTime() >= ITEM_VORTEX_DURATION - ITEM_VORTEX_SIZETIME )
-			shape.radius += ITEM_VORTEX_SIZERATE;
+			shape.radius -= ITEM_VORTEX_SIZERATE * delta;
 	}
 }
 
@@ -57,8 +57,9 @@ void ItemVortex::render( SDL_Surface *const target )
 	if ( vortex.wasStarted() && !vortex.isStopped() )
 	{
 		spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 192, 192, 192 ) );
+	} else {
+    UnitBase::render( target );
 	}
-	UnitBase::render( target );
 }
 
 void ItemVortex::ai(const Uint32& delta, UnitBase* const player )
@@ -81,7 +82,7 @@ void ItemVortex::ai(const Uint32& delta, UnitBase* const player )
 void ItemVortex::collisionResponse( UnitBase* const other )
 {
 	UnitBase::collisionResponse( other );
-	if ( other->flags.has(ufIsPlayer) )
+	if ( !life.isStopped() && other->flags.has(ufIsPlayer) )
 	{
 		// This code is executed when the player collects the item
 		// So your event code should go here (or be called from here)
