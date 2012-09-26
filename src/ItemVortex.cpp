@@ -7,6 +7,8 @@
 #define ITEM_VORTEX_RADIUS 20
 #define ITEM_VORTEX_LIFE 5000
 #define ITEM_VORTEX_DURATION 2000
+#define ITEM_VORTEX_SIZETIME 40
+#define ITEM_VORTEX_SIZERATE 2
 
 SDL_Surface* ItemVortex::idle = NULL;
 
@@ -21,6 +23,7 @@ ItemVortex::ItemVortex( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	y = &( shape.pos.y );
 
 	life.start( ITEM_VORTEX_LIFE );
+	timers.push_back( &vortex );
 	timers.push_back( &life );
 }
 
@@ -36,15 +39,35 @@ int ItemVortex::update( const Uint32 &delta )
 {
 	UnitBase::update( delta );
 
-	if ( life.isStopped() )
+	if ( life.isStopped() && (vortex.isStopped() || !vortex.wasStarted() ) )
 	{
 		toBeRemoved = true;
 	}
+	if ( vortex.wasStarted() && !vortex.isStopped() )
+	{
+		if( vortex.getTime() <= ITEM_VORTEX_SIZETIME )
+			shape.radius += ITEM_VORTEX_SIZERATE;
+		if( vortex.getTime() >= ITEM_VORTEX_DURATION - ITEM_VORTEX_SIZETIME )
+			shape.radius += ITEM_VORTEX_SIZERATE;
+	}
+}
+
+void ItemVortex::render( SDL_Surface *const target )
+{
+	if ( vortex.wasStarted() && !vortex.isStopped() )
+	{
+		spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 192, 192, 192 ) );
+	}
+	UnitBase::render( target );
 }
 
 void ItemVortex::ai(const Uint32& delta, UnitBase* const player )
 {
 	// All AI code goes here (reaction to the player except collision)
+	if ( vortex.wasStarted() && !vortex.isStopped() )
+	{
+		// TODO: Hold enemies within shape radius
+	}
 
 	// This makes the item reverse direction when touching a wall (items might move at a later point)
 	if ( (*x < shape.radius && accel.x < 0) ||
@@ -62,7 +85,12 @@ void ItemVortex::collisionResponse( UnitBase* const other )
 	{
 		// This code is executed when the player collects the item
 		// So your event code should go here (or be called from here)
-		toBeRemoved = true; // removes the unit/item from the game
+
+		life.stop();
+		shape.radius = 0;
+		vortex.start( ITEM_VORTEX_DURATION );
+		flags.add( UnitBase::ufInvincible );
+		// toBeRemoved = true; // removes the unit/item from the game
 	}
 }
 
