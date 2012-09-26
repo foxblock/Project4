@@ -13,12 +13,14 @@ public:
 	virtual ~ItemVortex();
 
 	int update( const Uint32 &delta );
+	void render ( SDL_Surface *const target );
 
 	void ai( const Uint32 &delta, UnitBase *const player );
 	void collisionResponse( UnitBase *const other );
 
 protected:
 	Timer life;
+	Timer vortex;
 	ShapeCircle shape;
 
 private:
