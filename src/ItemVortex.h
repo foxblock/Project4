@@ -27,6 +27,7 @@ private:
 	static void generateIdleImage();
 
 	static SDL_Surface *idle;
+	std::vector<UnitBase*> caught;
 
 };
 

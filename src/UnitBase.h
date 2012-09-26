@@ -42,7 +42,8 @@ public:
 		ufInvincible = 2,
 		ufApplySlowmo = 4,
 		ufIsPlayer = 8,
-		ufEOL = 16
+		ufEOL = 16,
+		ufFrozen = 32
 	};
 	enum UnitType
 	{
