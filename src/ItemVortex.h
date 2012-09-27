@@ -29,6 +29,9 @@ private:
 	static SDL_Surface *idle;
 	std::vector<UnitBase*> caught;
 
+	int animationOffset;
+	int animationSlow;
+
 };
 
 

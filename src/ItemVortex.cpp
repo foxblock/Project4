@@ -10,6 +10,7 @@
 #define ITEM_VORTEX_SIZETIME 400
 #define ITEM_VORTEX_SIZESCALE  5
 #define ITEM_VORTEX_SIZEMAX (ITEM_VORTEX_SIZETIME / ITEM_VORTEX_SIZESCALE)
+#define ITEM_VORTEX_ANIMSLOWOFF  10
 
 SDL_Surface* ItemVortex::idle = NULL;
 
@@ -46,6 +47,9 @@ int ItemVortex::update( const Uint32 &delta )
 	}
 	if ( vortex.wasStarted() && !vortex.isStopped() )
 	{
+	  if( vortex.getTime() % ITEM_VORTEX_ANIMSLOWOFF == 0 )
+      animationOffset = (animationOffset++) % 11;
+
 		if( vortex.getTime() <= ITEM_VORTEX_SIZETIME )
 			shape.radius = vortex.getTime() / ITEM_VORTEX_SIZESCALE;
 		else if( vortex.getTime() >= ITEM_VORTEX_DURATION - ITEM_VORTEX_SIZETIME )
@@ -63,7 +67,30 @@ void ItemVortex::render( SDL_Surface *const target )
 {
 	if ( vortex.wasStarted() && !vortex.isStopped() )
 	{
-		spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 192, 192, 192 ) );
+	  for( int r = shape.radius; r > 0; r-- )
+	  {
+	    switch( (r + animationOffset) % 11 )
+	    {
+	      case 0:
+          spEllipseBorder( *x, *y, -1, r, r, 1, 1, spGetFastRGB( 192, 192, 220 ) );
+          break;
+	      case 1:
+	      case 2:
+          spEllipseBorder( *x, *y, -1, r, r, 1, 1, spGetFastRGB( 64, 64, 128 ) );
+          break;
+	      case 3:
+	      case 4:
+	      case 5:
+          spEllipseBorder( *x, *y, -1, r, r, 1, 1, spGetFastRGB( 128, 128, 192 ) );
+          break;
+	      default:
+          break;
+
+	    }
+	  }
+
+
+		//spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 192, 192, 192 ) );
 	} else {
     UnitBase::render( target );
 	}
@@ -91,6 +118,8 @@ void ItemVortex::collisionResponse( UnitBase* const other )
 
 		life.stop();
 		shape.radius = 0;
+		animationSlow = 0;
+		animationOffset = 0;
 		vortex.start( ITEM_VORTEX_DURATION );
 		flags.add( UnitBase::ufInvincible );
 		// toBeRemoved = true; // removes the unit/item from the game
