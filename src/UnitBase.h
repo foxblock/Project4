@@ -42,8 +42,8 @@ public:
 		ufInvincible = 2,
 		ufApplySlowmo = 4,
 		ufIsPlayer = 8,
-		ufEOL = 16,
-		ufFrozen = 32
+		ufFrozen = 16,
+		ufEOL = 32, // this marks the end of the unit flag list
 	};
 	enum UnitType
 	{
@@ -52,10 +52,10 @@ public:
 		utSpike,
 		utLaser,
 		utBomb,
-		utEOL,
+		utEOL, // end of unit types
 		utItemSlowmo,
 		utItemVortex,
-		utItemEOL
+		utItemEOL // end of item types
 	};
 	UnitType type;
 
