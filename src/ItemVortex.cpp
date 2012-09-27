@@ -10,7 +10,7 @@
 #define ITEM_VORTEX_SIZETIME 400
 #define ITEM_VORTEX_SIZESCALE  5
 #define ITEM_VORTEX_SIZEMAX (ITEM_VORTEX_SIZETIME / ITEM_VORTEX_SIZESCALE)
-#define ITEM_VORTEX_ANIMSLOWOFF  10
+#define ITEM_VORTEX_ANIMSLOWOFF  50
 
 SDL_Surface* ItemVortex::idle = NULL;
 
@@ -76,12 +76,12 @@ void ItemVortex::render( SDL_Surface *const target )
           break;
 	      case 1:
 	      case 2:
-          spEllipseBorder( *x, *y, -1, r, r, 1, 1, spGetFastRGB( 64, 64, 128 ) );
+          spEllipseBorder( *x, *y, -1, r, r, 1, 1, spGetFastRGB( 128, 128, 192 ) );
           break;
 	      case 3:
 	      case 4:
 	      case 5:
-          spEllipseBorder( *x, *y, -1, r, r, 1, 1, spGetFastRGB( 128, 128, 192 ) );
+          spEllipseBorder( *x, *y, -1, r, r, 1, 1, spGetFastRGB( 64, 64, 128 ) );
           break;
 	      default:
           break;
