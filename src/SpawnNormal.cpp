@@ -185,8 +185,8 @@ UnitBase * SpawnNormal::getUnit( const int& type ) const
 		unit->shape->pos = getSpikePosition();
 		break;
 	case UnitBase::utLaser:
-		//unit = new UnitLaser( parent );
-		//unit->shape->pos = getLaserPosition();
+		unit = new UnitLaser( parent );
+		unit->shape->pos = getLaserPosition();
 		break;
 	case UnitBase::utBomb:
 		unit = new UnitBomb( parent );
@@ -194,9 +194,9 @@ UnitBase * SpawnNormal::getUnit( const int& type ) const
 		break;
 
 	case UnitBase::utItemSlowmo:
-		//unit = new ItemSlowmo( parent );
-		//unit->shape->pos = getItemPosition();
-		//break;
+		unit = new ItemSlowmo( parent );
+		unit->shape->pos = getItemPosition();
+		break;
 	case UnitBase::utItemVortex:
 		unit = new ItemVortex( parent );
 		unit->shape->pos = getItemPosition();
