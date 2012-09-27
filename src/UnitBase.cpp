@@ -56,9 +56,6 @@ UnitBase::~UnitBase()
 
 int UnitBase::update( const Uint32 &delta )
 {
-	if( flags.has( ufFrozen ) )
-		return 0;
-
 	vel += accel * delta;
 	if ( vel.lengthSquared() > Utility::sqr( friction ) * delta * delta )
 		vel -= vel.unit() * friction * delta;
@@ -99,9 +96,6 @@ void UnitBase::render( SDL_Surface *const target )
 
 bool UnitBase::checkCollision( UnitBase const *const other ) const
 {
-	if( flags.has( ufFrozen ) )
-		return false;
-
 	if ( shape->checkCollision( other->shape ) )
 		return true;
 	return false;

@@ -136,6 +136,9 @@ int StateLevel::update( Uint32 delta )
 	// Unit update, collision checking (creates events)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 	{
+		if ( (*I)->flags.has( UnitBase::ufFrozen ) )
+			continue;
+
 		if ( player )
 			( *I )->ai( delta, player );
 		( *I )->update( (*I)->flags.has( UnitBase::ufIsPlayer ) ? deltaBkUp : delta );
