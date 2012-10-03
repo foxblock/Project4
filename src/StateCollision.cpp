@@ -4,6 +4,7 @@
 #include "UnitSpike.h"
 #include "UnitLaser.h"
 #include "ProjectileLaser.h"
+#include "UtilityFunctions.h"
 
 #define PLAYER_VELOCITY 0.2f
 
@@ -71,6 +72,9 @@ int StateCollision::update( Uint32 delta )
 	if ( player != unit4 && player->checkCollision( unit4 ) )
 		debugString += "Projectile right\n";
 
+	float angle = (player->shape->pos - Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 )).angle();
+	debugString += "Angle: " + Utility::numToStr( angle * 180 / M_PI ) + "\n";
+
 	return 0;
 }
 
@@ -84,6 +88,13 @@ void StateCollision::render( SDL_Surface *target )
 	unit4->render( target );
 
 	spFontDraw( 10, 10, -1, debugString.c_str(), font );
+
+	spLine( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 0.8f, -1,
+			APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 1.2f, -1, -1 );
+	spLine( APP_SCREEN_WIDTH / 2 * 0.8f, APP_SCREEN_HEIGHT / 2, -1,
+			APP_SCREEN_WIDTH / 2 * 1.2f, APP_SCREEN_HEIGHT / 2, -1, -1 );
+	spLine( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2, -1,
+			*player->x, *player->y, -1, spGetRGB( 228, 228, 288 ) );
 }
 
 void StateCollision::handleInput( Uint32 delta )
@@ -113,11 +124,11 @@ void StateCollision::handleInput( Uint32 delta )
 	{
 		player->vel.x = 0;
 	}
-	if ( spGetInput()->axis[1] < 0 )
+	if ( spGetInput()->axis[1] > 0 )
 	{
 		player->vel.y = PLAYER_VELOCITY;
 	}
-	else if ( spGetInput()->axis[1] > 0 )
+	else if ( spGetInput()->axis[1] < 0 )
 	{
 		player->vel.y = -PLAYER_VELOCITY;
 	}

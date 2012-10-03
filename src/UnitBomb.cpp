@@ -43,8 +43,6 @@ UnitBomb::UnitBomb( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	activeSprite = idle;
 
 	shape.radius = BOMB_RADIUS;
-	x = &( shape.pos.x );
-	y = &( shape.pos.y );
 
 	pressure = 0;
 	status = 0;
@@ -66,7 +64,7 @@ UnitBomb::~UnitBomb()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int UnitBomb::update( Uint32 delta )
+int UnitBomb::update( const Uint32 &delta )
 {
 	if ( isFlashing )
 		activeSprite = flashing;
@@ -82,6 +80,7 @@ int UnitBomb::update( Uint32 delta )
 
 	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
 	{
+		LOG_MESSAGE("Removing exploded bomb");
 		toBeRemoved = true;
 		EventUnitDeath *event = new EventUnitDeath( this, NULL );
 		parent->addEvent( event );
@@ -90,7 +89,7 @@ int UnitBomb::update( Uint32 delta )
 	return UnitBase::update( delta );
 }
 
-void UnitBomb::render( SDL_Surface *target )
+void UnitBomb::render( SDL_Surface *const target )
 {
 #ifdef _DEBUG
 	debugString += Utility::numToStr( pressure ) + "\n" + Utility::numToStr( status ) + "\n";
@@ -106,13 +105,13 @@ void UnitBomb::collisionResponse( UnitBase *const other )
 {
 	if ( other->type == utBomb )
 	{
-		if ( props.hasFlag( ufDeadlyOnTouch ) && !other->props.hasFlag( ufInvincible ) )
+		if ( flags.has( ufDeadlyOnTouch ) && !other->flags.has( ufInvincible ) )
 		{
 			((UnitBomb*)other)->bombTimer.start( BOMB_EXPLOSION_TIME );
 			other->accel = Vector2d<float>(0,0);
 			other->vel = Vector2d<float>(0,0);
-			other->props.addFlag( UnitBase::ufDeadlyOnTouch );
-			other->props.addFlag( UnitBase::ufInvincible );
+			other->flags.add( UnitBase::ufDeadlyOnTouch );
+			other->flags.add( UnitBase::ufInvincible );
 			EventBombCascade *event = new EventBombCascade( this, other );
 			parent->addEvent( event );
 		}
@@ -121,13 +120,15 @@ void UnitBomb::collisionResponse( UnitBase *const other )
 		UnitBase::collisionResponse( other );
 }
 
-void UnitBomb::ai( Uint32 delta, UnitBase *player )
+void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 {
 	if ( bombTimer.wasStarted() )
 		return;
 
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
+
+	// player close -> +pressure
 	if ( dist < BOMB_PRESSURE_RADIUS_SQR_HI )
 	{
 		pressure += BOMB_PRESSURE_ADD_1 * delta;
@@ -141,6 +142,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 		pressure -= BOMB_PRESSURE_REL * delta;
 
 	bool idleRoaming = true;
+	// evasion
 	if ( dist < BOMB_EVASION_RADIUS_SQR )
 	{
 		Vector2d<float> playerAcc = player->accel.unit();
@@ -156,6 +158,7 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 			idleRoaming = false;
 		}
 	}
+	// min evade - when exiting evasion radius (to prevent immediate re-enter)
 	if ( idleRoaming && status == 1 )
 	{
 		idleRoaming = false;
@@ -165,8 +168,10 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 	if ( evadeTimer.getStatus() == 1 )
 		idleRoaming = false;
 
+	// idle movement
 	if ( idleRoaming )
 	{
+		// reset evasion status
 		if ( status > 0 )
 		{
 			status = 0;
@@ -183,13 +188,15 @@ void UnitBomb::ai( Uint32 delta, UnitBase *player )
 			accel.y *= -1;
 	}
 
+	// pressure levels - flashing and explosion
 	if ( pressure > BOMB_PRESSURE_LEVEL_4 )
 	{
 		bombTimer.start( BOMB_EXPLOSION_TIME );
 		accel = Vector2d<float>(0,0);
 		vel = Vector2d<float>(0,0);
-		props.addFlag( ufDeadlyOnTouch );
-		props.addFlag( ufInvincible );
+		flags.add( ufDeadlyOnTouch );
+		flags.add( ufInvincible );
+		LOG_MESSAGE("Bomb exploding");
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_3 )
 	{

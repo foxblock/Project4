@@ -14,6 +14,7 @@ Replay::Replay()
 	totalFrames = 0;
 	playing = false;
 	info.version = REPLAY_VERSION;
+	errorString = "";
 }
 
 Replay::~Replay()
@@ -80,6 +81,7 @@ bool Replay::play()
 
 bool Replay::loadFromFile(const std::string& filename)
 {
+	errorString = "";
 	std::fstream file( filename.c_str(), std::fstream::in );
 
 	if ( file.good() )
@@ -87,19 +89,28 @@ bool Replay::loadFromFile(const std::string& filename)
 		std::string line;
 		getline( file, line );
 		if ( line[0] != FILE_REPLAY_INFO_CHAR[0] )
+		{
+			errorString = "Replay info missing!";
 			return false;
+		}
 		std::vector< std::string > tokens;
 
 		Utility::tokenize( line, tokens, (std::string)FILE_REPLAY_DELIMITER + FILE_REPLAY_INFO_CHAR );
 		if ( tokens.size() < 4 )
+		{
+			errorString = "Replay info malformed!";
 			return false;
+		}
 		info.name = tokens[0];
 		info.score = Utility::strToNum<int>( tokens[1] );
 		info.timecode = Utility::strToNum<int>( tokens[2] );
 		info.version = Utility::strToNum<int>( tokens[3] );
 
 		if ( info.version != REPLAY_VERSION )
+		{
+			errorString = "File version not matching game version!";
 			return false;
+		}
 	}
 
 	while ( file.is_open() && file.good() )
@@ -125,11 +136,14 @@ bool Replay::loadFromFile(const std::string& filename)
 	totalFrames = entries.back().ms;
 
 	playing = !entries.empty();
+	if ( !playing )
+		errorString = "No replay data was loaded! (empty file?)";
 	return playing;
 }
 
 void Replay::saveToFile(const std::string& filename)
 {
+	errorString = "";
 	std::fstream file( filename.c_str(), std::fstream::out | std::fstream::trunc );
 
 	if ( file.good() )
@@ -145,6 +159,9 @@ void Replay::saveToFile(const std::string& filename)
 		file << I->ms << FILE_REPLAY_DELIMITER
 			<< buttonsToString( I->frameInput ) << "\n";
 	}
+
+	if ( !file.good() )
+		errorString = "Failed to write replay file!";
 
 	file.close();
 }

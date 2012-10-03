@@ -16,7 +16,9 @@ public:
 		etNone=0,
 		etUnitDeath,
 		etUnitSpawn,
-		etBombCascade
+		etBombCascade,
+		etSlowMotion,
+		etScoreMode
 	};
 	EventType type;
 };
@@ -24,7 +26,7 @@ public:
 class EventUnitDeath : public EventBase
 {
 public:
-	EventUnitDeath( UnitBase *unit, UnitBase *killer )
+	EventUnitDeath( UnitBase *const unit, UnitBase *const killer )
 	{
 		this->unit = unit;
 		this->killer = killer;
@@ -38,7 +40,7 @@ public:
 class EventUnitSpawn : public EventBase
 {
 public:
-	EventUnitSpawn( UnitBase *unit )
+	EventUnitSpawn( UnitBase *const unit )
 	{
 		this->unit = unit;
 		type = etUnitSpawn;
@@ -54,6 +56,31 @@ public:
 	{
 		type = etBombCascade;
 	}
+};
+
+class EventSlowMotion : public EventBase
+{
+public:
+	EventSlowMotion( const int &duration )
+	{
+		type = etSlowMotion;
+		this->duration = duration;
+	}
+
+	int duration;
+};
+
+class EventScoreModeChange : public EventBase
+{
+public:
+	EventScoreModeChange( const int &newMode, const int &prevMode )
+	{
+		type = etScoreMode;
+		this->newMode = newMode;
+		this->prevMode = prevMode;
+	}
+
+	int newMode,prevMode;
 };
 
 #endif // EVENT_BASE_H

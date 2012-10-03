@@ -12,6 +12,7 @@ Legend:
    + acceleration, deceleration
  + Change units to use SimpleFlags instead of boolean values
  + Add circle shape/collision class
+ - new collision system, no unit overlap
 ---
 * Small, random stuff
   + Create player character
@@ -27,11 +28,12 @@ Legend:
   + Create abstract event system
 ---
 * Spawning system
-  - create a class/definition of a wave
-  - create different wave data
-  - create event system checking wave spawning criteria
+  + create a class/definition of a wave
+  + create different wave data
+  + create event system checking wave spawning criteria
   + create spawn class
   + create region class for single spawns
+  - power-ups
 ---
 * Scoring system
   + assign points to each unit
@@ -52,12 +54,12 @@ Legend:
   + look into delta=0 frames (need those or not?)
   + look into smoother playback (talk to Ziz - done talking)
   + create replays folder
-  - spit out error when replay not found instead of starting a game
+  + spit out error when replay not found instead of starting a game
   - encrypt replay files
 ---
-- Menus, navigation
-- Help screen
-- Pause
++ Menus, navigation
+- Help screen / tutorial
++ Pause
 - Change to fit different resolutions
 - Draw menu elements (buttons, icons, etc.)
 ---

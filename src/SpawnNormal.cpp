@@ -3,6 +3,7 @@
 #include "Events.h"
 #include "gameDefines.h"
 #include "StateLevel.h"
+#include "ScoreNormal.h"
 #include "UtilityFunctions.h"
 
 // Unit classes
@@ -10,12 +11,14 @@
 #include "UnitSpike.h"
 #include "UnitLaser.h"
 #include "UnitBomb.h"
+#include "ItemSlowmo.h"
+#include "ItemVortex.h"
 
 #include "ShapeRect.h"
 #include "ShapeCircle.h"
 
 // Actual value: 200
-#define SPAWN_PLAYER_SAFE_RADIUS_SQR 40000.0f
+#define SPAWN_PLAYER_SAFE_RADIUS_SQR 30000.0f
 
 #define UNIT_TYPE_COUNT 2
 
@@ -28,12 +31,21 @@
 #define SPAWN_SIDE_OFFSET_V 15.0f
 
 #define SPAWN_TIME_START 1000
-#define SPAWN_MAX_START 10
+#define SPAWN_MAX_START 20
+#define SPAWN_POINTS_PER_UNIT 1000
 
 #define SPAWN_POSITION_MAX_TRIES 100
 
+#define SPAWN_SPIKE_OUTSIDE_CHANCE 25
+#define SPAWN_SPIKE_OUTSIDE_RADIUS 50
+
+#define SPAWN_WAVE_MAX_PROBABILITY 2500
+
+#define SPAWN_TIME_ITEM 3000
+
 SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 {
+	maxUnits = SPAWN_MAX_START;
 	Vector2d<float> tempVec;
 	std::map< int, int > tempMat;
 	SpawnRegion *tempRegion;
@@ -82,12 +94,19 @@ SpawnNormal::SpawnNormal( StateLevel *newParent ) : SpawnBase( newParent )
 	tempRegion->addRect( Vector2d<float>( APP_SCREEN_WIDTH / 2.0f, APP_SCREEN_HEIGHT / 2.0f ), Vector2d<float>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) );
 	regions.push_back( tempRegion );
 
+	// Waves
+	waves.push_back( new WaveBomb() );
+	waves.push_back( new WaveSpikeStar() );
+
 	timers.push_back( &spawnTimer );
+	timers.push_back( &itemTimer );
 }
 
 SpawnNormal::~SpawnNormal()
 {
 	for ( std::vector< SpawnRegion * >::iterator I = regions.begin(); I != regions.end(); ++I )
+		delete (*I);
+	for ( std::vector< WaveBase * >::iterator I = waves.begin(); I != waves.end(); ++I )
 		delete (*I);
 }
 
@@ -98,11 +117,30 @@ int SpawnNormal::update( Uint32 delta )
 {
 	SpawnBase::update( delta );
 
-	if ( !spawnTimer.isStopped() ||
-			parent->countUnits() >= SPAWN_MAX_START )
+	if ( itemTimer.isStopped() && itemTimer.wasStarted() )
+	{
+		parent->addUnit( getUnit( Utility::randomRange( UnitBase::utEOL + 1, UnitBase::utItemEOL - 1 ) ), false );
+		itemTimer.start( SPAWN_TIME_ITEM );
+	}
+
+	maxUnits = SPAWN_MAX_START + parent->scoreKeeper.getScore() / SPAWN_POINTS_PER_UNIT;
+
+	if ( parent->countUnits() >= maxUnits )
 		return 0;
 
-	UnitBase *newUnit = NULL;
+	for ( std::vector< WaveBase* >::iterator I = waves.begin(); I != waves.end(); ++I )
+	{
+		if ( (*I)->checkConditions( parent, this, delta ) > SPAWN_WAVE_MAX_PROBABILITY )
+		{
+			(*I)->spawn( parent, this );
+			spawnTimer.start( SPAWN_TIME_START );
+			return 0;
+		}
+	}
+
+	if ( !spawnTimer.isStopped() )
+		return 0;
+
 	int unitType = UnitBase::utNone;
 
 	for ( std::vector< SpawnRegion* >::iterator I = regions.begin();
@@ -111,22 +149,35 @@ int SpawnNormal::update( Uint32 delta )
 		unitType = (*I)->checkSpawn( parent->player );
 	}
 
-	spawnUnit( unitType, newUnit );
-
-	if ( !newUnit )
-		return 0;
-
-	parent->addUnit( newUnit );
-
-	spawnTimer.start( SPAWN_TIME_START );
-	EventUnitSpawn *event = new EventUnitSpawn( newUnit );
-	parent->addEvent( event );
+	// create the actual unit
+	UnitBase* newUnit = getUnit( unitType );
+	if ( newUnit )
+	{
+		spawnTimer.start( SPAWN_TIME_START );
+		parent->addUnit( newUnit, true );
+	}
 
 	return 0;
 }
 
-void SpawnNormal::spawnUnit(const int& type, UnitBase * &unit)
+void SpawnNormal::handleEvent(EventBase const* const event)
 {
+	switch ( event->type )
+	{
+	case EventBase::etScoreMode:
+		if ( ((EventScoreModeChange*)event)->newMode == ScoreNormal::smPeace )
+			itemTimer.start( SPAWN_TIME_ITEM );
+		else
+			itemTimer.stop();
+		break;
+	default:
+		break;
+	}
+}
+
+UnitBase * SpawnNormal::getUnit( const int& type ) const
+{
+	UnitBase *unit = NULL;
 	switch ( type )
 	{
 	case UnitBase::utSpike:
@@ -139,12 +190,23 @@ void SpawnNormal::spawnUnit(const int& type, UnitBase * &unit)
 		break;
 	case UnitBase::utBomb:
 		unit = new UnitBomb( parent );
-		unit->shape->pos = getLaserPosition();
+		unit->shape->pos = getBombPosition();
+		break;
+
+	case UnitBase::utItemSlowmo:
+		unit = new ItemSlowmo( parent );
+		unit->shape->pos = getItemPosition();
+		break;
+	case UnitBase::utItemVortex:
+		unit = new ItemVortex( parent );
+		unit->shape->pos = getItemPosition();
 		break;
 	default:
-		unit = NULL;
+		printf( "%s Passed type to SpawnNormal::getUnit is invalid: %i\n", WARNING_STRING, type );
 		break;
 	}
+
+	return unit;
 }
 
 void SpawnNormal::render( SDL_Surface *target )
@@ -158,21 +220,49 @@ void SpawnNormal::render( SDL_Surface *target )
 Vector2d<float> SpawnNormal::getSpikePosition() const
 {
 	Vector2d<float> result;
-	int count = 0;
-	result.x = Utility::randomRange( -APP_SCREEN_WIDTH * 0.4f, APP_SCREEN_WIDTH * 0.4f );
-	if ( result.x < 0 )
-		result.x += APP_SCREEN_WIDTH;
-	float temp = 0;
-	do
+	int method = Utility::randomRange( 1, 100 );
+	if ( method < SPAWN_SPIKE_OUTSIDE_CHANCE )
 	{
-		result.y = Utility::randomRange(-APP_SCREEN_HEIGHT * 0.4f, APP_SCREEN_HEIGHT * 0.4f);
-		if ( result.y < 0 )
-			result.y += APP_SCREEN_HEIGHT;
-		temp = Utility::sqr( result.x - *parent->player->x ) +
-				Utility::sqr( result.y - * parent->player->y );
-		++count;
+		int temp = Utility::randomRange( 1, APP_SCREEN_HEIGHT * 2 + APP_SCREEN_WIDTH * 2 );
+		if ( temp > APP_SCREEN_WIDTH * 2 + APP_SCREEN_HEIGHT )
+		{
+			result.x = 0 - SPAWN_SPIKE_OUTSIDE_RADIUS;
+			result.y = temp % ( APP_SCREEN_WIDTH * 2 + APP_SCREEN_HEIGHT );
+		}
+		else if ( temp > APP_SCREEN_WIDTH + APP_SCREEN_HEIGHT )
+		{
+			result.x = temp % ( APP_SCREEN_WIDTH + APP_SCREEN_HEIGHT );
+			result.y = APP_SCREEN_HEIGHT + SPAWN_SPIKE_OUTSIDE_RADIUS;
+		}
+		else if ( temp > APP_SCREEN_WIDTH )
+		{
+			result.x = APP_SCREEN_WIDTH + SPAWN_SPIKE_OUTSIDE_RADIUS;
+			result.y = temp % APP_SCREEN_WIDTH;
+		}
+		else
+		{
+			result.x = temp;
+			result.y = 0 - SPAWN_SPIKE_OUTSIDE_RADIUS;
+		}
 	}
-	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR && count < SPAWN_POSITION_MAX_TRIES );
+	else
+	{
+		int count = 0;
+		result.x = Utility::randomRange( -APP_SCREEN_WIDTH * 0.4f, APP_SCREEN_WIDTH * 0.4f );
+		if ( result.x < 0 )
+			result.x += APP_SCREEN_WIDTH;
+		float temp = 0;
+		do
+		{
+			result.y = Utility::randomRange(-APP_SCREEN_HEIGHT * 0.4f, APP_SCREEN_HEIGHT * 0.4f);
+			if ( result.y < 0 )
+				result.y += APP_SCREEN_HEIGHT;
+			temp = Utility::sqr( result.x - *parent->player->x ) +
+					Utility::sqr( result.y - * parent->player->y );
+			++count;
+		}
+		while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR && count < SPAWN_POSITION_MAX_TRIES );
+	}
 	return result;
 }
 
@@ -193,12 +283,40 @@ Vector2d<float> SpawnNormal::getLaserPosition() const
 	return result;
 }
 
+Vector2d<float> SpawnNormal::getBombPosition() const
+{
+	Vector2d<float> result;
+	int count = SPAWN_POSITION_MAX_TRIES;
+	float temp = 0;
+	do
+	{
+		if ( count == SPAWN_POSITION_MAX_TRIES )
+		{
+			result.x = Utility::randomRange( APP_SCREEN_WIDTH * 0.25f, APP_SCREEN_WIDTH * 0.75f );
+			count = 0;
+		}
+		result.y = Utility::randomRange( APP_SCREEN_HEIGHT * 0.25f, APP_SCREEN_HEIGHT * 0.75f );
+		temp = Utility::sqr( result.x - *parent->player->x ) +
+				Utility::sqr( result.y - * parent->player->y );
+		++count;
+	}
+	while ( temp < SPAWN_PLAYER_SAFE_RADIUS_SQR );
+	return result;
+}
+
+Vector2d<float> SpawnNormal::getItemPosition() const
+{
+	Vector2d<float> result;
+	result.x = Utility::clamp<float>( APP_SCREEN_WIDTH - *parent->player->x, APP_SCREEN_WIDTH * 0.05, APP_SCREEN_WIDTH * 0.95 );
+	result.y = Utility::clamp<float>( APP_SCREEN_HEIGHT - *parent->player->y, APP_SCREEN_HEIGHT * 0.05, APP_SCREEN_HEIGHT * 0.95 );
+	return result;
+}
 
 ///--- PRIVATE -----------------------------------------------------------------
 
 
 
-///-----------------------------------------------------------------------------
+///--- SPAWN REGION ------------------------------------------------------------
 
 SpawnRegion::SpawnRegion(std::map< int, int > probMatrix) :
 	totalCount(0)

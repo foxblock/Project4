@@ -2,7 +2,6 @@
 
 #include "UtilityFunctions.h"
 #include <vector>
-#include "gameDefines.h"
 
 #define FILE_HIGHSCORE_DELIMITER "|"
 
@@ -39,7 +38,7 @@ HighscoreFile::~HighscoreFile()
 				I->score << FILE_HIGHSCORE_DELIMITER <<
 				I->timestamp << FILE_HIGHSCORE_DELIMITER <<
 				// comment string
-				VERSION_STRING << "\n";
+				I->comment << "\n";
 	}
 
 	file.close();

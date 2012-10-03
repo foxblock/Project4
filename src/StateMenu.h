@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "sparrowFont.h"
+#include "Timer.h"
 
 class StateMenu : public StateBase
 {
@@ -16,10 +17,16 @@ public:
 	void render( SDL_Surface *target );
 
 protected:
-	std::size_t choice;
+	static std::size_t choice;
 	spFontPointer fontDark;
 	spFontPointer fontBright;
 	Timer inputLag;
+
+	SDL_Surface *text;
+	Timer textTimer;
+	int textMode;
+	int textIndex;
+	std::vector< std::pair< std::string, std::string > > lines;
 
 	struct MenuEntry
 	{

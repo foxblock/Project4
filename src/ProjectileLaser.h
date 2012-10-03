@@ -12,12 +12,14 @@ public:
 	ProjectileLaser( StateLevel *newParent, const int &duration );
 	virtual ~ProjectileLaser();
 
-	int update( Uint32 delta );
-	void render( SDL_Surface *target );
+	int update( const Uint32 &delta );
+	void render( SDL_Surface *const target );
 
 	ShapeRay shape;
 	Timer life;
 protected:
+	Timer blink;
+	int blinkStatus;
 
 private:
 

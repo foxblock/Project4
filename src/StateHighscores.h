@@ -20,6 +20,7 @@ protected:
 	HighscoreFile file;
 	spFontPointer fontW;
 	spFontPointer fontB;
+	spFontPointer fontHint;
 	int drawOffset;
 	int selOffset;
 	HighscoreFile::scoreIter offsetIter;

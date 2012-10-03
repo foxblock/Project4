@@ -7,114 +7,108 @@
 #include "Vector2d.h"
 
 #define FLOAT_ACCURACY 1e-10
-#define MY_RAND_MAX 32767
+#define MY_RAND_MAX 2147483647
 #define VEC_DELIMIT_CHAR ((std::string)",")
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
+#ifdef _DEBUG
+#define LOG_MESSAGE(x) printf("%s:%i\t\t%s\n",__FILE__,__LINE__,(x))
+#else
+#define LOG_MESSAGE(x)
+#endif
+
 namespace Utility
 {
+
+// -------- FUNCTIONS ----------------------------------------------------------
+
 template <class T>
-inline std::string numToStr( T number )
+inline std::string numToStr( const T &number )
 {
-	std::stringstream str;
+	std::ostringstream str;
 	str << number;
 	return str.str();
 };
 
 template <class T>
-inline T strToNum( std::string str )
+inline T strToNum( const std::string &str )
 {
-	std::stringstream ss;
+	std::istringstream ss (str);
 	T out;
-	ss << str;
 	ss >> out;
 	return out;
 };
 
 template <class T>
-inline std::string vecToStr( Vector2d<T> vec )
+inline std::string vecToStr( const Vector2d<T> &vec )
 {
-	std::string result = numToStr( vec.x ) + VEC_DELIMIT_CHAR + numToStr( vec.y );
+	std::string result = numToStr<T>( vec.x ) + VEC_DELIMIT_CHAR + numToStr<T>( vec.y );
 	return result;
 }
 
 template <class T>
-inline int sign( T number )
+inline int sign( const T &number )
 {
 	return ( ( number > 0 ) - ( 0 > number ) );
 }
 
 template <class T>
-inline T sqr( T number )
+inline T sqr( const T &number )
 {
 	return number * number;
 }
 
 template <class T>
-inline T clamp( T number, T minV, T maxV )
+inline T clamp( const T &number, const T &minV, const T &maxV )
 {
 	return std::min( std::max( minV, number ), maxV );
 }
 
-inline void tokenize( const std::string &str,
-					  std::vector<std::string> &tokens,
-					  const std::string &delimiters,
-					  const int &maxParts = -1 )
-{
-	tokens.clear();
-	// Skip delimiters at beginning.
-	std::string::size_type lastPos = str.find_first_not_of( delimiters, 0 );
-	// Find first "non-delimiter".
-	std::string::size_type pos     = str.find_first_of( delimiters, lastPos );
+void tokenize( const std::string &str, std::vector<std::string> &tokens,
+				const std::string &delimiters, const int &maxParts = -1 );
 
-	while ( ( ( maxParts <= 0 ) || tokens.size() < maxParts - 1 ) && ( std::string::npos != pos || std::string::npos != lastPos ) )
-	{
-		// Found a token, add it to the vector.
-		tokens.push_back( str.substr( lastPos, pos - lastPos ) );
-		// Skip delimiters.  Note the "not_of"
-		lastPos = str.find_first_not_of( delimiters, pos );
-		// Find next "non-delimiter"
-		pos = str.find_first_of( delimiters, lastPos );
-	}
-	if ( lastPos < str.size() )
-	{
-		tokens.push_back( str.substr( lastPos, str.size() - lastPos ) );
-	}
-}
+extern Uint32 w;
+extern Uint32 x;
+extern Uint32 y;
+extern Uint32 z;
 
-static unsigned int next = 1;
+void seedRand( const Uint32 &a = 88675123, const Uint32 &b = 123456789,
+				const Uint32 &c = 362436069, const Uint32 &d = 521288629);
 
-inline int my_rand_r(unsigned int *seed)
-{
-	*seed = *seed * 1103515245 + 12345;
-	return (*seed % ((unsigned int)MY_RAND_MAX + 1));
-}
+Uint32 rand();
 
-inline int my_rand(void)
-{
-	return (my_rand_r(&next));
-}
-
-inline void my_srand(unsigned int seed)
-{
-	next = seed;
-}
-
-inline int randomRange( int lower = 0, int upper = MY_RAND_MAX )
+inline Sint32 randomRange( Sint32 lower = 0, Sint32 upper = MY_RAND_MAX )
 {
 	if ( upper < lower )
 	{
-		int temp = lower;
+		Sint32 temp = lower;
 		lower = upper;
 		upper = temp;
 	}
 
 	if ( lower < 0 && upper < 0 )
-		return -( my_rand() % ( -lower + upper + 1 ) - upper );
+		return -( Utility::rand() % ( -lower + upper + 1 ) - upper );
 	else
-		return my_rand() % ( upper - lower + 1 ) + lower;
+		return Utility::rand() % ( upper - lower + 1 ) + lower;
 }
+
+inline bool floatComp( const float &a, const float &b )
+{
+	return ( abs( a - b ) < FLOAT_ACCURACY );
+}
+
+inline bool floatComp( const Vector2d<float> &a, const Vector2d<float> &b )
+{
+	return ( floatComp(a.x, b.x) && floatComp(a.y, b.y) );
+}
+
+// -------- STRUCTS ------------------------------------------------------------
+
+struct colour
+{
+	float r,g,b,intensity;
+};
 
 };
 

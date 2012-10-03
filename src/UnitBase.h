@@ -23,24 +23,27 @@ public:
 	UnitBase( StateLevel *newParent, ShapeBase *newShape );
 	virtual ~UnitBase();
 
-	virtual int update( Uint32 delta );
-	virtual void render( SDL_Surface *target );
+	virtual int update( const Uint32 &delta );
+	virtual void render( SDL_Surface *const target );
 
 	virtual bool checkCollision( UnitBase const *const other ) const;
 	virtual void collisionResponse( UnitBase *const other );
 
-	virtual void ai( Uint32 delta, UnitBase *player );
+	virtual void ai( const Uint32 &delta, UnitBase *const player );
 
 	bool toBeRemoved;
 
-	SimpleFlags props;
+	SimpleFlags flags;
 
 	enum UnitFlags
 	{
 		ufUnknown = 0,
 		ufDeadlyOnTouch = 1,
 		ufInvincible = 2,
-		ufEOL = 4
+		ufApplySlowmo = 4,
+		ufIsPlayer = 8,
+		ufFrozen = 16,
+		ufEOL = 32, // this marks the end of the unit flag list
 	};
 	enum UnitType
 	{
@@ -48,7 +51,11 @@ public:
 		utPlayer,
 		utSpike,
 		utLaser,
-		utBomb
+		utBomb,
+		utEOL, // end of unit types
+		utItemSlowmo,
+		utItemVortex,
+		utItemEOL // end of item types
 	};
 	UnitType type;
 

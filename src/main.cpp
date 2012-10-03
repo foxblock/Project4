@@ -25,6 +25,7 @@ int main( int argc, char **argv )
 	{
 		printf( "Application shut down gracefully.\n" );
 	}
+	fflush(stdout);
 
 	return 0;
 }

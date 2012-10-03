@@ -20,8 +20,16 @@ UnitBase::UnitBase( StateLevel *newParent, ShapeBase *newShape )
 	parent = newParent;
 	shape = newShape;
 	toBeRemoved = false;
-	x = NULL;
-	y = NULL;
+	if ( shape )
+	{
+		x = &( shape->pos.x );
+		y = &( shape->pos.y );
+	}
+	else
+	{
+		x = NULL;
+		y = NULL;
+	}
 	activeSprite = NULL;
 	maxVel = UNIT_DEFAULT_MAX_VEL;
 	maxAccel = UNIT_DEFAULT_MAX_ACCEL;
@@ -46,7 +54,7 @@ UnitBase::~UnitBase()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-int UnitBase::update( Uint32 delta )
+int UnitBase::update( const Uint32 &delta )
 {
 	vel += accel * delta;
 	if ( vel.lengthSquared() > Utility::sqr( friction ) * delta * delta )
@@ -59,12 +67,12 @@ int UnitBase::update( Uint32 delta )
 		accel = accel.unit() * maxAccel;
 	*x += vel.x * delta;
 	*y += vel.y * delta;
-	for ( std::vector< Timer* >::iterator I = timers.begin(); I != timers.end(); ++I )
-		(*I)->update( delta );
+	for ( std::vector< Timer * >::iterator I = timers.begin(); I != timers.end(); ++I )
+		( *I )->update( delta );
 	return 0;
 }
 
-void UnitBase::render( SDL_Surface *target )
+void UnitBase::render( SDL_Surface *const target )
 {
 	if ( activeSprite )
 		spBlitSurface( *x, *y, -1, activeSprite );
@@ -76,11 +84,11 @@ void UnitBase::render( SDL_Surface *target )
 	spLine( *x, *y, -1, *x + accel.x * DEBUG_ACCELERATION_LINE,
 			*y + accel.y * DEBUG_ACCELERATION_LINE, -1, spGetFastRGB( 0, 0, 255 ) );
 	spEllipseBorder( *x, *y, -1, maxVel * DEBUG_VELOCITY_LINE,
-					maxVel * DEBUG_VELOCITY_LINE, 1, 1, spGetFastRGB( 0, 255, 0 ) );
+					 maxVel * DEBUG_VELOCITY_LINE, 1, 1, spGetFastRGB( 0, 255, 0 ) );
 	spEllipseBorder( *x, *y, -1, maxAccel * DEBUG_ACCELERATION_LINE,
-					maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 0, 255 ) );
+					 maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 0, 255 ) );
 	spEllipseBorder( *x, *y, -1, friction * DEBUG_ACCELERATION_LINE,
-					friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 255, 255 ) );
+					 friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 255, 255 ) );
 	spFontDraw( *x, *y, -1, debugString.c_str(), debugFont );
 	debugString = "";
 #endif
@@ -95,15 +103,16 @@ bool UnitBase::checkCollision( UnitBase const *const other ) const
 
 void UnitBase::collisionResponse( UnitBase *const other )
 {
-	if ( props.hasFlag( ufDeadlyOnTouch ) && !other->props.hasFlag( ufInvincible ) )
+	if ( flags.has( ufDeadlyOnTouch ) && !other->flags.has( ufInvincible ) )
 	{
+		LOG_MESSAGE( "Unit beeing killed" );
 		other->toBeRemoved = true;
 		EventUnitDeath *event = new EventUnitDeath( other, this );
 		parent->addEvent( event );
 	}
 }
 
-void UnitBase::ai( Uint32 delta, UnitBase *player )
+void UnitBase::ai( const Uint32 &delta, UnitBase *const player )
 {
 	//
 }

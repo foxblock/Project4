@@ -11,12 +11,12 @@ public:
 	UnitBomb( StateLevel *newParent );
 	virtual ~UnitBomb();
 
-	int update( Uint32 delta );
-	void render ( SDL_Surface *target );
+	int update( const Uint32 &delta );
+	void render ( SDL_Surface *const target );
 
 	void collisionResponse( UnitBase *const other );
 
-	void ai( Uint32 delta, UnitBase *player );
+	void ai( const Uint32 &delta, UnitBase *const player );
 
 	ShapeCircle shape;
 	Timer bombTimer;

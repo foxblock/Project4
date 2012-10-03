@@ -16,7 +16,9 @@ public:
 	virtual ~StateBase();
 
 	virtual int update( Uint32 delta );
+	virtual int pauseUpdate( Uint32 delta );
 	virtual void render( SDL_Surface* target )=0;
+	virtual void pauseRender( SDL_Surface* target );
 
 	std::string getLastError() { return errorString; }
 
@@ -29,9 +31,14 @@ public:
 		stReplay,
 		stMenu,
 		stHighscores,
-		stReplayLoader
+		stReplayLoader,
+		stError
 	};
 	StateType type;
+
+	std::string message;
+
+	bool paused;
 
 protected:
 	std::string errorString;

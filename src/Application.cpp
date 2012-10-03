@@ -10,6 +10,8 @@
 #include "StateMenu.h"
 #include "StateReplayLoader.h"
 #include "StateHighscores.h"
+#include "StateError.h"
+#include "UtilityFunctions.h"
 
 #ifdef WIN32
 #include <direct.h>
@@ -62,6 +64,12 @@ Application::~Application()
 
 bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) )
 {
+	printf( "Starting application... Version: %s\n", VERSION_STRING );
+
+	Utility::seedRand( 987654321 );
+	printf("Random test: %i %i %i %i\n",Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100));
+	printf("Control group: %i %i %i %i\n",-3, -4, 37, -81);
+
 	if ( spLoop( spDraw, spCalc, 2, NULL, NULL ) != ERROR_CODE )
 		return true;
 	return false;
@@ -69,6 +77,8 @@ bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 s
 
 int Application::update( Uint32 delta )
 {
+	LOG_MESSAGE("Running state update...");
+
 	if ( prevState ) // Transition
 	{
 		delete prevState;
@@ -79,9 +89,20 @@ int Application::update( Uint32 delta )
 		int result = 0;
 		for ( int I = 0; I < delta; ++I )
 		{
-			result = activeState->update( 1 );
+			if ( activeState->paused )
+				result = activeState->pauseUpdate( 1 );
+			else
+				result = activeState->update( 1 );
 			if ( result != 0 )
 				break;
+		}
+
+		if ( activeState->getLastError()[0] != 0 )
+		{
+			printf( "State %i returned error: %s\n", activeState->type, activeState->getLastError().c_str() );
+			prevState = activeState;
+			activeState = new StateError( prevState->getLastError(), (StateBase::StateType)result );
+			return 0;
 		}
 
 		switch ( result )
@@ -107,7 +128,7 @@ int Application::update( Uint32 delta )
 			break;
 		case StateBase::stReplay:
 			prevState = activeState;
-			activeState = new StateLevel( prevState->getLastError() );
+			activeState = new StateLevel( prevState->message );
 			break;
 		case StateBase::stMenu:
 			prevState = activeState;
@@ -132,15 +153,18 @@ int Application::update( Uint32 delta )
 
 void Application::render()
 {
-	//spResetZBuffer();
+	LOG_MESSAGE("Rendering...");
 
 	if ( prevState ) // Transition
 	{
 
 	}
-	else
+	else if ( activeState )
 	{
-		activeState->render( screen );
+		if ( activeState->paused )
+			activeState->pauseRender( screen );
+		else
+			activeState->render( screen );
 	}
 
 	spFlip();

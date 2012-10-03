@@ -24,6 +24,7 @@
 					<Add option="-s" />
 					<Add option="-lmingw32" />
 					<Add option="-lSDLmain" />
+					<Add option="-lsparrow3d" />
 					<Add directory="$(#mingw.lib)" />
 					<Add directory="..\sparrow3d\bin\W32" />
 				</Linker>
@@ -84,6 +85,8 @@
 					<Add option="-lpng" />
 					<Add option="-lz" />
 					<Add option="-lts" />
+					<Add option="-lmad" />
+					<Add option="-lsparrow3d" />
 					<Add directory="$(#pandora_sdk.lib)" />
 					<Add directory="..\sparrow3d\bin\Pandora" />
 				</Linker>
@@ -119,6 +122,7 @@
 					<Add option="-lpng" />
 					<Add option="-lz" />
 					<Add option="-lts" />
+					<Add option="-lmad" />
 					<Add directory="$(#pandora_sdk.lib)" />
 					<Add directory="..\sparrow3d\bin\Pandora" />
 				</Linker>
@@ -133,12 +137,12 @@
 			<Add option="-lSDL" />
 			<Add option="-lSDL_image" />
 			<Add option="-lSDL_ttf" />
-			<Add option="-lsparrow3d" />
+			<Add option="-lSDL_mixer" />
 		</Linker>
 		<Unit filename="..\sparrow3d\sparrow3d.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowCore.c">
 			<Option compilerVar="CC" />
@@ -147,13 +151,23 @@
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowCore.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowDefines.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowFile.c">
+			<Option compilerVar="CC" />
+			<Option target="W32 Debug" />
+			<Option target="Pandora Debug" />
+		</Unit>
+		<Unit filename="..\sparrow3d\sparrowFile.h">
+			<Option target="W32 Debug" />
+			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowFont.c">
 			<Option compilerVar="CC" />
@@ -162,19 +176,18 @@
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowFont.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMath.c">
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMath.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMesh.c">
 			<Option compilerVar="CC" />
@@ -183,79 +196,75 @@
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowMesh.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowPrimitives.c">
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowPrimitives.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowPrimitivesAsm.c">
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowRenderer.c">
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowRenderer.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowSprite.c">
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowSprite.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowText.c">
 			<Option compilerVar="CC" />
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
 		</Unit>
 		<Unit filename="..\sparrow3d\sparrowText.h">
 			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
 			<Option target="Pandora Debug" />
+			<Option target="Pandora Release" />
 		</Unit>
 		<Unit filename="..\sparrow3d\testsparrow.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="W32 Debug" />
-			<Option target="Pandora Release" />
-			<Option target="Pandora Debug" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="..\sparrow3d\testsprite.c">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="W32 Debug" />
-			<Option target="Pandora Debug" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="src\Application.cpp" />
 		<Unit filename="src\Application.h" />
 		<Unit filename="src\Events.h" />
 		<Unit filename="src\HighscoreFile.cpp" />
 		<Unit filename="src\HighscoreFile.h" />
+		<Unit filename="src\ItemSlowmo.cpp" />
+		<Unit filename="src\ItemSlowmo.h" />
+		<Unit filename="src\ItemVortex.cpp" />
+		<Unit filename="src\ItemVortex.h" />
 		<Unit filename="src\ProjectileLaser.cpp" />
 		<Unit filename="src\ProjectileLaser.h" />
 		<Unit filename="src\Replay.cpp" />
@@ -278,10 +287,14 @@
 		<Unit filename="src\SpawnBase.h" />
 		<Unit filename="src\SpawnNormal.cpp" />
 		<Unit filename="src\SpawnNormal.h" />
+		<Unit filename="src\SpawnWaves.cpp" />
+		<Unit filename="src\SpawnWaves.h" />
 		<Unit filename="src\StateBase.cpp" />
 		<Unit filename="src\StateBase.h" />
 		<Unit filename="src\StateCollision.cpp" />
 		<Unit filename="src\StateCollision.h" />
+		<Unit filename="src\StateError.cpp" />
+		<Unit filename="src\StateError.h" />
 		<Unit filename="src\StateHighscores.cpp" />
 		<Unit filename="src\StateHighscores.h" />
 		<Unit filename="src\StateLevel.cpp" />
@@ -304,6 +317,7 @@
 		<Unit filename="src\UnitPlayer.h" />
 		<Unit filename="src\UnitSpike.cpp" />
 		<Unit filename="src\UnitSpike.h" />
+		<Unit filename="src\UtilityFunctions.cpp" />
 		<Unit filename="src\UtilityFunctions.h" />
 		<Unit filename="src\Vector2d.h" />
 		<Unit filename="src\gameDefines.h" />

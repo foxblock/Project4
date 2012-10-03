@@ -33,14 +33,13 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 		generateAttackImage();
 	activeSprite = idle;
 	shape.radius = SPIKE_IDLE_RADIUS;
-	x = &( shape.pos.x );
-	y = &( shape.pos.y );
 	chargeState = 0;
 	maxVel = SPIKE_IDLE_MAX_VEL;
 	maxAccel = SPIKE_IDLE_MAX_ACCEL;
 	friction = SPIKE_IDLE_FRICTION;
 	type = utSpike;
 	timers.push_back( &chargeTimer );
+	target = Vector2d<float>(-1,-1);
 }
 
 UnitSpike::~UnitSpike()
@@ -51,35 +50,62 @@ UnitSpike::~UnitSpike()
 
 ///--- PUBLIC ------------------------------------------------------------------
 
-void UnitSpike::ai( Uint32 delta, UnitBase *player )
+void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 {
+	if ( !shape.pos.isInRect( Vector2d<int>(0,0), Vector2d<int>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) ) &&
+		target.x < 0 && target.y < 0 )
+	{
+		target = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
+		float dist = std::sqrt( Utility::sqr( shape.pos.x - Utility::clamp( (int)shape.pos.x, 0, APP_SCREEN_WIDTH ) ) +
+								Utility::sqr( shape.pos.y - Utility::clamp( (int)shape.pos.y, 0, APP_SCREEN_HEIGHT ) ) );
+		target = shape.pos + (target - shape.pos).unit() * ( dist + shape.radius );
+	}
+	if ( target.x > 0 && target.y > 0 )
+	{
+		maxVel = SPIKE_IDLE_MAX_VEL;
+		maxAccel = SPIKE_IDLE_MAX_ACCEL;
+		friction = SPIKE_IDLE_FRICTION;
+		accel = (target - shape.pos).unit() * SPIKE_IDLE_MAX_ACCEL * delta;
+		if ( Utility::floatComp( target, shape.pos ) )
+			target = Vector2d<float>(-1,-1);
+		else
+			return;
+	}
+
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
+	// waiting for charge -> charging
 	if ( chargeTimer.isStopped() && chargeState == 1 )
 	{
 		maxVel = UNIT_DEFAULT_MAX_VEL;
 		vel = diff.unit() * SPIKE_CHARGE_MAX_VEL;
 		friction = 0;
 		activeSprite = attack;
-		props.addFlag( ufDeadlyOnTouch );
+		flags.add( ufDeadlyOnTouch );
 		chargeState = 2;
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
+	// prevent charging unit from going off screen
 	if ( !chargeTimer.isStopped() && chargeState == 2 &&
 		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_HEIGHT)) )
 	{
 		chargeTimer.stop();
+		*x = Utility::clamp( *x, 0.0f, (float)APP_SCREEN_WIDTH );
+		*y = Utility::clamp( *y, 0.0f, (float)APP_SCREEN_HEIGHT );
 	}
+	// charging -> idle movement
 	if ( chargeTimer.isStopped() && chargeState == 2 )
 	{
 		chargeState = 0;
 		activeSprite = idle;
-		props.removeFlag( ufDeadlyOnTouch );
+		flags.remove( ufDeadlyOnTouch );
 		vel = Vector2d<float>( 0, 0 );
 		accel = Vector2d<float>( 0, 0 );
 	}
+	// idle
 	if ( chargeState == 0 )
 	{
+		// idle -> charging
 		if ( dist < SPIKE_CHARGE_RADIUS_SQR )
 		{
 			chargeTimer.start( SPIKE_WAIT_TIME );
@@ -87,13 +113,14 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 			vel = Vector2d<float>( 0, 0 );
 			accel = Vector2d<float>( 0, 0 );
 		}
+		// idle -> following
 		else if ( dist < SPIKE_ATTACK_RADIUS_SQR )
 		{
 			maxVel = SPIKE_MOVEMENT_MAX_VEL;
 			friction = UNIT_DEFAULT_FRICTION;
 			maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 			accel = diff.unit() * SPIKE_ATTACK_ACCEL;
-		}
+		}// idle movement
 		else
 		{
 			maxVel = SPIKE_IDLE_MAX_VEL;
@@ -111,7 +138,7 @@ void UnitSpike::ai( Uint32 delta, UnitBase *player )
 	}
 }
 
-void UnitSpike::render( SDL_Surface *target )
+void UnitSpike::render( SDL_Surface *const target )
 {
 	UnitBase::render( target );
 	if ( chargeState == 1 )
@@ -141,7 +168,7 @@ void UnitSpike::generateAttackImage()
 	SDL_FillRect( attack, NULL, SP_ALPHA_COLOR );
 	spSelectRenderTarget( attack );
 	spEllipse( SPIKE_ATTACK_RADIUS, SPIKE_ATTACK_RADIUS, -1, SPIKE_IDLE_RADIUS, SPIKE_IDLE_RADIUS, spGetFastRGB(255,0,0) );
-	float spikeRadSize = 2.0f * M_PI / SPIKE_SPIKE_COUNT;
+	const float spikeRadSize = 2.0f * M_PI / SPIKE_SPIKE_COUNT;
 	for ( int I = 0; I < SPIKE_SPIKE_COUNT; ++I )
 	{
 		spTriangle( SPIKE_ATTACK_RADIUS + SPIKE_ATTACK_RADIUS * sin( spikeRadSize * I ),

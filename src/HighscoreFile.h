@@ -5,6 +5,7 @@
 #include <set>
 #include <fstream>
 #include <time.h>
+#include "gameDefines.h"
 
 #define SCORE_ENTRY_SIZE 4
 
@@ -35,7 +36,7 @@ public:
 
 	void addScore( const std::string &name, const int &score, const int &timestamp )
 	{
-		ScoreEntry temp = { name, score, timestamp };
+		ScoreEntry temp = { name, score, timestamp, VERSION_STRING };
 		scores.insert( temp );
 	}
 	void addScore( const ScoreEntry &entry )

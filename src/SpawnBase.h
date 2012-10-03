@@ -6,6 +6,8 @@
 #include <vector>
 
 class StateLevel;
+class UnitBase;
+class EventBase;
 
 class SpawnBase
 {
@@ -15,6 +17,10 @@ public:
 
 	virtual int update( Uint32 delta );
 	virtual void render( SDL_Surface *target )=0;
+
+	virtual void handleEvent( EventBase const * const event );
+
+	virtual UnitBase * getUnit( const int &type ) const=0;
 protected:
 	StateLevel *parent;
 	std::vector< Timer* > timers;
