@@ -45,7 +45,7 @@ StateScore::StateScore( StateLevel *level ) :
 	{
 		caret = true;
 		state = 0;
-		spPollKeyboardInput( name, SCORE_MAX_NAME_LENGTH, 1 );
+		spPollKeyboardInput( name, SCORE_MAX_NAME_LENGTH, SP_BUTTON_RIGHT_MASK | SP_BUTTON_DOWN_MASK );
 		run = level->run;
 		level->run = NULL;
 	}
@@ -129,7 +129,7 @@ void StateScore::render( SDL_Surface *target )
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE, -1, temp, scoreText);
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE * 3, -1, "Press \""SP_BUTTON_START_NAME"\" to go again...", scoreText );
 	}
-	if (spIsInputLocked())
+	if (spIsKeyboardPolled())
 		spBlitSurface(APP_SCREEN_WIDTH/2,APP_SCREEN_HEIGHT-spGetVirtualKeyboard()->h/2,0,spGetVirtualKeyboard());
 }
 

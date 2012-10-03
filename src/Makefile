@@ -73,7 +73,7 @@ targets:
 	@echo "gp2x, open2x (like gp2x, but dynamic compiled => smaller), wiz caanoo, dingux, pandora, maemo5, maemo6"
 
 Project4: main.cpp Application.o ProjectileLaser.o ShapeCircle.o ShapeRay.o ShapeRect.o SimpleDirection.o StateBase.o StateCollision.o StateLevel.o Timer.o UnitBase.o UnitBomb.o UnitLaser.o UnitPlayer.o UnitSpike.o HighscoreFile.o Replay.o StateHighscores.o StateMenu.o StateReplayLoader.o StateScore.o SpawnNormal.o ScoreNormal.o SpawnBase.o ScoreBase.o ItemSlowmo.o ItemVortex.o SpawnWaves.o StateError.o UtilityFunctions.o
-	$(CPP) $(CFLAGS) main.cpp Application.o ProjectileLaser.o ShapeCircle.o ShapeRay.o ShapeRect.o SimpleDirection.o StateBase.o StateCollision.o StateLevel.o Timer.o UnitBase.o UnitBomb.o UnitLaser.o UnitPlayer.o UnitSpike.o HighscoreFile.o Replay.o StateHighscores.o StateMenu.o StateReplayLoader.o StateScore.o SpawnNormal.o ScoreNormal.o SpawnBase.o ScoreBase.o ItemSlowmo.o ItemVortex.o SpawnWaves.o StateError.o UtilityFunctions.o $(SDL) $(INCLUDE) -L../build $(LIB) $(STATIC) $(DYNAMIC) -lsparrow3d -o ../build/Project4
+	$(CPP) $(CFLAGS) main.cpp Application.o ProjectileLaser.o ShapeCircle.o ShapeRay.o ShapeRect.o SimpleDirection.o StateBase.o StateCollision.o StateLevel.o Timer.o UnitBase.o UnitBomb.o UnitLaser.o UnitPlayer.o UnitSpike.o HighscoreFile.o Replay.o StateHighscores.o StateMenu.o StateReplayLoader.o StateScore.o SpawnNormal.o ScoreNormal.o SpawnBase.o ScoreBase.o ItemSlowmo.o ItemVortex.o SpawnWaves.o StateError.o UtilityFunctions.o $(SDL) $(INCLUDE) -L../../sparrow3d $(LIB) $(STATIC) $(DYNAMIC) -lsparrow3d -o ../build/Project4
 
 
 Application.o: Application.cpp Application.h
