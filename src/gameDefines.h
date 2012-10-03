@@ -11,7 +11,7 @@
 	#define APP_SCREEN_HEIGHT 480
 	#define APP_FULLSCREEN 1
 #else
-	#define APP_SCREEN_WIDTH 800
+	#define APP_SCREEN_WIDTH 640
 	#define APP_SCREEN_HEIGHT 480
 	#define APP_FULLSCREEN 0
 #endif
