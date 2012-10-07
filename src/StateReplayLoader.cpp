@@ -15,7 +15,7 @@ StateReplayLoader::StateReplayLoader()
 	{
 		spFontAdd( font, SP_FONT_GROUP_ALPHABET SP_FONT_GROUP_GERMAN SP_FONT_GROUP_NUMBERS ".:!\"_", 0 );
 	}
-	spPollKeyboardInput( filenameBuffer, 255, NULL );
+	spPollKeyboardInput( filenameBuffer, 255, SP_BUTTON_RIGHT_MASK | SP_BUTTON_DOWN_MASK );
 	caretTimer.start( REPLAY_CARET_BLINK_TIME );
 	timers.push_back( &caretTimer );
 	caret = true;
@@ -68,6 +68,8 @@ void StateReplayLoader::render(SDL_Surface* target)
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + REPLAY_FONT_SIZE, -1, temp, font);
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + REPLAY_FONT_SIZE * 3, -1, "Press \""SP_BUTTON_START_NAME"\" to load...", font );
 	}
+	if (spIsKeyboardPolled())
+		spBlitSurface(APP_SCREEN_WIDTH/2,APP_SCREEN_HEIGHT-spGetVirtualKeyboard()->h/2,0,spGetVirtualKeyboard());
 }
 
 
