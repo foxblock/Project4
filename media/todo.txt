@@ -61,6 +61,7 @@ Legend:
 - Help screen / tutorial
 + Pause
 - Change to fit different resolutions
+  - Change pixel values to percentage of screen region
 - Draw menu elements (buttons, icons, etc.)
 ---
 * Change render pipeline for final graphics style

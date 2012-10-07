@@ -36,7 +36,6 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	shape.radius = LASER_RADIUS;
 	projectile = NULL;
 	hasCharged = false;
-	maxAccel = 0.01f;
 	type = utLaser;
 	life.start( LASER_TIME_MOVEMENT );
 	maxVel = LASER_MAX_MOVEMENT_SPEED;
