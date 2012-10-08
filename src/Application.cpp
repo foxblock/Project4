@@ -37,7 +37,7 @@ Application::Application()
 	spSetVerticalOrigin( SP_CENTER );
 	spSetZSet( 0 );
 	spSetZTest( 0 );
-	spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_IF_NEEDED,APP_SCREEN_WIDTH,APP_SCREEN_WIDTH*3/20,spLoadSurface("./data/keyboard1280.png"));
+	spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_IF_NEEDED,0,APP_SCREEN_HEIGHT-APP_SCREEN_WIDTH*3/20,APP_SCREEN_WIDTH,APP_SCREEN_WIDTH*3/20,spLoadSurface("./data/keyboard1280.png"),spLoadSurface("./data/keyboardShift1280.png"));
 
 	errorString = "";
 	activeState = new STARTING_STATE();
