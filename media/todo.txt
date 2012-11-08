@@ -33,7 +33,11 @@ Legend:
   + create event system checking wave spawning criteria
   + create spawn class
   + create region class for single spawns
-  - power-ups
+  + power-ups
+  - change to wave spawns only
+    - spawn a wave after a fixes amount of time
+    - type of wave would be dependant on wave spawning criteria
+    - time between waves becomes less in agression mode and more in evasion mode
 ---
 * Scoring system
   + assign points to each unit
@@ -68,3 +72,4 @@ Legend:
   + change units to be drawn with sparrow shapes
   - expose pixel matrix
   - create style class for pixel manipulation
+  - create final style of the game (effects, etc.!
