@@ -7,7 +7,6 @@
 #include "StateLevel.h"
 #include "gameDefines.h"
 
-#define LASER_EYE_DISTANCE 15.0f
 // Radians per millisecond
 #define LASER_ROTATION_SPEED 0.01f
 #define LASER_ROTATION_THESHOLD 0.05f
@@ -16,7 +15,8 @@
 #define LASER_ATTACK_RADIUS_SQR 90000.0f
 #define LASER_IDLE_SPEED 2e-6
 #define LASER_IDLE_MAX_SPEED 2e-5
-#define LASER_RADIUS 32
+#define LASER_RADIUS 16
+#define LASER_EYE_DISTANCE 7.5f
 #define LASER_TIME_MOVEMENT 2500
 #define LASER_MAX_MOVEMENT_SPEED 0.04f
 #define LASER_MOVEMENT_ACCEL 0.003f

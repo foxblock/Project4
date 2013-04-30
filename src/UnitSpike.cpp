@@ -19,8 +19,8 @@
 #define SPIKE_WAIT_TIME 500
 #define SPIKE_CHARGE_TIME 500
 #define SPIKE_SPIKE_COUNT 16
-#define SPIKE_IDLE_RADIUS 20
-#define SPIKE_ATTACK_RADIUS 32
+#define SPIKE_IDLE_RADIUS 10
+#define SPIKE_ATTACK_RADIUS 16
 
 SDL_Surface* UnitSpike::idle = NULL;
 SDL_Surface* UnitSpike::attack = NULL;
@@ -143,8 +143,8 @@ void UnitSpike::render( SDL_Surface *const target )
 	UnitBase::render( target );
 	if ( chargeState == 1 )
 	{
-		spEllipse( *x, *y, -1, 20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
-				   20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
+		spEllipse( *x, *y, -1, SPIKE_IDLE_RADIUS * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
+				   SPIKE_IDLE_RADIUS * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
 				   spGetFastRGB( 255, 0 , 0 ) );
 	}
 }

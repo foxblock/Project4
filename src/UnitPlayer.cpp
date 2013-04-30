@@ -6,8 +6,8 @@
 // Pixels per millisecond
 #define PLAYER_MAX_VELOCITY 0.5f
 #define PLAYER_ACCEL 0.01f
-#define PLAYER_DRAW_RADIUS 20
-#define PLAYER_COLLISION_RADIUS 8
+#define PLAYER_DRAW_RADIUS 10
+#define PLAYER_COLLISION_RADIUS 4
 
 UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
