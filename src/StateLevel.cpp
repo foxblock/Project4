@@ -38,7 +38,7 @@ StateLevel::StateLevel( const std::string &filename ) :
 	bgcol.r = 0;
 	bgcol.g = 0;
 	bgcol.b = 255;
-	bgcol.intensity = 0.50;
+	bgcol.intensity = 0.7;
 
 	pauseScreen = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 
@@ -283,7 +283,9 @@ void StateLevel::pauseRender( SDL_Surface *target )
 
 void StateLevel::addUnit( UnitBase *newUnit, const bool &generateEvent )
 {
+#ifdef _DEBUG
 	printf("%s:%i\t\t%s, type: %i\n",__FILE__,__LINE__,"New unit is being added",newUnit->type);
+#endif
 	if ( generateEvent )
 	{
 		EventUnitSpawn *event = new EventUnitSpawn( newUnit );
@@ -294,7 +296,9 @@ void StateLevel::addUnit( UnitBase *newUnit, const bool &generateEvent )
 
 void StateLevel::addEvent( EventBase *newEvent )
 {
+#ifdef _DEBUG
 	printf("%s:%i\t\t%s, type: %i\n",__FILE__,__LINE__,"New event is being added",newEvent->type);
+#endif
 	eventQueue.push_back( newEvent );
 }
 
@@ -325,19 +329,22 @@ void StateLevel::handleEvents( Uint32 delta )
 				tempCol.r = 0;
 				tempCol.g = 0;
 				tempCol.b = 255;
+				tempCol.intensity = 0.7;
 				break;
 			case ScoreNormal::smPeace:
 				tempCol.r = 0;
 				tempCol.g = 255;
 				tempCol.b = 0;
+				tempCol.intensity = 0.5;
 				break;
 			case ScoreNormal::smAggression:
 				tempCol.r = 255;
 				tempCol.g = 0;
 				tempCol.b = 0;
+				tempCol.intensity = 0.5;
 				break;
 			}
-			tempCol.intensity = bgcol.intensity;
+			//tempCol.intensity = bgcol.intensity;
 			bgEffects.push_back( std::make_pair(temp,tempCol) );
 			break;
 		}
