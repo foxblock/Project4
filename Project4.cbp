@@ -287,10 +287,11 @@
 		<Unit filename="src/SimpleFlags.h" />
 		<Unit filename="src/SpawnBase.cpp" />
 		<Unit filename="src/SpawnBase.h" />
+		<Unit filename="src/SpawnFile.cpp" />
+		<Unit filename="src/SpawnFile.h" />
+		<Unit filename="src/SpawnFileEntry.h" />
 		<Unit filename="src/SpawnNormal.cpp" />
 		<Unit filename="src/SpawnNormal.h" />
-		<Unit filename="src/SpawnWaves.cpp" />
-		<Unit filename="src/SpawnWaves.h" />
 		<Unit filename="src/StateBase.cpp" />
 		<Unit filename="src/StateBase.h" />
 		<Unit filename="src/StateCollision.cpp" />
@@ -307,6 +308,8 @@
 		<Unit filename="src/StateReplayLoader.h" />
 		<Unit filename="src/StateScore.cpp" />
 		<Unit filename="src/StateScore.h" />
+		<Unit filename="src/StateWave.cpp" />
+		<Unit filename="src/StateWave.h" />
 		<Unit filename="src/Timer.cpp" />
 		<Unit filename="src/Timer.h" />
 		<Unit filename="src/UnitBase.cpp" />
@@ -322,6 +325,8 @@
 		<Unit filename="src/UtilityFunctions.cpp" />
 		<Unit filename="src/UtilityFunctions.h" />
 		<Unit filename="src/Vector2d.h" />
+		<Unit filename="src/Waves.cpp" />
+		<Unit filename="src/Waves.h" />
 		<Unit filename="src/gameDefines.h" />
 		<Unit filename="src/main.cpp" />
 		<Extensions>

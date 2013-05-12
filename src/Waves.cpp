@@ -1,4 +1,4 @@
-#include "SpawnWaves.h"
+#include "Waves.h"
 
 #include "StateLevel.h"
 #include "SpawnBase.h"

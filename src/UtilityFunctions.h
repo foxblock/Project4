@@ -39,6 +39,23 @@ inline T strToNum( const std::string &str )
 	ss >> out;
 	return out;
 };
+template <class T>
+inline T strToNum( const char* &str )
+{
+	std::istringstream ss (str);
+	T out;
+	ss >> out;
+	return out;
+};
+template <class T>
+inline T strToNum( const char &str )
+{
+	std::stringstream ss;
+	ss << str;
+	T out;
+	ss >> out;
+	return out;
+};
 
 template <class T>
 inline std::string vecToStr( const Vector2d<T> &vec )

@@ -6,13 +6,8 @@
 #include "ScoreNormal.h"
 #include "UtilityFunctions.h"
 
-// Unit classes
+#include "UnitBase.h"
 #include "UnitPlayer.h"
-#include "UnitSpike.h"
-#include "UnitLaser.h"
-#include "UnitBomb.h"
-#include "ItemSlowmo.h"
-#include "ItemVortex.h"
 
 #include "ShapeRect.h"
 #include "ShapeCircle.h"
@@ -177,28 +172,25 @@ void SpawnNormal::handleEvent(EventBase const* const event)
 
 UnitBase * SpawnNormal::getUnit( const int& type ) const
 {
-	UnitBase *unit = NULL;
+	UnitBase *unit = SpawnBase::getUnit( type );
+
+	if ( !unit )
+		return NULL;
+
 	switch ( type )
 	{
 	case UnitBase::utSpike:
-		unit = new UnitSpike( parent );
 		unit->shape->pos = getSpikePosition();
 		break;
 	case UnitBase::utLaser:
-		unit = new UnitLaser( parent );
 		unit->shape->pos = getLaserPosition();
 		break;
 	case UnitBase::utBomb:
-		unit = new UnitBomb( parent );
 		unit->shape->pos = getBombPosition();
 		break;
 
 	case UnitBase::utItemSlowmo:
-		unit = new ItemSlowmo( parent );
-		unit->shape->pos = getItemPosition();
-		break;
 	case UnitBase::utItemVortex:
-		unit = new ItemVortex( parent );
 		unit->shape->pos = getItemPosition();
 		break;
 	default:
@@ -211,8 +203,10 @@ UnitBase * SpawnNormal::getUnit( const int& type ) const
 
 void SpawnNormal::render( SDL_Surface *target )
 {
+	#ifdef _DEBUG
 	for ( std::vector< SpawnRegion * >::iterator I = regions.begin(); I != regions.end(); ++I )
 		(*I)->render( target );
+	#endif
 }
 
 ///--- PROTECTED ---------------------------------------------------------------

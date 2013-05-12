@@ -4,7 +4,7 @@
 #include "UnitBase.h"
 #include "SpawnBase.h"
 #include "ShapeBase.h"
-#include "SpawnWaves.h"
+#include "Waves.h"
 #include <vector>
 #include <map>
 

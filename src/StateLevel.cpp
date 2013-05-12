@@ -269,8 +269,8 @@ void StateLevel::render( SDL_Surface *target )
 	debugString += Utility::numToStr( units.size() ) + " units\n";
 	if ( debugText )
 		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
-	spawnHandler.render( target );
 #endif
+	spawnHandler.render( target );
 }
 
 void StateLevel::pauseRender( SDL_Surface *target )

@@ -1,5 +1,5 @@
-#ifndef _SPAWN_WAVES_H
-#define _SPAWN_WAVES_H
+#ifndef _WAVES_BASE_H
+#define _WAVES_BASE_H
 
 class StateLevel;
 class SpawnBase;
@@ -33,5 +33,5 @@ public:
 
 
 
-#endif // _SPAWN_WAVES_H
+#endif // _WAVES_BASE_H
 
