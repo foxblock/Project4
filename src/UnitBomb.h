@@ -5,6 +5,12 @@
 #include "ShapeCircle.h"
 #include "Timer.h"
 
+#define BOMB_PRESSURE_LEVEL_1 50
+#define BOMB_PRESSURE_LEVEL_2 100
+#define BOMB_PRESSURE_LEVEL_3 180
+#define BOMB_PRESSURE_LEVEL_4 300
+#define BOMB_PRESSURE_LEVEL_5 999 // Explode
+
 class UnitBomb : public UnitBase
 {
 public:
@@ -20,6 +26,7 @@ public:
 
 	ShapeCircle shape;
 	Timer bombTimer;
+	int pressure;
 protected:
 
 private:
@@ -29,7 +36,6 @@ private:
 	static SDL_Surface *idle;
 	static SDL_Surface *flashing;
 
-	int pressure;
 	int status;
 	bool isFlashing;
 	Timer flashTimer;

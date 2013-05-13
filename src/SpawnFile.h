@@ -19,6 +19,20 @@ protected:
 	void parsePattern( const SpawnWave::SpawnEntry &entry );
 	void parseText( const SpawnWave::SpawnEntry &entry );
 
+	void patternCircle( const int &type, const float &x, const float &y,
+						const float &radius, const int &amount );
+	void patternLineH( const int &type, const int &amount );
+	void patternLineV( const int &type, const int &amount );
+
+	enum PatternType
+	{
+		ptNone=0,
+		ptCircle,
+		ptLineH,
+		ptLineV,
+		ptEOL
+	};
+
 	std::vector< SpawnWave* > waves;
 	int currentTick;
 	int currentWave;

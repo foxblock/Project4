@@ -9,10 +9,7 @@
 #define BOMB_PRESSURE_RADIUS_SQR_HI  22500.0f
 #define BOMB_PRESSURE_RADIUS_SQR_MID 10000.0f
 #define BOMB_PRESSURE_RADIUS_SQR_LOW  3600.0f
-#define BOMB_PRESSURE_LEVEL_1 50
-#define BOMB_PRESSURE_LEVEL_2 100
-#define BOMB_PRESSURE_LEVEL_3 180
-#define BOMB_PRESSURE_LEVEL_4 300
+// pressure levels in header
 #define BOMB_PRESSURE_TIMER_1 200
 #define BOMB_PRESSURE_TIMER_2 120
 #define BOMB_PRESSURE_TIMER_3 50
@@ -107,11 +104,7 @@ void UnitBomb::collisionResponse( UnitBase *const other )
 	{
 		if ( flags.has( ufDeadlyOnTouch ) && !other->flags.has( ufInvincible ) )
 		{
-			((UnitBomb*)other)->bombTimer.start( BOMB_EXPLOSION_TIME );
-			other->accel = Vector2d<float>(0,0);
-			other->vel = Vector2d<float>(0,0);
-			other->flags.add( UnitBase::ufDeadlyOnTouch );
-			other->flags.add( UnitBase::ufInvincible );
+			((UnitBomb*)other)->pressure = BOMB_PRESSURE_LEVEL_5;
 			EventBombCascade *event = new EventBombCascade( this, other );
 			parent->addEvent( event );
 		}

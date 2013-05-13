@@ -4,7 +4,14 @@
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
 
-#include "UnitBase.h"
+// Unit classes
+#include "UnitPlayer.h"
+#include "UnitSpike.h"
+#include "UnitLaser.h"
+#include "UnitBomb.h"
+#include "ItemSlowmo.h"
+#include "ItemVortex.h"
+
 #include "Events.h"
 #include "StateLevel.h"
 
@@ -106,15 +113,23 @@ int SpawnFile::update(Uint32 delta)
 void SpawnFile::parseUnit( const SpawnWave::SpawnEntry &entry )
 {
 	UnitBase *unit = getUnit( entry.type );
-	if ( entry.parameter[0] != 0 )
+	std::stringstream str( entry.parameter );
+	str >> *(unit->x);
+	str >> *(unit->y);
+	if ( str.good() )
 	{
-		std::stringstream str( entry.parameter );
-		str >> *(unit->x);
-		str >> *(unit->y);
+		switch ( entry.type )
+		{
+		case UnitBase::utBomb:
+			str >> ((UnitBomb*)unit)->pressure;
+			break;
+		default:
+			break;
+		}
 	}
 
 	if ( unit )
-		parent->addUnit( unit, false );
+		parent->addUnit( unit, true );
 }
 
 void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
@@ -128,6 +143,7 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 		int temp = 0;
 		str >> temp;
 		event = new EventSlowMotion( temp );
+		break;
 	}
 	default:
 		break;
@@ -138,11 +154,74 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 
 void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 {
-		// TODO: this
+	std::stringstream str( entry.parameter );
+	switch ( entry.type )
+	{
+	case ptCircle:
+	{
+		int type, amount;
+		float x, y, radius;
+		str >> type;
+		str >> x;
+		str >> y;
+		str >> radius;
+		str >> amount;
+		if ( x == -1 && y == -1 )
+			patternCircle( type, *parent->player->x, *parent->player->y, radius, amount );
+		else
+			patternCircle( type, x, y, radius, amount );
+		break;
+	}
+	}
 }
 
 void SpawnFile::parseText(const SpawnWave::SpawnEntry& entry)
 {
 		// TODO: this
 }
+
+///
+
+void SpawnFile::patternCircle( const int &type, const float& x, const float& y,
+							const float& radius, const int& amount)
+{
+	for ( int I = 0; I < amount; ++I )
+	{
+		float angle = 2 * M_PI / amount * I;
+		Vector2d<float> pos( x + radius * cos( angle ), y + radius * sin( angle ) );
+		UnitBase *unit = getUnit( type );
+		*(unit->x) = pos.x;
+		*(unit->y) = pos.y;
+		parent->addUnit( unit, true );
+	}
+}
+
+void SpawnFile::patternLineH( const int &type, const int& amount )
+{
+	for ( int I = 0; I < amount; ++I )
+	{
+		UnitBase *unit = getUnit( type );
+		if ( I < amount / 2 )
+			*(unit->x) = APP_SCREEN_WIDTH * 0.1f;
+		else
+			*(unit->x) = APP_SCREEN_WIDTH * 0.9f;
+		*(unit->y) = APP_SCREEN_HEIGHT * 0.1f + APP_SCREEN_HEIGHT * 0.8f * float(I % (amount / 2)) / float(amount / 2 - 1);
+		parent->addUnit( unit, true );
+	}
+}
+
+void SpawnFile::patternLineV( const int &type, const int& amount )
+{
+	for ( int I = 0; I < amount; ++I )
+	{
+		UnitBase *unit = getUnit( type );
+		if ( I < amount / 2 )
+			*(unit->y) = APP_SCREEN_HEIGHT * 0.1f;
+		else
+			*(unit->y) = APP_SCREEN_HEIGHT * 0.9f;
+		*(unit->x) = APP_SCREEN_WIDTH * 0.1f + APP_SCREEN_WIDTH * 0.8f * float(I % (amount / 2)) / float(amount / 2 - 1);
+		parent->addUnit( unit, true );
+	}
+}
+
 

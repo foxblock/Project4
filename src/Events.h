@@ -18,7 +18,8 @@ public:
 		etUnitSpawn,
 		etBombCascade,
 		etSlowMotion,
-		etScoreMode
+		etScoreMode,
+		etEOL
 	};
 	EventType type;
 };

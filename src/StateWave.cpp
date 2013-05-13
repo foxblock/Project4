@@ -13,11 +13,13 @@ StateWave::StateWave( const std::string &levelFilename, const std::string &repla
 		if ( file.good() )
 		{
 			getline( file,line );
+			spawnHandler.load( file );
 		}
 		else
 		{
 			errorString = "Could not open wave data " + levelFilename;
 		}
+		file.close();
 	}
 	else
 	{
