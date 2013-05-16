@@ -4,12 +4,12 @@
 #include "StateBase.h"
 #include "UnitBase.h"
 #include "Events.h"
-#include "ScoreNormal.h"
-#include "SpawnNormal.h"
 #include "Replay.h"
 #include "ShapeCircle.h"
 #include "UtilityFunctions.h"
 #include "Timer.h"
+#include "SpawnNormal.h"
+#include "ScoreNormal.h"
 #include <vector>
 #include <string>
 
@@ -35,8 +35,8 @@ public:
 	void addEvent( EventBase *newEvent );
 
 	PLAYER_CLASS *player;
-	ScoreNormal scoreKeeper;
-	SpawnNormal spawnHandler;
+	ScoreBase *scoreKeeper;
+	SpawnBase *spawnHandler;
 
 	Replay *run;
 	int timecode;
@@ -66,6 +66,8 @@ protected:
 #endif
 
 private:
+	ScoreNormal __scoreKeeper;
+	SpawnNormal __spawnHandler;
 };
 
 

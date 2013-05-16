@@ -32,7 +32,8 @@ public:
 		stMenu,
 		stHighscores,
 		stReplayLoader,
-		stError
+		stError,
+		stWave
 	};
 	StateType type;
 

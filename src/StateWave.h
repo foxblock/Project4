@@ -2,7 +2,6 @@
 #define _STATE_WAVE_H
 
 #include "StateLevel.h"
-
 #include "SpawnFile.h"
 
 class StateWave : public StateLevel
@@ -14,11 +13,10 @@ public:
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
 
-	SpawnFile spawnHandler;
 protected:
 
 private:
-
+	SpawnFile __spawnHandler;
 };
 
 

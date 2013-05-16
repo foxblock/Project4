@@ -11,6 +11,7 @@
 #include "StateReplayLoader.h"
 #include "StateHighscores.h"
 #include "StateError.h"
+#include "StateWave.h"
 #include "UtilityFunctions.h"
 
 #ifdef WIN32
@@ -141,6 +142,10 @@ int Application::update( Uint32 delta )
 		case StateBase::stHighscores:
 			prevState = activeState;
 			activeState = new StateHighscores();
+			break;
+		case StateBase::stWave:
+			prevState = activeState;
+			activeState = new StateWave( "waves/test.txt", "" );
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );

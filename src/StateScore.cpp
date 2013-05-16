@@ -5,6 +5,8 @@
 #include "sparrowCore.h"
 #include "UtilityFunctions.h"
 
+#include "ScoreBase.h"
+
 #include <time.h>
 
 #define SCORE_FONT_SIZE 32
@@ -25,7 +27,7 @@ StateScore::StateScore( StateLevel *level ) :
 	spSelectRenderTarget( spGetWindowSurface() );
 	spDeleteSurface( temp );
 
-	score = level->scoreKeeper.getScore();
+	score = level->scoreKeeper->getScore();
 	scoreText = spFontLoad( FONT_GENERAL, SCORE_FONT_SIZE );
 	if ( scoreText )
 	{

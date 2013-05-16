@@ -7,6 +7,8 @@
 #include "gameDefines.h"
 
 #include "UnitPlayer.h"
+#include "ScoreNormal.h"
+#include "SpawnNormal.h"
 
 #define LEVEL_BG_FADE_TIME 2500
 #define LEVEL_PAUSE_FONT_SIZE 32
@@ -15,9 +17,11 @@
 
 StateLevel::StateLevel( const std::string &filename ) :
 	StateBase(),
-	scoreKeeper( this ),
-	spawnHandler( this )
+	__scoreKeeper( this ),
+	__spawnHandler( this )
 {
+	spawnHandler = &__spawnHandler;
+	scoreKeeper = &__scoreKeeper;
 	player = new PLAYER_CLASS( this );
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
 	*( player->y ) = APP_SCREEN_HEIGHT / 2;
@@ -155,7 +159,7 @@ int StateLevel::update( Uint32 delta )
 	LOG_MESSAGE("Spawn checks");
 
 	// Spawning (creates events)
-	spawnHandler.update( delta );
+	spawnHandler->update( delta );
 
 	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
 	unitQueue.clear();
@@ -163,7 +167,7 @@ int StateLevel::update( Uint32 delta )
 	LOG_MESSAGE("Score stuff");
 
 	// Score (reads events)
-	scoreKeeper.update( delta );
+	scoreKeeper->update( delta );
 
 	LOG_MESSAGE("Effects");
 
@@ -199,7 +203,7 @@ int StateLevel::update( Uint32 delta )
 
 	if ( player && player->toBeRemoved )
 	{
-		printf( "Score: %i\n", scoreKeeper.getScore() );
+		printf( "Score: %i\n", scoreKeeper->getScore() );
 		return stScore;
 	}
 
@@ -259,7 +263,7 @@ void StateLevel::render( SDL_Surface *target )
 	if ( player )
 		player->render( target );
 
-	scoreKeeper.render( target );
+	scoreKeeper->render( target );
 
 #ifdef _DEBUG
 	debugString = Utility::numToStr( spGetFPS() ) + " fps\n";
@@ -270,7 +274,7 @@ void StateLevel::render( SDL_Surface *target )
 	if ( debugText )
 		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
 #endif
-	spawnHandler.render( target );
+	spawnHandler->render( target );
 }
 
 void StateLevel::pauseRender( SDL_Surface *target )
@@ -311,8 +315,8 @@ void StateLevel::handleEvents( Uint32 delta )
 
 	for ( std::vector<EventBase *>::iterator event = eventList.begin(); event != eventList.end(); ++event )
 	{
-		scoreKeeper.handleEvent( *event );
-		spawnHandler.handleEvent( *event );
+		scoreKeeper->handleEvent( *event );
+		spawnHandler->handleEvent( *event );
 		switch ( ( *event )->type )
 		{
 		case EventBase::etSlowMotion:

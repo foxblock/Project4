@@ -25,6 +25,7 @@ StateMenu::StateMenu() : StateBase()
 		spFontAdd( fontBright, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 255, 255 ) );
 
 	addMenuEntry( "start game", stLevel );
+	addMenuEntry( "start wave game", stWave );
 	addMenuEntry( "show scores", stHighscores );
 	addMenuEntry( "load replay", stReplayLoader );
 #ifdef _DEBUG

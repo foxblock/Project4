@@ -118,7 +118,7 @@ int SpawnNormal::update( Uint32 delta )
 		itemTimer.start( SPAWN_TIME_ITEM );
 	}
 
-	maxUnits = SPAWN_MAX_START + parent->scoreKeeper.getScore() / SPAWN_POINTS_PER_UNIT;
+	maxUnits = SPAWN_MAX_START + parent->scoreKeeper->getScore() / SPAWN_POINTS_PER_UNIT;
 
 	if ( parent->countUnits() >= maxUnits )
 		return 0;

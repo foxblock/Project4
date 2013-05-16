@@ -17,7 +17,7 @@
 
 SpawnFile::SpawnFile(StateLevel* newParent) :
 	SpawnBase(newParent),
-	currentWave(0),
+	currentWave(-1),
 	currentTick(0)
 {
 
@@ -61,7 +61,7 @@ bool SpawnFile::load(std::fstream& file)
 				temp.entryType = SpawnWave::stNone;
 			}
 			temp.type = Utility::strToNum<int>( line[2] );
-			temp.parameter = line.substr( 3 );
+			temp.parameter = line.substr( 4 );
 			waves.back()->entries.push_back( temp );
 		}
 		else
@@ -70,18 +70,23 @@ bool SpawnFile::load(std::fstream& file)
 			waves.back()->duration = Utility::strToNum<int>( line );
 		}
 	}
+	if ( waves.empty() )
+		printf( "%s No wave data has been loaded (empty file?)\n", WARNING_STRING );
 }
 
 
 int SpawnFile::update(Uint32 delta)
 {
 	currentTick += delta;
-	if ( currentTick >= waves[currentWave]->duration )
+	if ( currentWave < 0 || currentTick >= waves[currentWave]->duration )
 	{
 		currentTick = 0;
 		++currentWave;
 		if ( currentWave >= waves.size() )
+		{
 			currentWave = 0;
+			LOG_MESSAGE( "Cycled through wave data, starting from beginning." );
+		}
 		for ( std::vector< SpawnWave::SpawnEntry >::iterator I = waves[currentWave]->entries.begin();
 				I != waves[currentWave]->entries.end(); ++I )
 		{
@@ -113,15 +118,29 @@ int SpawnFile::update(Uint32 delta)
 void SpawnFile::parseUnit( const SpawnWave::SpawnEntry &entry )
 {
 	UnitBase *unit = getUnit( entry.type );
-	std::stringstream str( entry.parameter );
-	str >> *(unit->x);
-	str >> *(unit->y);
-	if ( str.good() )
+	std::vector< std::string > tokens;
+	Utility::tokenize( entry.parameter, tokens, " ," );
+	if ( !unit || tokens.size() < 2 )
+	{
+		printf( "%s SpawnFile, failed to parse unit: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
+		return;
+	}
+
+	if ( tokens[0][0] == 'r' || tokens[0][0] == 'R' )
+		*(unit->x) = Utility::strToNum<float>( tokens[0].substr(1) ) + *(parent->player->x);
+	else
+		*(unit->x) = Utility::strToNum<float>( tokens[0] );
+	if ( tokens[1][0] == 'r' || tokens[1][0] == 'R' )
+		*(unit->y) = Utility::strToNum<float>( tokens[1].substr(1) ) + *(parent->player->y);
+	else
+		*(unit->y) = Utility::strToNum<float>( tokens[1] );
+
+	if (tokens.size() > 2 )
 	{
 		switch ( entry.type )
 		{
 		case UnitBase::utBomb:
-			str >> ((UnitBomb*)unit)->pressure;
+			((UnitBomb*)unit)->pressure = Utility::strToNum<int>( tokens[2] );
 			break;
 		default:
 			break;
@@ -135,14 +154,19 @@ void SpawnFile::parseUnit( const SpawnWave::SpawnEntry &entry )
 void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 {
 	EventBase *event = NULL;
-	std::stringstream str( entry.parameter );
+	std::vector< std::string > tokens;
+	Utility::tokenize( entry.parameter, tokens, " ," );
+	if ( tokens.empty() )
+	{
+		printf( "%s SpawnFile, failed to parse event: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
+		return;
+	}
+
 	switch ( entry.type )
 	{
 	case EventBase::etSlowMotion:
 	{
-		int temp = 0;
-		str >> temp;
-		event = new EventSlowMotion( temp );
+		event = new EventSlowMotion( Utility::strToNum<int>( tokens[0] ) );
 		break;
 	}
 	default:
@@ -154,24 +178,64 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 
 void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 {
-	std::stringstream str( entry.parameter );
+	std::vector< std::string > tokens;
+	Utility::tokenize( entry.parameter, tokens, " ," );
+	bool error = false;
+
 	switch ( entry.type )
 	{
-	case ptCircle:
+	case ptCircle: // type x y radius amount
 	{
-		int type, amount;
-		float x, y, radius;
-		str >> type;
-		str >> x;
-		str >> y;
-		str >> radius;
-		str >> amount;
-		if ( x == -1 && y == -1 )
-			patternCircle( type, *parent->player->x, *parent->player->y, radius, amount );
+		if ( tokens.size() < 5 )
+		{
+			error = true;
+			break;
+		}
+		float x, y;
+		if ( tokens[1][0] == 'r' || tokens[1][0] == 'R' )
+			x = Utility::strToNum<float>( tokens[1].substr(1) ) + *(parent->player->x);
 		else
-			patternCircle( type, x, y, radius, amount );
+			x = Utility::strToNum<float>( tokens[1] );
+		if ( tokens[2][0] == 'r' || tokens[2][0] == 'R' )
+			y = Utility::strToNum<float>( tokens[2].substr(1) ) + *(parent->player->y);
+		else
+			y = Utility::strToNum<float>( tokens[2] );
+
+		patternCircle( Utility::strToNum<int>( tokens[0] ), x, y,
+						Utility::strToNum<int>( tokens[3] ),
+						Utility::strToNum<int>( tokens[4] ) );
 		break;
 	}
+	case ptLineH: // type amount
+	{
+		if ( tokens.size() < 2 )
+		{
+			error = true;
+			break;
+		}
+		patternLineH( Utility::strToNum<int>( tokens[0] ),
+					Utility::strToNum<int>( tokens[1] ) );
+		break;
+	}
+	case ptLineV: // type amount
+	{
+		if ( tokens.size() < 2 )
+		{
+			error = true;
+			break;
+		}
+		patternLineV( Utility::strToNum<int>( tokens[0] ),
+					Utility::strToNum<int>( tokens[1] ) );
+		break;
+	}
+	default:
+		error = true;
+		break;
+	}
+	if ( error )
+	{
+		printf( "%s SpawnFile, failed to parse pattern: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
+		return;
 	}
 }
 
