@@ -321,6 +321,8 @@
 		<Unit filename="src/UnitPlayer.h" />
 		<Unit filename="src/UnitSpike.cpp" />
 		<Unit filename="src/UnitSpike.h" />
+		<Unit filename="src/UnitText.cpp" />
+		<Unit filename="src/UnitText.h" />
 		<Unit filename="src/UtilityFunctions.cpp" />
 		<Unit filename="src/UtilityFunctions.h" />
 		<Unit filename="src/Vector2d.h" />

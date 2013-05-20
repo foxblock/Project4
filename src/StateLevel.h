@@ -40,7 +40,6 @@ public:
 
 	Replay *run;
 	int timecode;
-	int deltaBkUp;
 
 	bool slowmo;
 
@@ -61,6 +60,7 @@ protected:
 
 	int slowmoCounter;
 	Timer slowmoTimer;
+	int deltaBkUp;
 
 #ifdef _DEBUG
 	spFontPointer debugText;
