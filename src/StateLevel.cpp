@@ -118,7 +118,7 @@ int StateLevel::update( Uint32 delta )
 
 	delta = std::min( ( int )delta, MAX_DELTA );
 
-	int deltaBkUp = delta;
+	deltaBkUp = delta;
 	if ( slowmo )
 	{
 		if ( slowmoCounter > 0 || ( Utility::sign( LEVEL_SLOWMO_LEVEL ) < 0 && slowmoCounter == 0 ) )
@@ -257,8 +257,13 @@ void StateLevel::render( SDL_Surface *target )
 							I->second.b * I->second.intensity ) );
 	}
 
+	// render text
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
-		( *I )->render( target );
+		if ( ( *I )->flags.has( UnitBase::ufBackground ) )
+			( *I )->render( target );
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
+		if ( !( *I )->flags.has( UnitBase::ufBackground ) )
+			( *I )->render( target );
 
 	if ( player )
 		player->render( target );
@@ -266,7 +271,7 @@ void StateLevel::render( SDL_Surface *target )
 	scoreKeeper->render( target );
 
 #ifdef _DEBUG
-	debugString = Utility::numToStr( spGetFPS() ) + " fps\n";
+	debugString = Utility::numToStr( spGetFPS() ) + " fps (" + Utility::numToStr<int>( deltaBkUp ) + ")\n";
 	if ( run->playing )
 		debugString += "frame: " + Utility::numToStr( run->frameCounter ) + " / " + Utility::numToStr( run->totalFrames ) + "\n";
 

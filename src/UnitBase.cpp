@@ -96,7 +96,7 @@ void UnitBase::render( SDL_Surface *const target )
 
 bool UnitBase::checkCollision( UnitBase const *const other ) const
 {
-	if ( shape->checkCollision( other->shape ) )
+	if ( shape && other->shape && shape->checkCollision( other->shape ) )
 		return true;
 	return false;
 }

@@ -43,7 +43,8 @@ public:
 		ufApplySlowmo = 4,
 		ufIsPlayer = 8,
 		ufFrozen = 16,
-		ufEOL = 32, // this marks the end of the unit flag list
+		ufBackground = 32,
+		ufEOL = 64, // this marks the end of the unit flag list
 	};
 	enum UnitType
 	{
@@ -55,7 +56,8 @@ public:
 		utEOL, // end of unit types
 		utItemSlowmo,
 		utItemVortex,
-		utItemEOL // end of item types
+		utItemEOL, // end of item types
+		utText,
 	};
 	UnitType type;
 

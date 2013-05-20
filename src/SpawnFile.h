@@ -36,6 +36,7 @@ protected:
 	std::vector< SpawnWave* > waves;
 	int currentTick;
 	int currentWave;
+	bool skipping;
 private:
 
 };

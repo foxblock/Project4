@@ -40,6 +40,7 @@ public:
 
 	Replay *run;
 	int timecode;
+	int deltaBkUp;
 
 	bool slowmo;
 

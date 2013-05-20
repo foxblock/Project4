@@ -11,14 +11,18 @@
 #include "UnitBomb.h"
 #include "ItemSlowmo.h"
 #include "ItemVortex.h"
+#include "UnitText.h"
 
 #include "Events.h"
 #include "StateLevel.h"
 
+using namespace Utility;
+
 SpawnFile::SpawnFile(StateLevel* newParent) :
 	SpawnBase(newParent),
 	currentWave(-1),
-	currentTick(0)
+	currentTick(0),
+	skipping(false)
 {
 
 }
@@ -60,14 +64,14 @@ bool SpawnFile::load(std::fstream& file)
 			default:
 				temp.entryType = SpawnWave::stNone;
 			}
-			temp.type = Utility::strToNum<int>( line[2] );
+			temp.type = strToNum<int>( line[2] );
 			temp.parameter = line.substr( 4 );
 			waves.back()->entries.push_back( temp );
 		}
 		else
 		{
 			waves.push_back( new SpawnWave() );
-			waves.back()->duration = Utility::strToNum<int>( line );
+			waves.back()->duration = strToNum<int>( line );
 		}
 	}
 	if ( waves.empty() )
@@ -78,10 +82,19 @@ bool SpawnFile::load(std::fstream& file)
 int SpawnFile::update(Uint32 delta)
 {
 	currentTick += delta;
+
+	if ( currentWave >= 0 && parent->countUnits() == 1 && !skipping ) // skip to next wave when one is done
+	{
+		currentTick = (float)waves[currentWave]->duration - 750;
+		skipping = true;
+		LOG_MESSAGE( "Skipped to next wave (all units dead)." );
+	}
+
 	if ( currentWave < 0 || currentTick >= waves[currentWave]->duration )
 	{
 		currentTick = 0;
 		++currentWave;
+		skipping = false;
 		if ( currentWave >= waves.size() )
 		{
 			currentWave = 0;
@@ -119,7 +132,7 @@ void SpawnFile::parseUnit( const SpawnWave::SpawnEntry &entry )
 {
 	UnitBase *unit = getUnit( entry.type );
 	std::vector< std::string > tokens;
-	Utility::tokenize( entry.parameter, tokens, " ," );
+	tokenize( entry.parameter, tokens, " ," );
 	if ( !unit || tokens.size() < 2 )
 	{
 		printf( "%s SpawnFile, failed to parse unit: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
@@ -127,20 +140,20 @@ void SpawnFile::parseUnit( const SpawnWave::SpawnEntry &entry )
 	}
 
 	if ( tokens[0][0] == 'r' || tokens[0][0] == 'R' )
-		*(unit->x) = Utility::strToNum<float>( tokens[0].substr(1) ) + *(parent->player->x);
+		*(unit->x) = strToNum<float>( tokens[0].substr(1) ) + *(parent->player->x);
 	else
-		*(unit->x) = Utility::strToNum<float>( tokens[0] );
+		*(unit->x) = strToNum<float>( tokens[0] );
 	if ( tokens[1][0] == 'r' || tokens[1][0] == 'R' )
-		*(unit->y) = Utility::strToNum<float>( tokens[1].substr(1) ) + *(parent->player->y);
+		*(unit->y) = strToNum<float>( tokens[1].substr(1) ) + *(parent->player->y);
 	else
-		*(unit->y) = Utility::strToNum<float>( tokens[1] );
+		*(unit->y) = strToNum<float>( tokens[1] );
 
 	if (tokens.size() > 2 )
 	{
 		switch ( entry.type )
 		{
 		case UnitBase::utBomb:
-			((UnitBomb*)unit)->pressure = Utility::strToNum<int>( tokens[2] );
+			((UnitBomb*)unit)->pressure = strToNum<int>( tokens[2] );
 			break;
 		default:
 			break;
@@ -155,7 +168,7 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 {
 	EventBase *event = NULL;
 	std::vector< std::string > tokens;
-	Utility::tokenize( entry.parameter, tokens, " ," );
+	tokenize( entry.parameter, tokens, " ," );
 	if ( tokens.empty() )
 	{
 		printf( "%s SpawnFile, failed to parse event: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
@@ -166,7 +179,7 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 	{
 	case EventBase::etSlowMotion:
 	{
-		event = new EventSlowMotion( Utility::strToNum<int>( tokens[0] ) );
+		event = new EventSlowMotion( strToNum<int>( tokens[0] ) );
 		break;
 	}
 	default:
@@ -179,7 +192,7 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 {
 	std::vector< std::string > tokens;
-	Utility::tokenize( entry.parameter, tokens, " ," );
+	tokenize( entry.parameter, tokens, " ," );
 	bool error = false;
 
 	switch ( entry.type )
@@ -193,44 +206,39 @@ void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 		}
 		float x, y;
 		if ( tokens[1][0] == 'r' || tokens[1][0] == 'R' )
-			x = Utility::strToNum<float>( tokens[1].substr(1) ) + *(parent->player->x);
+			x = strToNum<float>( tokens[1].substr(1) ) + *(parent->player->x);
 		else
-			x = Utility::strToNum<float>( tokens[1] );
+			x = strToNum<float>( tokens[1] );
 		if ( tokens[2][0] == 'r' || tokens[2][0] == 'R' )
-			y = Utility::strToNum<float>( tokens[2].substr(1) ) + *(parent->player->y);
+			y = strToNum<float>( tokens[2].substr(1) ) + *(parent->player->y);
 		else
-			y = Utility::strToNum<float>( tokens[2] );
+			y = strToNum<float>( tokens[2] );
 
-		patternCircle( Utility::strToNum<int>( tokens[0] ), x, y,
-						Utility::strToNum<int>( tokens[3] ),
-						Utility::strToNum<int>( tokens[4] ) );
+		patternCircle( strToNum<int>( tokens[0] ), x, y,
+						strToNum<int>( tokens[3] ),
+						strToNum<int>( tokens[4] ) );
 		break;
 	}
 	case ptLineH: // type amount
-	{
 		if ( tokens.size() < 2 )
 		{
 			error = true;
 			break;
 		}
-		patternLineH( Utility::strToNum<int>( tokens[0] ),
-					Utility::strToNum<int>( tokens[1] ) );
+		patternLineH( strToNum<int>( tokens[0] ),
+					strToNum<int>( tokens[1] ) );
 		break;
-	}
 	case ptLineV: // type amount
-	{
 		if ( tokens.size() < 2 )
 		{
 			error = true;
 			break;
 		}
-		patternLineV( Utility::strToNum<int>( tokens[0] ),
-					Utility::strToNum<int>( tokens[1] ) );
+		patternLineV( strToNum<int>( tokens[0] ),
+					strToNum<int>( tokens[1] ) );
 		break;
-	}
 	default:
 		error = true;
-		break;
 	}
 	if ( error )
 	{
@@ -241,7 +249,51 @@ void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 
 void SpawnFile::parseText(const SpawnWave::SpawnEntry& entry)
 {
-		// TODO: this
+	std::vector< std::string > tokens;
+	bool error = false;
+	UnitText *unit = new UnitText( parent );
+	unit->mode = entry.type;
+	unit->life = waves[currentWave]->duration;
+
+	switch ( entry.type )
+	{
+	case UnitText::tmStatic: // t0 x y size r g b text
+		tokenize( entry.parameter, tokens, " ,", 7 );
+		*(unit->x) = strToNum<float>( tokens[0] );
+		*(unit->y) = strToNum<float>( tokens[1] );
+		unit->fontSize = strToNum<float>( tokens[2] );
+		unit->colour1 = spGetRGB( strToNum<int>( tokens[3] ),
+								strToNum<int>( tokens[4] ),
+								strToNum<int>( tokens[5] ) );
+		unit->text = tokens[6];
+		break;
+	case UnitText::tmBlink: // t1 x y size r1 g1 b1 time1 r2 g2 b2 time2 text
+		tokenize( entry.parameter, tokens, " ,", 12 );
+		*(unit->x) = strToNum<float>( tokens[0] );
+		*(unit->y) = strToNum<float>( tokens[1] );
+		unit->fontSize = strToNum<float>( tokens[2] );
+		unit->colour1 = spGetRGB( strToNum<int>( tokens[3] ),
+								strToNum<int>( tokens[4] ),
+								strToNum<int>( tokens[5] ) );
+		unit->fadeTime1 = strToNum<int>( tokens[6] );
+		unit->colour2 = spGetRGB( strToNum<int>( tokens[7] ),
+								strToNum<int>( tokens[8] ),
+								strToNum<int>( tokens[9] ) );
+		unit->fadeTime2 = strToNum<int>( tokens[10] );
+		unit->text = tokens[11];
+		break;
+	default:
+		error = true;
+		delete unit;
+	}
+	if ( error )
+	{
+		printf( "%s SpawnFile, failed to parse text: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
+		return;
+	}
+
+	if ( unit )
+		parent->addUnit( unit, true );
 }
 
 ///
