@@ -23,6 +23,14 @@ public:
 	int fadeTime1;
 	int fadeTime2;
 	int life;
+	int alignment;
+
+	enum TextAlign
+	{
+		taLeft=0,
+		taCentre,
+		taRight
+	};
 
 	enum TextMode
 	{

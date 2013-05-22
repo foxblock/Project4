@@ -40,7 +40,7 @@ bool SpawnFile::load(std::fstream& file)
 	while ( file.good() )
 	{
 		getline( file,line );
-		if ( line[0] == 0 )
+		if ( line[0] == 0 || line[0] == '#' )
 			continue;
 		if ( line[0] == '\t' )
 		{
@@ -132,7 +132,7 @@ void SpawnFile::parseUnit( const SpawnWave::SpawnEntry &entry )
 {
 	UnitBase *unit = getUnit( entry.type );
 	std::vector< std::string > tokens;
-	tokenize( entry.parameter, tokens, " ," );
+	tokenize( entry.parameter, tokens, " ,\t" );
 	if ( !unit || tokens.size() < 2 )
 	{
 		printf( "%s SpawnFile, failed to parse unit: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
@@ -168,7 +168,7 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 {
 	EventBase *event = NULL;
 	std::vector< std::string > tokens;
-	tokenize( entry.parameter, tokens, " ," );
+	tokenize( entry.parameter, tokens, " ,\t" );
 	if ( tokens.empty() )
 	{
 		printf( "%s SpawnFile, failed to parse event: %i %s\n", WARNING_STRING, entry.type, entry.parameter.c_str() );
@@ -192,12 +192,12 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 {
 	std::vector< std::string > tokens;
-	tokenize( entry.parameter, tokens, " ," );
+	tokenize( entry.parameter, tokens, " ,\t" );
 	bool error = false;
 
 	switch ( entry.type )
 	{
-	case ptCircle: // type x y radius amount
+	case ptCircle: // unitType x y radius amount
 	{
 		if ( tokens.size() < 5 )
 		{
@@ -219,7 +219,7 @@ void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 						strToNum<int>( tokens[4] ) );
 		break;
 	}
-	case ptLineH: // type amount
+	case ptLineH: // unitType amount
 		if ( tokens.size() < 2 )
 		{
 			error = true;
@@ -228,7 +228,7 @@ void SpawnFile::parsePattern( const SpawnWave::SpawnEntry &entry )
 		patternLineH( strToNum<int>( tokens[0] ),
 					strToNum<int>( tokens[1] ) );
 		break;
-	case ptLineV: // type amount
+	case ptLineV: // unitType amount
 		if ( tokens.size() < 2 )
 		{
 			error = true;
@@ -254,33 +254,46 @@ void SpawnFile::parseText(const SpawnWave::SpawnEntry& entry)
 	UnitText *unit = new UnitText( parent );
 	unit->mode = entry.type;
 	unit->life = waves[currentWave]->duration;
+	int I = 0;
 
 	switch ( entry.type )
 	{
-	case UnitText::tmStatic: // t0 x y size r g b text
-		tokenize( entry.parameter, tokens, " ,", 7 );
+	case UnitText::tmStatic: // t0 x y align size r g b text
+		tokenize( entry.parameter, tokens, " ,\t", 8 );
+		if ( tokens.size() < 8 )
+		{
+			error = true;
+			break;
+		}
 		*(unit->x) = strToNum<float>( tokens[0] );
 		*(unit->y) = strToNum<float>( tokens[1] );
-		unit->fontSize = strToNum<float>( tokens[2] );
-		unit->colour1 = spGetRGB( strToNum<int>( tokens[3] ),
-								strToNum<int>( tokens[4] ),
-								strToNum<int>( tokens[5] ) );
-		unit->text = tokens[6];
+		unit->alignment = strToNum<int>( tokens[2] );
+		unit->fontSize = strToNum<float>( tokens[3] );
+		unit->colour1 = spGetRGB( strToNum<int>( tokens[4] ),
+								strToNum<int>( tokens[5] ),
+								strToNum<int>( tokens[6] ) );
+		unit->text = tokens[7];
 		break;
-	case UnitText::tmBlink: // t1 x y size r1 g1 b1 time1 r2 g2 b2 time2 text
-		tokenize( entry.parameter, tokens, " ,", 12 );
+	case UnitText::tmBlink: // t1 x y align size r1 g1 b1 time1 r2 g2 b2 time2 text
+		tokenize( entry.parameter, tokens, " ,\t", 13 );
+		if ( tokens.size() < 13 )
+		{
+			error = true;
+			break;
+		}
 		*(unit->x) = strToNum<float>( tokens[0] );
 		*(unit->y) = strToNum<float>( tokens[1] );
-		unit->fontSize = strToNum<float>( tokens[2] );
-		unit->colour1 = spGetRGB( strToNum<int>( tokens[3] ),
-								strToNum<int>( tokens[4] ),
-								strToNum<int>( tokens[5] ) );
-		unit->fadeTime1 = strToNum<int>( tokens[6] );
-		unit->colour2 = spGetRGB( strToNum<int>( tokens[7] ),
-								strToNum<int>( tokens[8] ),
-								strToNum<int>( tokens[9] ) );
-		unit->fadeTime2 = strToNum<int>( tokens[10] );
-		unit->text = tokens[11];
+		unit->alignment = strToNum<int>( tokens[2] );
+		unit->fontSize = strToNum<float>( tokens[3] );
+		unit->colour1 = spGetRGB( strToNum<int>( tokens[4] ),
+								strToNum<int>( tokens[5] ),
+								strToNum<int>( tokens[6] ) );
+		unit->fadeTime1 = strToNum<int>( tokens[7] );
+		unit->colour2 = spGetRGB( strToNum<int>( tokens[8] ),
+								strToNum<int>( tokens[9] ),
+								strToNum<int>( tokens[10] ) );
+		unit->fadeTime2 = strToNum<int>( tokens[11] );
+		unit->text = tokens[12];
 		break;
 	default:
 		error = true;
@@ -293,7 +306,7 @@ void SpawnFile::parseText(const SpawnWave::SpawnEntry& entry)
 	}
 
 	if ( unit )
-		parent->addUnit( unit, true );
+		parent->addUnit( unit, false );
 }
 
 ///

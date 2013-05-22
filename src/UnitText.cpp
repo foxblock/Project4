@@ -12,6 +12,7 @@ UnitText::UnitText(StateLevel* newParent) :
 	fadeTime1(0),
 	fadeTime2(0),
 	life(0),
+	alignment(0),
 	font1( NULL ),
 	font2( NULL ),
 	fadeMode( 0 )
@@ -37,16 +38,6 @@ UnitText::~UnitText()
 
 int UnitText::update(const Uint32& delta)
 {
-	if ( !font1 )
-	{
-		font1 = spFontLoad( FONT_GENERAL, fontSize );
-		spFontAdd( font1, SP_FONT_GROUP_ASCII, colour1 );
-	}
-	if ( !font2 && mode == tmBlink )
-	{
-		font2 = spFontLoad( FONT_GENERAL, fontSize );
-		spFontAdd( font2, SP_FONT_GROUP_ASCII, colour2 );
-	}
 	if ( lifeTimer.isStopped() && life > 0 )
 	{
 		if ( lifeTimer.wasStarted() )
@@ -73,9 +64,35 @@ int UnitText::update(const Uint32& delta)
 
 void UnitText::render(SDL_Surface* const target)
 {
+	if ( !font1 )
+	{
+		font1 = spFontLoad( FONT_GENERAL, fontSize );
+		spFontAdd( font1, SP_FONT_GROUP_ASCII, colour1 );
+	}
+	if ( !font2 && mode == tmBlink )
+	{
+		font2 = spFontLoad( FONT_GENERAL, fontSize );
+		spFontAdd( font2, SP_FONT_GROUP_ASCII, colour2 );
+	}
+
+	spFontPointer font = NULL;
 	if ( fadeMode == 0 )
-		spFontDraw( *x, *y, -1, text.c_str(), font1 );
+		font = font1;
 	else
-		spFontDraw( *x, *y, -1, text.c_str(), font2 );
+		font = font2;
+	switch (alignment)
+	{
+	case taLeft:
+		spFontDraw( *x, *y, -1, text.c_str(), font );
+		break;
+	case taCentre:
+		spFontDrawMiddle( *x, *y, -1, text.c_str(), font );
+		break;
+	case taRight:
+		spFontDrawRight( *x, *y, -1, text.c_str(), font );
+		break;
+	default:
+		break;
+	}
 }
 

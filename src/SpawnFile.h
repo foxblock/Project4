@@ -26,8 +26,7 @@ protected:
 
 	enum PatternType
 	{
-		ptNone=0,
-		ptCircle,
+		ptCircle=0,
 		ptLineH,
 		ptLineV,
 		ptEOL

@@ -127,7 +127,7 @@ void UnitLaser::render( SDL_Surface *const target )
 
 bool UnitLaser::checkCollision( UnitBase const *const other ) const
 {
-	if ( other != projectile && shape.checkCollision( other->shape ) )
+	if ( other != projectile && UnitBase::checkCollision( other ) )
 		return true;
 	return false;
 }
