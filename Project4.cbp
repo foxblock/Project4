@@ -61,10 +61,10 @@
 				<Option type="0" />
 				<Option compiler="armelfgcc" />
 				<Compiler>
-					<Add option="-O3" />
 					<Add option="-mcpu=cortex-a8" />
-					<Add option="-mtune=cortex-a8" />
 					<Add option="-mfpu=neon" />
+					<Add option="-O3" />
+					<Add option="-mtune=cortex-a8" />
 					<Add option="-march=armv7-a" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-mfloat-abi=softfp" />
@@ -83,10 +83,7 @@
 					<Add option="-s" />
 					<Add option="-static-libstdc++" />
 					<Add option="-lfreetype" />
-					<Add option="-lpng" />
-					<Add option="-lz" />
 					<Add option="-lts" />
-					<Add option="-lmad" />
 					<Add option="-lsparrow3d" />
 					<Add directory="$(#pandora_sdk.lib)" />
 					<Add directory="../sparrow3d/bin/Pandora" />
@@ -100,8 +97,8 @@
 				<Option compiler="armelfgcc" />
 				<Compiler>
 					<Add option="-mcpu=cortex-a8" />
-					<Add option="-mtune=cortex-a8" />
 					<Add option="-mfpu=neon" />
+					<Add option="-mtune=cortex-a8" />
 					<Add option="-march=armv7-a" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-mfloat-abi=softfp" />
@@ -120,10 +117,7 @@
 				<Linker>
 					<Add option="-static-libstdc++" />
 					<Add option="-lfreetype" />
-					<Add option="-lpng" />
-					<Add option="-lz" />
 					<Add option="-lts" />
-					<Add option="-lmad" />
 					<Add directory="$(#pandora_sdk.lib)" />
 					<Add directory="../sparrow3d/bin/Pandora" />
 				</Linker>
@@ -136,9 +130,8 @@
 		</Compiler>
 		<Linker>
 			<Add option="-lSDL" />
-			<Add option="-lSDL_image" />
 			<Add option="-lSDL_ttf" />
-			<Add option="-lSDL_mixer" />
+			<Add option="-lSDL_image" />
 		</Linker>
 		<Unit filename="../sparrow3d/sparrow3d.h">
 			<Option target="W32 Debug" />
