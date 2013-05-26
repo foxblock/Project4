@@ -13,6 +13,7 @@
 #include "StateError.h"
 #include "StateWave.h"
 #include "UtilityFunctions.h"
+#include "Replay.h"
 
 #ifdef WIN32
 #include <direct.h>
@@ -106,6 +107,9 @@ int Application::update( Uint32 delta )
 			return 0;
 		}
 
+		StateBase *temp = prevState;
+		prevState = activeState;
+		activeState = NULL;
 		switch ( result )
 		{
 		case ERROR_CODE: // exit with error
@@ -116,39 +120,64 @@ int Application::update( Uint32 delta )
 		case 0: // keep using current state
 			break;
 		case StateBase::stLevel:
-			prevState = activeState;
 			activeState = new StateLevel();
 			break;
 		case StateBase::stCollision:
-			prevState = activeState;
 			activeState = new StateCollision();
 			break;
 		case StateBase::stScore:
-			prevState = activeState;
 			activeState = new StateScore( (StateLevel*)prevState );
 			break;
 		case StateBase::stReplay:
-			prevState = activeState;
-			activeState = new StateLevel( prevState->message );
+		{
+			Replay *run = new Replay();
+			if ( !run->loadFromFile( prevState->message ) )
+			{
+				errorString = "Could not load replay file!\n" + run->errorString;
+				break;
+			}
+			switch ( run->info.levelType )
+			{
+			case StateBase::stLevel:
+				activeState = new StateLevel( run );
+				break;
+			case StateBase::stWave:
+				activeState = new StateWave( run->info.parameter, run );
+				break;
+			default:
+				errorString = "Malformed Replay header, unknown level type: " +
+						Utility::numToStr( run->info.levelType);
+			}
 			break;
+		}
 		case StateBase::stMenu:
-			prevState = activeState;
 			activeState = new StateMenu();
 			break;
 		case StateBase::stReplayLoader:
-			prevState = activeState;
 			activeState = new StateReplayLoader();
 			break;
 		case StateBase::stHighscores:
-			prevState = activeState;
 			activeState = new StateHighscores();
 			break;
 		case StateBase::stWave:
-			prevState = activeState;
-			activeState = new StateWave( "waves/test.txt", "" );
+			activeState = new StateWave( "waves/test.txt", NULL );
 			break;
 		default:
 			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );
+		}
+		if ( !activeState )
+		{
+			if ( errorString[0] == 0 )
+			{
+				activeState = prevState;
+				prevState = temp;
+			}
+			else
+			{
+				printf( "Error during state switch: %s\n", errorString.c_str() );
+				activeState = new StateError( errorString, StateBase::stMenu );
+				errorString = "";
+			}
 		}
 
 	}

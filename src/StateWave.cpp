@@ -3,8 +3,8 @@
 #include <fstream>
 #include "SpawnFile.h"
 
-StateWave::StateWave( const std::string &levelFilename, const std::string &replayFilename ) :
-	StateLevel( replayFilename ),
+StateWave::StateWave( const std::string &levelFilename, Replay *loadReplay ) :
+	StateLevel( loadReplay ),
 	__spawnHandler( this )
 {
 	spawnHandler = &__spawnHandler;
@@ -26,6 +26,11 @@ StateWave::StateWave( const std::string &levelFilename, const std::string &repla
 	else
 	{
 		errorString = "Wave data missing!";
+	}
+	if ( !run->playing )
+	{
+		run->info.levelType = stWave;
+		run->info.parameter = levelFilename;
 	}
 	type = stWave;
 }

@@ -6,7 +6,7 @@
 
 #define FILE_REPLAY_DELIMITER "|"
 #define FILE_REPLAY_SUB_DELIMITER ","
-#define FILE_REPLAY_INFO_CHAR "#"
+#define FILE_REPLAY_HEADER_CHAR "#"
 
 Replay::Replay()
 {
@@ -14,6 +14,7 @@ Replay::Replay()
 	totalFrames = 0;
 	playing = false;
 	info.version = REPLAY_VERSION;
+	info.levelType = 0;
 	errorString = "";
 }
 
@@ -88,23 +89,26 @@ bool Replay::loadFromFile(const std::string& filename)
 	{
 		std::string line;
 		getline( file, line );
-		if ( line[0] != FILE_REPLAY_INFO_CHAR[0] )
+		if ( line[0] != FILE_REPLAY_HEADER_CHAR[0] )
 		{
-			errorString = "Replay info missing!";
+			errorString = "Replay header missing!";
 			return false;
 		}
 		std::vector< std::string > tokens;
 
-		Utility::tokenize( line, tokens, (std::string)FILE_REPLAY_DELIMITER + FILE_REPLAY_INFO_CHAR );
-		if ( tokens.size() < 4 )
+		Utility::tokenize( line, tokens, (std::string)FILE_REPLAY_DELIMITER + FILE_REPLAY_HEADER_CHAR );
+		if ( tokens.size() < REPLAY_HEADER_MIN_SIZE )
 		{
-			errorString = "Replay info malformed!";
+			errorString = "Replay header malformed!";
 			return false;
 		}
 		info.name = tokens[0];
 		info.score = Utility::strToNum<int>( tokens[1] );
 		info.timecode = Utility::strToNum<int>( tokens[2] );
 		info.version = Utility::strToNum<int>( tokens[3] );
+		info.levelType = Utility::strToNum<int>( tokens[4] );
+		if ( tokens.size() >= REPLAY_HEADER_MIN_SIZE )
+			info.parameter = tokens[5];
 
 		if ( info.version != REPLAY_VERSION )
 		{
@@ -148,10 +152,12 @@ void Replay::saveToFile(const std::string& filename)
 
 	if ( file.good() )
 	{
-		file << FILE_REPLAY_INFO_CHAR << info.name << FILE_REPLAY_DELIMITER <<
+		file << FILE_REPLAY_HEADER_CHAR << info.name << FILE_REPLAY_DELIMITER <<
 				info.score << FILE_REPLAY_DELIMITER <<
 				info.timecode << FILE_REPLAY_DELIMITER <<
-				info.version << "\n";
+				info.version << FILE_REPLAY_DELIMITER <<
+				info.levelType << FILE_REPLAY_DELIMITER <<
+				info.parameter << "\n";
 	}
 
 	for ( std::list< ReplayEntry >::const_iterator I = entries.begin(); I != entries.end() && file.good(); ++I )

@@ -4,7 +4,8 @@
 
 #define ERROR_FONT_SIZE 32
 
-StateError::StateError( const std::string &message, const StateType &returnState )
+StateError::StateError( const std::string &message, const StateType &returnState ) :
+	StateBase()
 {
 	next = returnState;
 	msg = message;

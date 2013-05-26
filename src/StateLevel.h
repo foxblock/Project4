@@ -20,7 +20,7 @@ class PLAYER_CLASS;
 class StateLevel : public StateBase
 {
 public:
-	StateLevel( const std::string &filename = "" );
+	StateLevel( Replay *loadReplay = NULL );
 	virtual ~StateLevel();
 
 	int update( Uint32 delta );

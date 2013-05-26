@@ -7,7 +7,7 @@
 class StateWave : public StateLevel
 {
 public:
-	StateWave( const std::string &levelFilename, const std::string &replayFilename = "" );
+	StateWave( const std::string &levelFilename, Replay *loadReplay = NULL );
 	virtual ~StateWave();
 
 	int update( Uint32 delta );

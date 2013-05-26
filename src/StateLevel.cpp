@@ -15,7 +15,7 @@
 
 #define LEVEL_SLOWMO_LEVEL 1
 
-StateLevel::StateLevel( const std::string &filename ) :
+StateLevel::StateLevel( Replay *loadReplay ) :
 	StateBase(),
 	__scoreKeeper( this ),
 	__spawnHandler( this )
@@ -46,17 +46,18 @@ StateLevel::StateLevel( const std::string &filename ) :
 
 	pauseScreen = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 
-	run = new Replay();
-	if ( filename[0] != 0 )
+	if ( loadReplay )
 	{
-		if ( !run->loadFromFile( filename ) )
-			errorString = "Could not load replay file!\n" + run->errorString;
+		run = loadReplay;
 		timecode = run->info.timecode;
 	}
 	else
 	{
+		run = new Replay();
 		timecode = time( NULL );
 		run->info.timecode = timecode;
+		run->info.levelType = stLevel;
+		run->info.parameter = "";
 	}
 	Utility::seedRand( timecode );
 
