@@ -107,7 +107,7 @@ bool Replay::loadFromFile(const std::string& filename)
 		info.timecode = Utility::strToNum<int>( tokens[2] );
 		info.version = Utility::strToNum<int>( tokens[3] );
 		info.levelType = Utility::strToNum<int>( tokens[4] );
-		if ( tokens.size() >= REPLAY_HEADER_MIN_SIZE )
+		if ( tokens.size() > REPLAY_HEADER_MIN_SIZE )
 			info.parameter = tokens[5];
 
 		if ( info.version != REPLAY_VERSION )
