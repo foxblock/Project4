@@ -55,6 +55,11 @@ void Replay::update( const bool &forceAdd )
 
 bool Replay::play()
 {
+	if ( entries.empty() )
+	{
+		return false;
+	}
+
 	++frameCounter;
 
 	if ( frameCounter == 1 )
@@ -73,10 +78,6 @@ bool Replay::play()
 	setReplayButtons( lastInput );
 	playing = true;
 
-	if ( entries.empty() )
-	{
-		return false;
-	}
 	return true;
 }
 

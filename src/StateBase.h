@@ -20,7 +20,7 @@ public:
 	virtual void render( SDL_Surface* target )=0;
 	virtual void pauseRender( SDL_Surface* target );
 
-	std::string getLastError() { return errorString; }
+	std::string getLastError() const { return errorString; }
 
 	enum StateType
 	{

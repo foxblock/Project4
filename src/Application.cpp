@@ -64,6 +64,71 @@ Application::~Application()
 
 // --- PUBLIC ------------------------------------------------------------------
 
+StateBase* Application::getState( const int &type, StateBase const * const passingState )
+{
+	StateBase *result = NULL;
+	switch ( type )
+	{
+	case StateBase::stLevel:
+		result = new StateLevel();
+		break;
+	case StateBase::stCollision:
+		result = new StateCollision();
+		break;
+	case StateBase::stScore:
+		if ( !passingState )
+		{
+			errorString = "Needs passingState to construct state type: " + Utility::numToStr( type );
+			return NULL;
+		}
+		result = new StateScore( (StateLevel*)passingState );
+		break;
+	case StateBase::stReplay:
+	{
+		if ( !passingState )
+		{
+			errorString = "Needs passingState to construct state type: " + Utility::numToStr( type );
+			return NULL;
+		}
+		Replay *run = new Replay();
+		if ( !run->loadFromFile( passingState->message ) )
+		{
+			errorString = "Could not load replay file!\n" + run->errorString;
+			break;
+		}
+		switch ( run->info.levelType )
+		{
+		case StateBase::stLevel:
+			result = new StateLevel( run );
+			break;
+		case StateBase::stWave:
+			result = new StateWave( run->info.parameter, run );
+			break;
+		default:
+			errorString = "Malformed Replay header, unknown level type: " +
+					Utility::numToStr( run->info.levelType );
+		}
+		break;
+	}
+	case StateBase::stMenu:
+		result = new StateMenu();
+		break;
+	case StateBase::stReplayLoader:
+		result = new StateReplayLoader();
+		break;
+	case StateBase::stHighscores:
+		result = new StateHighscores();
+		break;
+	case StateBase::stWave:
+		result = new StateWave( "waves/test.txt", NULL );
+		break;
+	default:
+		printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, type );
+	}
+
+	return result;
+}
+
 bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) )
 {
 	printf( "Starting application... Version: %s\n", VERSION_STRING );
@@ -113,57 +178,14 @@ int Application::update( Uint32 delta )
 		switch ( result )
 		{
 		case ERROR_CODE: // exit with error
-			errorString = activeState->getLastError();
+			errorString = prevState->getLastError();
 			return ERROR_CODE;
 		case -1: // exit app normally
 			return -1;
 		case 0: // keep using current state
 			break;
-		case StateBase::stLevel:
-			activeState = new StateLevel();
-			break;
-		case StateBase::stCollision:
-			activeState = new StateCollision();
-			break;
-		case StateBase::stScore:
-			activeState = new StateScore( (StateLevel*)prevState );
-			break;
-		case StateBase::stReplay:
-		{
-			Replay *run = new Replay();
-			if ( !run->loadFromFile( prevState->message ) )
-			{
-				errorString = "Could not load replay file!\n" + run->errorString;
-				break;
-			}
-			switch ( run->info.levelType )
-			{
-			case StateBase::stLevel:
-				activeState = new StateLevel( run );
-				break;
-			case StateBase::stWave:
-				activeState = new StateWave( run->info.parameter, run );
-				break;
-			default:
-				errorString = "Malformed Replay header, unknown level type: " +
-						Utility::numToStr( run->info.levelType);
-			}
-			break;
-		}
-		case StateBase::stMenu:
-			activeState = new StateMenu();
-			break;
-		case StateBase::stReplayLoader:
-			activeState = new StateReplayLoader();
-			break;
-		case StateBase::stHighscores:
-			activeState = new StateHighscores();
-			break;
-		case StateBase::stWave:
-			activeState = new StateWave( "waves/test.txt", NULL );
-			break;
 		default:
-			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );
+			activeState = getState( result, prevState );
 		}
 		if ( !activeState )
 		{

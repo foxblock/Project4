@@ -12,7 +12,8 @@ public:
 	virtual ~Application();
 
 	bool showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) );
-	std::string getLastError() { return errorString; }
+	std::string getLastError() const { return errorString; }
+	StateBase* getState( const int &type, StateBase const * const passingState = NULL );
 
 	SDL_Surface *getVideoSurface() { return screen; }
 
