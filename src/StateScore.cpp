@@ -6,6 +6,7 @@
 #include "UtilityFunctions.h"
 
 #include "ScoreBase.h"
+#include "UnitPlayer.h"
 
 #include <time.h>
 
@@ -26,6 +27,10 @@ StateScore::StateScore( StateLevel *level ) :
 	SDL_BlitSurface( temp, NULL, killFrame, NULL );
 	spSelectRenderTarget( spGetWindowSurface() );
 	spDeleteSurface( temp );
+	if ( level->player->toBeRemoved )
+		playerDead = true;
+	else
+		playerDead = false;
 
 	score = level->scoreKeeper->getScore();
 	scoreText = spFontLoad( FONT_GENERAL, SCORE_FONT_SIZE );
@@ -118,7 +123,7 @@ void StateScore::render( SDL_Surface *target )
 	SDL_BlitSurface( killFrame, NULL, spGetWindowSurface(), NULL );
 	if ( scoreText )
 	{
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE * 2, -1, "You died!", scoreText );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE * 2, -1, playerDead ? "You died!" : "You survived, somehow...", scoreText );
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE, -1, ("Score:  " + Utility::numToStr( score )).c_str(), scoreText );
 		if ( run && run->playing )
 			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "Name of this player:", scoreText );

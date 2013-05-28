@@ -22,7 +22,7 @@ StateLevel::StateLevel( Replay *loadReplay ) :
 {
 	spawnHandler = &__spawnHandler;
 	scoreKeeper = &__scoreKeeper;
-	player = new PLAYER_CLASS( this );
+	player = new UnitPlayer( this );
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
 	*( player->y ) = APP_SCREEN_HEIGHT / 2;
 	addUnit( player, false );
@@ -204,7 +204,7 @@ int StateLevel::update( Uint32 delta )
 
 	if ( player && player->toBeRemoved )
 	{
-		printf( "Score: %i\n", scoreKeeper->getScore() );
+		printf( "YOU DIED! Score: %i\n", scoreKeeper->getScore() );
 		return stScore;
 	}
 

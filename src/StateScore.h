@@ -31,6 +31,7 @@ protected:
 	Timer caretTimer;
 	HighscoreFile file;
 	Replay *run;
+	bool playerDead;
 private:
 
 };

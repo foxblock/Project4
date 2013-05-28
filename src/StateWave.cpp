@@ -37,11 +37,16 @@ StateWave::StateWave( const std::string &levelFilename, Replay *loadReplay ) :
 
 StateWave::~StateWave()
 {
-
+	//
 }
 
 int StateWave::update( Uint32 delta )
 {
+	if ( __spawnHandler.finished && countUnits() == 1 )
+	{
+		printf( "GAME OVER! Score: %i\n", scoreKeeper->getScore() );
+		return stScore;
+	}
 	return StateLevel::update( delta );
 }
 

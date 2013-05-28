@@ -20,8 +20,9 @@ using namespace Utility;
 
 SpawnFile::SpawnFile(StateLevel* newParent) :
 	SpawnBase(newParent),
-	currentWave(-1),
+	finished(false),
 	currentTick(0),
+	currentWave(-1),
 	skipping(false)
 {
 
@@ -81,6 +82,9 @@ bool SpawnFile::load(std::fstream& file)
 
 int SpawnFile::update(Uint32 delta)
 {
+	if ( finished )
+		return 1;
+
 	currentTick += delta;
 
 	if ( currentWave >= 0 && parent->countUnits() == 1 && !skipping ) // skip to next wave when one is done
@@ -97,8 +101,9 @@ int SpawnFile::update(Uint32 delta)
 		skipping = false;
 		if ( currentWave >= waves.size() )
 		{
-			currentWave = 0;
-			LOG_MESSAGE( "Cycled through wave data, starting from beginning." );
+			finished = true;
+			LOG_MESSAGE( "Cycled through wave data." );
+			return 1;
 		}
 		for ( std::vector< SpawnWave::SpawnEntry >::iterator I = waves[currentWave]->entries.begin();
 				I != waves[currentWave]->entries.end(); ++I )
@@ -122,6 +127,8 @@ int SpawnFile::update(Uint32 delta)
             }
 		}
 	}
+
+	return 0;
 }
 
 

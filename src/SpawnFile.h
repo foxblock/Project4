@@ -13,6 +13,8 @@ public:
 	bool load( std::fstream &file );
 
 	int update( Uint32 delta );
+
+	bool finished;
 protected:
 	void parseUnit( const SpawnWave::SpawnEntry &entry );
 	void parseEvent( const SpawnWave::SpawnEntry &entry );

@@ -13,9 +13,7 @@
 #include <vector>
 #include <string>
 
-#define PLAYER_CLASS UnitPlayer
-
-class PLAYER_CLASS;
+class UnitPlayer;
 
 class StateLevel : public StateBase
 {
@@ -34,7 +32,7 @@ public:
 	// This function takes ownership of the event passed!
 	void addEvent( EventBase *newEvent );
 
-	PLAYER_CLASS *player;
+	UnitPlayer *player;
 	ScoreBase *scoreKeeper;
 	SpawnBase *spawnHandler;
 
