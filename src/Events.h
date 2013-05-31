@@ -31,6 +31,7 @@ public:
 	{
 		this->unit = unit;
 		this->killer = killer;
+		points = -1;
 		type = etUnitDeath;
 	}
 

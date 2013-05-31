@@ -362,6 +362,8 @@ void StateLevel::handleEvents( Uint32 delta )
 		case EventBase::etUnitDeath:
 		{
 			EventUnitDeath *temp = (EventUnitDeath*)*event;
+			if ( temp->points < 0 )
+				break;
 			UnitText *text = new UnitText( this );
 			*(text->x) = *(temp->unit->x);
 			*(text->y) = *(temp->unit->y);
@@ -373,6 +375,7 @@ void StateLevel::handleEvents( Uint32 delta )
 			text->life = 500;
 			text->mode = UnitText::tmStatic;
 			addUnit( text, false );
+			break;
 		}
 		default:
 			break;
