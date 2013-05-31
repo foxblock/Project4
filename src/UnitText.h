@@ -20,6 +20,8 @@ public:
 	int fontSize;
 	Uint16 colour1;
 	Uint16 colour2;
+	Uint8 alpha1;
+	Uint8 alpha2;
 	int fadeTime1;
 	int fadeTime2;
 	int life;

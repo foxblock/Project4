@@ -110,7 +110,8 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 		std::map<int,int>::iterator p = pointMatrix.find( ((EventUnitDeath*)event)->unit->type );
 		if ( p != pointMatrix.end() )
 		{
-			points += p->second * multiplier;
+			((EventUnitDeath*)event)->points = p->second * multiplier;
+			points += ((EventUnitDeath*)event)->points;
 			++kills;
 			multiplier += SCORE_MULTI_PER_KILL;
 			comboTimer.start( std::max( SCORE_COMBO_START_TIME - SCORE_COMBO_KILL_TIME * streak, SCORE_COMBO_MIN_TIME ) );

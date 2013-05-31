@@ -36,6 +36,7 @@ public:
 
 	UnitBase *unit;
 	UnitBase *killer;
+	int points; // filled in by scoreKeeper AFTER creation
 };
 
 class EventUnitSpawn : public EventBase

@@ -7,6 +7,7 @@
 #include "gameDefines.h"
 
 #include "UnitPlayer.h"
+#include "UnitText.h"
 #include "ScoreNormal.h"
 #include "SpawnNormal.h"
 
@@ -357,6 +358,21 @@ void StateLevel::handleEvents( Uint32 delta )
 			//tempCol.intensity = bgcol.intensity;
 			bgEffects.push_back( std::make_pair(temp,tempCol) );
 			break;
+		}
+		case EventBase::etUnitDeath:
+		{
+			EventUnitDeath *temp = (EventUnitDeath*)*event;
+			UnitText *text = new UnitText( this );
+			*(text->x) = *(temp->unit->x);
+			*(text->y) = *(temp->unit->y);
+			text->alignment = UnitText::taCentre;
+			text->fontSize = 24;
+			text->colour1 = -1;
+			text->alpha1 = 128;
+			text->text = "kill +" + Utility::numToStr( temp->points );
+			text->life = 500;
+			text->mode = UnitText::tmStatic;
+			addUnit( text, false );
 		}
 		default:
 			break;

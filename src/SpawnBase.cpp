@@ -5,6 +5,7 @@
 #include "UnitSpike.h"
 #include "UnitLaser.h"
 #include "UnitBomb.h"
+#include "UnitText.h"
 #include "ItemSlowmo.h"
 #include "ItemVortex.h"
 
@@ -53,6 +54,9 @@ UnitBase* SpawnBase::getUnit(const int& type) const
 		break;
 	case UnitBase::utBomb:
 		unit = new UnitBomb( parent );
+		break;
+	case UnitBase::utText:
+		unit = new UnitText( parent );
 		break;
 
 	case UnitBase::utItemSlowmo:

@@ -266,8 +266,8 @@ void SpawnFile::parseText(const SpawnWave::SpawnEntry& entry)
 	switch ( entry.type )
 	{
 	case UnitText::tmStatic: // t0 x y align size r g b text
-		tokenize( entry.parameter, tokens, " ,\t", 8 );
-		if ( tokens.size() < 8 )
+		tokenize( entry.parameter, tokens, " ,\t", 9 );
+		if ( tokens.size() < 9 )
 		{
 			error = true;
 			break;
@@ -279,11 +279,12 @@ void SpawnFile::parseText(const SpawnWave::SpawnEntry& entry)
 		unit->colour1 = spGetRGB( strToNum<int>( tokens[4] ),
 								strToNum<int>( tokens[5] ),
 								strToNum<int>( tokens[6] ) );
-		unit->text = tokens[7];
+		unit->alpha1 = strToNum<int>(tokens[7]);
+		unit->text = tokens[8];
 		break;
 	case UnitText::tmBlink: // t1 x y align size r1 g1 b1 time1 r2 g2 b2 time2 text
-		tokenize( entry.parameter, tokens, " ,\t", 13 );
-		if ( tokens.size() < 13 )
+		tokenize( entry.parameter, tokens, " ,\t", 15 );
+		if ( tokens.size() < 15 )
 		{
 			error = true;
 			break;
@@ -295,12 +296,14 @@ void SpawnFile::parseText(const SpawnWave::SpawnEntry& entry)
 		unit->colour1 = spGetRGB( strToNum<int>( tokens[4] ),
 								strToNum<int>( tokens[5] ),
 								strToNum<int>( tokens[6] ) );
-		unit->fadeTime1 = strToNum<int>( tokens[7] );
-		unit->colour2 = spGetRGB( strToNum<int>( tokens[8] ),
-								strToNum<int>( tokens[9] ),
-								strToNum<int>( tokens[10] ) );
-		unit->fadeTime2 = strToNum<int>( tokens[11] );
-		unit->text = tokens[12];
+		unit->alpha1 = strToNum<int>(tokens[7]);
+		unit->fadeTime1 = strToNum<int>( tokens[8] );
+		unit->colour2 = spGetRGB( strToNum<int>( tokens[9] ),
+								strToNum<int>( tokens[10] ),
+								strToNum<int>( tokens[11] ) );
+		unit->alpha2 = strToNum<int>(tokens[12]);
+		unit->fadeTime2 = strToNum<int>( tokens[13] );
+		unit->text = tokens[14];
 		break;
 	default:
 		error = true;

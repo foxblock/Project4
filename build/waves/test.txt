@@ -13,8 +13,8 @@ DONT DELETE THIS LINE
 # 1 - lineH    ; unitType amount
 # 2 - lineV    ; unitType amount
 # Text (t)
-# 1 - static   ; x y align size r  g  b  text
-# 2 - blinking ; x y align size r1 g1 b1 time1 r2 g2 b2 time2 text
+# 1 - static   ; x y align size r  g  b  a  text
+# 2 - blinking ; x y align size r1 g1 b1 a1 time1 r2 g2 b2 a2 time2 text
 # align: 0 - left, 1 - centre, 2 - right
 # Text will be shown for the duration of the wave
 #
@@ -40,28 +40,28 @@ DONT DELETE THIS LINE
 # INTRO BEGIN
 5000
 	u2 100 100
-	t0 100 120 1 16 255 255 255 This is Spikey
-	t0 100 140 1 16 255 255 255 He will chase you
-	t0 100 160 1 16 255 255 255 if you get close
+	t0 100 120 1 16 255 255 255 255 This is Spikey
+	t0 100 140 1 16 255 255 255 255 He will chase you
+	t0 100 160 1 16 255 255 255 255 if you get close
 5000
 	u4 700 100
-	t0 700 120 1 16 255 255 255 This is Bomba
-	t0 700 140 1 16 255 255 255 He is very shy
-	t0 700 160 1 16 255 255 255 and will explode
-	t0 700 180 1 16 255 255 255 when approached
+	t0 700 120 1 16 255 255 255 255 This is Bomba
+	t0 700 140 1 16 255 255 255 255 He is very shy
+	t0 700 160 1 16 255 255 255 255 and will explode
+	t0 700 180 1 16 255 255 255 255 when approached
 4500
 	u3 700 380
-	t0 700 280 1 16 255 255 255 This is Tom
-	t0 700 300 1 16 255 255 255 He can shoot lasers
-	t0 700 320 1 16 255 255 255 from his eye
+	t0 700 280 1 16 255 255 255 255 This is Tom
+	t0 700 300 1 16 255 255 255 255 He can shoot lasers
+	t0 700 320 1 16 255 255 255 255 from his eye
 500
-	t0 700 280 1 16 255 255 255 This is Tom
-	t0 700 300 1 16 255 255 255 He can shoot lasers
-	t0 700 320 1 16 255 255 255 from his eye
-	t0 700 340 1 16 255 255 255 ...show-off!
+	t0 700 280 1 16 255 255 255 255 This is Tom
+	t0 700 300 1 16 255 255 255 255 He can shoot lasers
+	t0 700 320 1 16 255 255 255 255 from his eye
+	t0 700 340 1 16 255 255 255 255 ...show-off!
 5000
-	t0 400 200 1 32 255 255 255 Bright red stuff will kill you...
-	t0 400 240 1 32 255 255 255 ...and everything else, too.
+	t0 400 200 1 32 255 255 255 255 Bright red stuff will kill you...
+	t0 400 240 1 32 255 255 255 255 ...and everything else, too.
 	u2 r-100 r100
 	u2 r100 r-100
 # INTRO END
@@ -81,22 +81,22 @@ DONT DELETE THIS LINE
 	p0 4 r0 r0 150 16
 # Circle of bombs (explode immediately, stand still)
 500
-	t0 400 50 1 300 200 0 0 STOP!
+	t0 400 50 1 300 255 255 255 128 STOP!
 2000
 	p0 4 r0 r0 100 16
 # Trail of bombs BEGIN
 100
-	t0 800 -10 2 80 255 255 255 MOVE!
+	t0 800 -10 2 80 255 255 255 128 MOVE!
 100
-	t0 800 90 2 80 255 255 255 MOVE!
+	t0 800 90 2 80 255 255 255 128 MOVE!
 100
-	t0 800 190 2 80 255 255 255 MOVE!
+	t0 800 190 2 80 255 255 255 128 MOVE!
 100
-	t0 800 190 2 80 255 255 255 MOVE!
+	t0 800 190 2 80 255 255 255 128 MOVE!
 100
-	t0 800 290 2 80 255 255 255 MOVE!
+	t0 800 290 2 80 255 255 255 128 MOVE!
 100
-	t0 800 390 2 80 255 255 255 MOVE!
+	t0 800 390 2 80 255 255 255 128 MOVE!
 250
 	u4 r0 r0
 250

@@ -2,6 +2,7 @@
 
 #include "sparrowFont.h"
 #include "gameDefines.h"
+#include "UtilityFunctions.h"
 
 UnitText::UnitText(StateLevel* newParent) :
 	UnitBase( newParent, NULL ),
@@ -9,6 +10,8 @@ UnitText::UnitText(StateLevel* newParent) :
 	fontSize(24),
 	colour1(0),
 	colour2(0),
+	alpha1(255),
+	alpha2(255),
 	fadeTime1(0),
 	fadeTime2(0),
 	life(0),
@@ -68,11 +71,15 @@ void UnitText::render(SDL_Surface* const target)
 	{
 		font1 = spFontLoad( FONT_GENERAL, fontSize );
 		spFontAdd( font1, SP_FONT_GROUP_ASCII, colour1 );
+		if ( alpha1 < 255 )
+			Utility::setFontAlpha( font1, alpha1 );
 	}
 	if ( !font2 && mode == tmBlink )
 	{
 		font2 = spFontLoad( FONT_GENERAL, fontSize );
 		spFontAdd( font2, SP_FONT_GROUP_ASCII, colour2 );
+		if ( alpha2 < 255 )
+			Utility::setFontAlpha( font2, alpha2 );
 	}
 
 	spFontPointer font = NULL;

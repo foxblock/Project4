@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "Vector2d.h"
+#include "sparrowFont.h"
 
 #define FLOAT_ACCURACY 1e-10
 #define MY_RAND_MAX 2147483647
@@ -119,6 +120,8 @@ inline bool floatComp( const Vector2d<float> &a, const Vector2d<float> &b )
 {
 	return ( floatComp(a.x, b.x) && floatComp(a.y, b.y) );
 }
+
+void setFontAlpha( spFontPointer font, const int &alpha );
 
 // -------- STRUCTS ------------------------------------------------------------
 

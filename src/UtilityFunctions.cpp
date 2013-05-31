@@ -49,4 +49,19 @@ Uint32 rand()
 	return w;
 }
 
+static void internalSetFontAlpha( spLetterPointer letter, const int &alpha )
+{
+	if ( !letter )
+		return;
+    internalSetFontAlpha( letter->left, alpha );
+    internalSetFontAlpha( letter->right, alpha );
+    SDL_SetAlpha( letter->surface, SDL_SRCALPHA, alpha );
+}
+
+void setFontAlpha(spFontPointer font, const int& alpha)
+{
+	internalSetFontAlpha( font->root, alpha );
+	internalSetFontAlpha( font->buttonRoot, alpha );
+}
+
 }
