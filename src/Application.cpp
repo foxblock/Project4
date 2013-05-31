@@ -120,7 +120,12 @@ StateBase* Application::getState( const int &type, StateBase const * const passi
 		result = new StateHighscores();
 		break;
 	case StateBase::stWave:
-		result = new StateWave( "waves/test.txt", NULL );
+		if ( !passingState )
+		{
+			errorString = "Needs passingState to construct state type: " + Utility::numToStr( type );
+			return NULL;
+		}
+		result = new StateWave( passingState->message, NULL );
 		break;
 	default:
 		printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, type );

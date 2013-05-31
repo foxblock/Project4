@@ -86,6 +86,8 @@ int StateMenu::update(Uint32 delta)
 		 spGetInput()->button[SP_BUTTON_START] )
 	{
 		spResetButtonsState();
+		if ( entries[choice].targetState == stWave )
+			message = "waves/test.txt";
 		return entries[choice].targetState;
 	}
 
