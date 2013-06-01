@@ -19,6 +19,7 @@ public:
 		etBombCascade,
 		etSlowMotion,
 		etScoreMode,
+		etWaveSkip,
 		etEOL
 	};
 	EventType type;
@@ -84,6 +85,18 @@ public:
 	}
 
 	int newMode,prevMode;
+};
+
+class EventWaveSkip : public EventBase
+{
+public:
+	EventWaveSkip( const int &timeAmount )
+	{
+		type = etWaveSkip;
+		this->timeAmount = timeAmount;
+	}
+
+	int timeAmount;
 };
 
 #endif // EVENT_BASE_H

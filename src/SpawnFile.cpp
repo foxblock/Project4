@@ -92,6 +92,8 @@ int SpawnFile::update(Uint32 delta)
 
 	if ( currentWave >= 0 && !waves[currentWave]->noSkip && parent->countUnits() == 1 && !skipping ) // skip to next wave when one is done
 	{
+		EventWaveSkip *ev = new EventWaveSkip( waves[currentWave]->duration - currentTick );
+		parent->addEvent( ev );
 		currentTick = (float)waves[currentWave]->duration - 750;
 		skipping = true;
 		LOG_MESSAGE( "Skipped to next wave (all units dead)." );
@@ -190,6 +192,11 @@ void SpawnFile::parseEvent( const SpawnWave::SpawnEntry &entry )
 	case EventBase::etSlowMotion:
 	{
 		event = new EventSlowMotion( strToNum<int>( tokens[0] ) );
+		break;
+	}
+	case EventBase::etScoreMode:
+	{
+		event = new EventScoreModeChange( strToNum<int>( tokens[0] ), 0 );
 		break;
 	}
 	default:

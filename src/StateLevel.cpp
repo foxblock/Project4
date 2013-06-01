@@ -377,6 +377,21 @@ void StateLevel::handleEvents( Uint32 delta )
 			addUnit( text, false );
 			break;
 		}
+		case EventBase::etWaveSkip:
+		{
+			UnitText *text = new UnitText( this );
+			*(text->x) = 400;
+			*(text->y) = 240;
+			text->alignment = UnitText::taCentre;
+			text->fontSize = 24;
+			text->colour1 = -1;
+			text->alpha1 = 128;
+			text->text = "wave skip +" + Utility::numToStr( ((EventWaveSkip*)*event)->timeAmount );
+			text->life = 1000;
+			text->mode = UnitText::tmStatic;
+			addUnit( text, false );
+			break;
+		}
 		default:
 			break;
 		}
