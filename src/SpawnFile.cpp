@@ -72,7 +72,10 @@ bool SpawnFile::load(std::fstream& file)
 		else
 		{
 			waves.push_back( new SpawnWave() );
-			waves.back()->duration = strToNum<int>( line );
+			std::vector< std::string > tokens;
+			tokenize( line, tokens, " ,\t" );
+			waves.back()->duration = strToNum<int>( tokens[0] );
+			waves.back()->noSkip = tokens.size() > 1;
 		}
 	}
 	if ( waves.empty() )
@@ -87,7 +90,7 @@ int SpawnFile::update(Uint32 delta)
 
 	currentTick += delta;
 
-	if ( currentWave >= 0 && parent->countUnits() == 1 && !skipping ) // skip to next wave when one is done
+	if ( currentWave >= 0 && !waves[currentWave]->noSkip && parent->countUnits() == 1 && !skipping ) // skip to next wave when one is done
 	{
 		currentTick = (float)waves[currentWave]->duration - 750;
 		skipping = true;

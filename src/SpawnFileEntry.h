@@ -22,6 +22,7 @@ public:
 
 	int duration;
 	std::vector< SpawnEntry > entries;
+	bool noSkip;
 };
 
 #endif // _SPAWN_FILE_ENTRY_H
