@@ -23,7 +23,7 @@ DONT DELETE THIS LINE
 # Examples
 # u2 r50 r-50 ; will spawn a spike 50 pixels right and 50 above the player
 # p0 4 400 240 150 10 ; will spawn a circle of 10 bombs at 150 pixels distance to (400,240) aka the centre of the screen
-# t2 800 480 2 64 255 255 255 500 255 0 0 200 Hello World! ; text at the bottom right of the screen blinking white (500ms) and red (200ms)
+# t2 800 480 2 64 255 255 255 255 500 255 0 0 255 200 Hello World! ; text at the bottom right of the screen blinking white (500ms) and red (200ms)
 # 
 # General format
 # Duration of wave (in ms)
@@ -36,42 +36,98 @@ DONT DELETE THIS LINE
 # Check stdout for errors...
 #
 
-1000
-# INTRO BEGIN
+1500 noskip
+# INTRO
+1500
+	e5 2
+	t1 400 210 1 32 255 255 255 255 100 255 0 0 255 300 INTRUDER ALERT!
+2000
+	t1 400 210 1 32 255 255 255 255 100 255 0 0 255 300 INTRUDER ALERT!
+	t1 400 250 1 32 255 255 255 255 100 255 0 0 255 300 DEFENSIVE SYSTEM ACTIVATED!
+# SPIKES
 5000
 	u2 100 100
-	t0 100 120 1 16 255 255 255 255 This is Spikey
-	t0 100 140 1 16 255 255 255 255 He will chase you
-	t0 100 160 1 16 255 255 255 255 if you get close
+1000
+	u2 700 100
+1000
+	u2 700 380
+1000
+	u2 100 380
+6000
 5000
-	u4 700 100
-	t0 700 120 1 16 255 255 255 255 This is Bomba
-	t0 700 140 1 16 255 255 255 255 He is very shy
-	t0 700 160 1 16 255 255 255 255 and will explode
-	t0 700 180 1 16 255 255 255 255 when approached
-4500
-	u3 700 380
-	t0 700 280 1 16 255 255 255 255 This is Tom
-	t0 700 300 1 16 255 255 255 255 He can shoot lasers
-	t0 700 320 1 16 255 255 255 255 from his eye
+	p0 2 r0 r0 200 4
+7000
+	p0 2 r0 r0 200 8
+13000
+	p1 2 16
+# LASER
+3000
+	u3 400 240 stat
 500
-	t0 700 280 1 16 255 255 255 255 This is Tom
-	t0 700 300 1 16 255 255 255 255 He can shoot lasers
-	t0 700 320 1 16 255 255 255 255 from his eye
-	t0 700 340 1 16 255 255 255 255 ...show-off!
+	u2 400 500
+500
+	u2 820 500
+500
+	u2 820 240
+500
+	u2 820 -20
+100
+	u2 400 -20
+100
+	u2 -20 -20
+2000
+6000
+	p2 2 10
 5000
-	t0 400 200 1 32 255 255 255 255 Bright red stuff will kill you...
-	t0 400 240 1 32 255 255 255 255 ...and everything else, too.
-	u2 r-100 r100
-	u2 r100 r-100
-# INTRO END
+	u3 100 100 stat
+	u3 700 100 stat
+	u3 700 380 stat
+	u3 100 380 stat
+6000
+	p0 2 400 240 80 12
+10000
+	p0 2 100 100 50 4
+	p0 2 700 100 50 4
+	p0 2 700 380 50 4
+	p0 2 100 380 50 4
+3000
+	p0 3 400 240 30 4
+10000
+	p1 2 4
+	u2 r100 r100
+	u2 r-100 r-100
+	u2 280 70
+	u2 100 320
+	u2 680 220
+	u2 700 370
+	u2 580 50
+3000 noskip
+# BOMBS
+2000
+	u4 r-120 r-80
+1000
+	u4 r100 r-40
+500
+	u4 120 100
+500
+	u4 400 380
+500
+	u4 640 50
+500
+	u4 80 400
+500
+	u4 720 420
 5000
-	p2 2 12
-5000
-	u3 50 50
-	u3 750 50
-	u3 50 430
-	u3 750 430
+	u4 100 100
+	u4 700 100
+	u4 700 380
+	u4 100 38
+	p0 4 r0 r0 200 8
+
+
+# OLD DATA BELOW
+
+
 # Circle of bombs (evade)
 1500
 	p0 4 r0 r0 150 16
@@ -130,4 +186,3 @@ DONT DELETE THIS LINE
 250
 	u4 r0 r0
 # Trail of Bombs END
-

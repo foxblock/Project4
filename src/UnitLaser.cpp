@@ -43,6 +43,7 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	friction = LASER_MOVEMENT_FRICTION;
 	timers.push_back( &charge );
 	timers.push_back( &life );
+	stationary = false;
 }
 
 UnitLaser::~UnitLaser()
@@ -87,7 +88,7 @@ int UnitLaser::update( const Uint32 &delta )
 	}
 
 	// movement
-	if ( life.isStopped() && life.wasStarted() )
+	if ( !stationary && life.isStopped() && life.wasStarted() )
 	{
 		life.stop();
 		float angle = Utility::randomRange( 0, 359 ) * M_PI / 180;

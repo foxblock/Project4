@@ -164,6 +164,9 @@ void SpawnFile::parseUnit( const SpawnWave::SpawnEntry &entry )
 	{
 		switch ( entry.type )
 		{
+		case UnitBase::utLaser:
+			((UnitLaser*)unit)->stationary = true;
+			break;
 		case UnitBase::utBomb:
 			((UnitBomb*)unit)->pressure = strToNum<int>( tokens[2] );
 			break;
@@ -345,7 +348,7 @@ void SpawnFile::patternCircle( const int &type, const float& x, const float& y,
 	}
 }
 
-void SpawnFile::patternLineH( const int &type, const int& amount )
+void SpawnFile::patternLineV( const int &type, const int& amount )
 {
 	for ( int I = 0; I < amount; ++I )
 	{
@@ -359,7 +362,7 @@ void SpawnFile::patternLineH( const int &type, const int& amount )
 	}
 }
 
-void SpawnFile::patternLineV( const int &type, const int& amount )
+void SpawnFile::patternLineH( const int &type, const int& amount )
 {
 	for ( int I = 0; I < amount; ++I )
 	{
