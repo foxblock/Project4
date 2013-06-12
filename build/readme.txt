@@ -1,6 +1,6 @@
 Project4
 Prototype version.
-Janek Sch‰fer 2012
+Janek Sch√§fer 2012-2013
 
 Controls: [Pandora/PC]
 

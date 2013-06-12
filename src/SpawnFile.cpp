@@ -41,7 +41,7 @@ bool SpawnFile::load(std::fstream& file)
 	while ( file.good() )
 	{
 		getline( file,line );
-		if ( line[0] == 0 || line[0] == '#' )
+		if ( line[0] == 0 || line[0] == '#' || line[0] == '\r' )
 			continue;
 		if ( line[0] == '\t' )
 		{
@@ -71,15 +71,27 @@ bool SpawnFile::load(std::fstream& file)
 		}
 		else
 		{
-			waves.push_back( new SpawnWave() );
 			std::vector< std::string > tokens;
 			tokenize( line, tokens, " ,\t" );
-			waves.back()->duration = strToNum<int>( tokens[0] );
+			int dur = strToNum<int>( tokens[0] );
+			if ( dur <= 0 )
+			{
+				printf( "%s Invalid wave duration, skipping this wave declaration. \
+						Coming unit declarations might be shifted.\n", ERROR_STRING );
+				continue;
+			}
+			waves.push_back( new SpawnWave() );
+			waves.back()->duration = dur;
 			waves.back()->noSkip = tokens.size() > 1;
+			#ifdef _DEBUG
+			printf( "Adding wave... duration: %i, noSkip: %i\n", dur, waves.back()->noSkip );
+			#endif // _DEBUG
 		}
 	}
 	if ( waves.empty() )
 		printf( "%s No wave data has been loaded (empty file?)\n", WARNING_STRING );
+	else
+		printf( "%i waves have been loaded\n", waves.size() );
 }
 
 

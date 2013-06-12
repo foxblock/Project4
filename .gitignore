@@ -18,3 +18,4 @@ build/data/scores*
 copy_sparrow.bat
 build/libsparrow3d.so
 build/lib/*
+copy_binaries.bat
