@@ -40,10 +40,12 @@ StateScore::StateScore( StateLevel *level ) :
 		spFontAdd( scoreText, SP_FONT_GROUP_NUMBERS, spGetRGB( 255, 128, 0 ) );
 	}
 
+	nameBkup[0] = 0;
 	if ( level->run->playing )
 	{
 		state = 1;
 		caret = false;
+		strcpy( nameBkup, name );
 		strcpy( name, level->run->info.name.c_str() );
 		run = level->run;
 		level->run = NULL;
@@ -70,6 +72,8 @@ StateScore::~StateScore()
 	spResetAxisState();
 	spResetButtonsState();
 	delete run;
+	if ( nameBkup[0] != 0 )
+		strcpy( name, nameBkup );
 }
 
 
