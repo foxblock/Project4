@@ -44,6 +44,7 @@
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
 					<Add option="-D_DEBUG" />
+					<Add option="-D_DEEP_DEBUG" />
 					<Add directory="$(#mingw.include)" />
 					<Add directory="$(#mingw.include)/SDL" />
 				</Compiler>
@@ -51,7 +52,6 @@
 					<Add option="-lmingw32" />
 					<Add option="-lSDLmain" />
 					<Add directory="$(#mingw.lib)" />
-					<Add directory="../sparrow3d/bin/W32" />
 				</Linker>
 			</Target>
 			<Target title="Pandora Release">
@@ -119,13 +119,11 @@
 					<Add option="-lfreetype" />
 					<Add option="-lts" />
 					<Add directory="$(#pandora_sdk.lib)" />
-					<Add directory="../sparrow3d/bin/Pandora" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-ffinite-math-only" />
-			<Add option="-DSDL_INCLUDE_SUBDIR" />
 			<Add directory="../sparrow3d/" />
 		</Compiler>
 		<Linker>

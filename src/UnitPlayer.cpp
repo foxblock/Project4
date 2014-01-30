@@ -30,8 +30,18 @@ UnitPlayer::~UnitPlayer()
 
 int UnitPlayer::update( const Uint32 &delta )
 {
-	Vector2d<float> dir(spGetInput()->axis[0],spGetInput()->axis[1]);
-	accel = dir.unit() * PLAYER_ACCEL;
+	if ( spGetInput()->axis[0] == 0 && spGetInput()->axis[1] == 0 )
+	{
+		Vector2d<float> dir(spGetInput()->analog_axis[0],spGetInput()->analog_axis[1]);
+		dir /= (float)SP_ANALOG_AXIS_MAX;
+		vel = dir * maxVel;
+		accel.x = accel.y = 0;
+	}
+	else
+	{
+		Vector2d<float> dir(spGetInput()->axis[0],spGetInput()->axis[1]);
+		accel = dir.unit() * maxAccel;
+	}
 
 	if ( *x < 0 )
 		*x = 0;

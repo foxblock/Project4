@@ -117,29 +117,38 @@ DONT DELETE THIS LINE
 	u4 80 400
 500
 	u4 720 420
+2000
+	u4 100 100
+	u4 700 100
+	u4 700 380
+	u4 100 38
+	u2 280 70
+	u2 100 320
+	u2 680 220
+	u2 700 370
+3000
+	p0 4 r0 r0 200 6
 5000
 	u4 100 100
 	u4 700 100
 	u4 700 380
 	u4 100 38
-	p0 4 r0 r0 200 8
-
-
-# OLD DATA BELOW
-
-
-# Circle of bombs (evade)
-1500
-	p0 4 r0 r0 150 16
-1500
-	p0 4 r0 r0 150 16
-1500
-	p0 4 r0 r0 150 16
 # Circle of bombs (explode immediately, stand still)
 500
 	t0 400 50 1 300 255 255 255 128 STOP!
 2000
 	p0 4 r0 r0 100 16
+#
+10000
+	u3 50 240 stats
+	u3 750 240 stat
+	u2 400 60
+	u2 400 120
+	u2 400 180
+	u2 400 240
+	u2 400 300
+	u2 400 360
+	u2 400 420
 # Trail of bombs BEGIN
 100
 	t0 800 -10 2 80 255 255 255 128 MOVE!

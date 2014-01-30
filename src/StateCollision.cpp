@@ -6,7 +6,7 @@
 #include "ProjectileLaser.h"
 #include "UtilityFunctions.h"
 
-#define PLAYER_VELOCITY 0.2f
+#define TEST_PLAYER_VELOCITY 0.2f
 
 StateCollision::StateCollision()
 {
@@ -114,11 +114,11 @@ void StateCollision::handleInput( Uint32 delta )
 
 	if ( spGetInput()->axis[0] < 0 )
 	{
-		player->vel.x = -PLAYER_VELOCITY;
+		player->vel.x = -TEST_PLAYER_VELOCITY;
 	}
 	else if ( spGetInput()->axis[0] > 0 )
 	{
-		player->vel.x = PLAYER_VELOCITY;
+		player->vel.x = TEST_PLAYER_VELOCITY;
 	}
 	else
 	{
@@ -126,11 +126,11 @@ void StateCollision::handleInput( Uint32 delta )
 	}
 	if ( spGetInput()->axis[1] > 0 )
 	{
-		player->vel.y = PLAYER_VELOCITY;
+		player->vel.y = TEST_PLAYER_VELOCITY;
 	}
 	else if ( spGetInput()->axis[1] < 0 )
 	{
-		player->vel.y = -PLAYER_VELOCITY;
+		player->vel.y = -TEST_PLAYER_VELOCITY;
 	}
 	else
 	{

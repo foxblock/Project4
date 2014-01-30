@@ -139,8 +139,12 @@ bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 s
 	printf( "Starting application... Version: %s\n", VERSION_STRING );
 
 	Utility::seedRand( 987654321 );
-	printf("Random test: %i %i %i %i\n",Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100));
-	printf("Control group: %i %i %i %i\n",-3, -4, 37, -81);
+	int a = Utility::randomRange(-100,100);
+	int b = Utility::randomRange(-100,100);
+	int c = Utility::randomRange(-100,100);
+	int d = Utility::randomRange(-100,100);
+	printf("RNG test: %i %i %i %i\n",a,b,c,d);
+	printf("Control group: %i %i %i %i\n",-81,37,-4,-3);
 
 	if ( spLoop( spDraw, spCalc, 2, NULL, NULL ) != ERROR_CODE )
 		return true;
