@@ -5,6 +5,7 @@
 #include "SimpleFlags.h"
 
 #include "sparrowSprite.h"
+#include "sparrowFont.h"
 #include <string>
 #include <vector>
 

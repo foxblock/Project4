@@ -7,6 +7,8 @@
 #include "StateLevel.h"
 #include "gameDefines.h"
 
+#include "sparrowPrimitives.h"
+
 // Radians per millisecond
 #define LASER_ROTATION_SPEED 0.01f
 #define LASER_ROTATION_THESHOLD 0.05f

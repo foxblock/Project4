@@ -5,6 +5,8 @@
 #include "Events.h"
 #include "StateLevel.h"
 
+#include "sparrowPrimitives.h"
+
 #define BOMB_RADIUS 6
 #define BOMB_PRESSURE_RADIUS_SQR_HI  22500.0f
 #define BOMB_PRESSURE_RADIUS_SQR_MID 10000.0f

@@ -1,5 +1,7 @@
 #include "ProjectileLaser.h"
 
+#include "sparrowPrimitives.h"
+
 #define PROJECTILE_LASER_BLINK_TIME 75
 
 ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :

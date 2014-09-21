@@ -4,6 +4,8 @@
 #include "UtilityFunctions.h"
 #include "gameDefines.h"
 
+#include "sparrowPrimitives.h"
+
 // Pixels per millisecond
 #define SPIKE_ATTACK_ACCEL 0.008f
 #define SPIKE_CHARGE_MAX_VEL 0.75f

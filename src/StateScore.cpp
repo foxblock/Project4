@@ -8,6 +8,8 @@
 #include "ScoreBase.h"
 #include "UnitPlayer.h"
 
+#include "sparrowPrimitives.h"
+
 #include <time.h>
 
 #define SCORE_FONT_SIZE 32

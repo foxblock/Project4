@@ -4,6 +4,8 @@
 #include "gameDefines.h"
 #include "StateLevel.h"
 
+#include "sparrowPrimitives.h"
+
 #define ITEM_SLOWMO_RADIUS 16
 #define ITEM_SLOWMO_LIFE 5000
 #define ITEM_SLOWMO_DURATION 2000

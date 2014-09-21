@@ -3,6 +3,8 @@
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
 
+#include "sparrowPrimitives.h"
+
 // Pixels per millisecond
 #define PLAYER_MAX_VELOCITY 0.5f
 #define PLAYER_ACCEL 0.01f

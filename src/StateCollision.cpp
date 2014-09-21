@@ -6,6 +6,8 @@
 #include "ProjectileLaser.h"
 #include "UtilityFunctions.h"
 
+#include "sparrowPrimitives.h"
+
 #define TEST_PLAYER_VELOCITY 0.2f
 
 StateCollision::StateCollision()

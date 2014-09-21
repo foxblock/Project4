@@ -11,6 +11,8 @@
 #include "ScoreNormal.h"
 #include "SpawnNormal.h"
 
+#include "sparrowPrimitives.h"
+
 #define LEVEL_BG_FADE_TIME 2500
 #define LEVEL_PAUSE_FONT_SIZE 32
 

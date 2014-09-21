@@ -4,6 +4,8 @@
 #include "gameDefines.h"
 #include "StateLevel.h"
 
+#include "sparrowPrimitives.h"
+
 #define ITEM_VORTEX_RADIUS 16
 #define ITEM_VORTEX_LIFE 5000
 #define ITEM_VORTEX_DURATION 5000

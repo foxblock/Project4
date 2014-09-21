@@ -6,6 +6,8 @@
 #include "Events.h"
 #include "StateLevel.h"
 
+#include "sparrowPrimitives.h"
+
 #ifdef _DEBUG
 #define DEBUG_VELOCITY_LINE 200.0f
 #define DEBUG_ACCELERATION_LINE 20000.0f
