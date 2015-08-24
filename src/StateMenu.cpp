@@ -64,7 +64,7 @@ int StateMenu::update(Uint32 delta)
 {
 	StateBase::update( delta );
 
-	if ( inputLag.isStopped() )
+	if ( inputLag.stopped() )
 	{
 		if ( spGetInput()->axis[1] > 0 )
 			choice = std::min( --choice, entries.size()-1 );
@@ -101,7 +101,7 @@ void StateMenu::render(SDL_Surface* target)
 	if ( textMode == -1 )
 	{
 		SDL_SetAlpha( text, SDL_SRCALPHA, (1.0f - (float)textTimer.getTime() / (float)textTimer.getDuration()) * 255.0f );
-		if ( textTimer.isStopped() )
+		if ( textTimer.stopped() )
 		{
 			textTimer.start( MENU_TEXT_SHOW_TIME );
 			textMode = 0;
@@ -110,7 +110,7 @@ void StateMenu::render(SDL_Surface* target)
 	}
 	else if ( textMode == 0 )
 	{
-		if ( textTimer.isStopped() )
+		if ( textTimer.stopped() )
 		{
 			textTimer.start( MENU_TEXT_FADE_TIME );
 			textMode = 1;
@@ -119,7 +119,7 @@ void StateMenu::render(SDL_Surface* target)
 	else if ( textMode == 1 )
 	{
 		SDL_SetAlpha( text, SDL_SRCALPHA, (float)textTimer.getTime() / (float)textTimer.getDuration() * 255.0f );
-		if ( textTimer.isStopped() )
+		if ( textTimer.stopped() )
 		{
 			++textIndex;
 			if ( textIndex >= lines.size() )

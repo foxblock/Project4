@@ -136,7 +136,7 @@ int StateLevel::update( Uint32 delta )
 		else
 			slowmoCounter -= Utility::sign( slowmoCounter );
 	}
-	if ( slowmoTimer.isStopped() && slowmo )
+	if ( slowmoTimer.stopped() && slowmo )
 		slowmo = false;
 
 	StateBase::update( delta );

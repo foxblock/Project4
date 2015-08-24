@@ -45,11 +45,11 @@ int ItemVortex::update( const Uint32 &delta )
 {
 	UnitBase::update( delta );
 
-	if ( life.isStopped() && ( vortex.isStopped() || !vortex.wasStarted() ) )
+	if ( life.stopped() && ( vortex.stopped() || !vortex.started() ) )
 	{
 		toBeRemoved = true;
 	}
-	if ( vortex.wasStarted() && !vortex.isStopped() )
+	if ( vortex.running() )
 	{
 		if( vortex.getTime() % ITEM_VORTEX_ANIMSLOWOFF == 0 )
 			animationOffset = ( animationOffset++ ) % 11;
@@ -71,7 +71,7 @@ int ItemVortex::update( const Uint32 &delta )
 
 void ItemVortex::render( SDL_Surface *const target )
 {
-	if ( vortex.wasStarted() && !vortex.isStopped() )
+	if ( vortex.running() )
 	{
 		for( int r = shape.radius; r > 0; r-- )
 		{
@@ -110,7 +110,7 @@ void ItemVortex::ai( const Uint32 &delta, UnitBase *const player )
 void ItemVortex::collisionResponse( UnitBase *const other )
 {
 	UnitBase::collisionResponse( other );
-	if ( !life.isStopped() && other->flags.has( ufIsPlayer ) )
+	if ( !life.stopped() && other->flags.has( ufIsPlayer ) )
 	{
 		// This code is executed when the player collects the item
 		// So your event code should go here (or be called from here)
@@ -125,7 +125,7 @@ void ItemVortex::collisionResponse( UnitBase *const other )
 	}
 
 
-	if ( vortex.wasStarted() && !vortex.isStopped() && !other->flags.has( ufIsPlayer )
+	if ( vortex.running() && !other->flags.has( ufIsPlayer )
 		&& other->type != utItemVortex )
 	{
 		other->flags.add( ufFrozen );

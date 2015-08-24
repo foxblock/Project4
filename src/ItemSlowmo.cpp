@@ -38,7 +38,7 @@ int ItemSlowmo::update( const Uint32 &delta )
 {
 	UnitBase::update( delta );
 
-	if ( life.isStopped() )
+	if ( life.stopped() )
 	{
 		toBeRemoved = true;
 	}

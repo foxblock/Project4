@@ -112,7 +112,7 @@ int SpawnNormal::update( Uint32 delta )
 {
 	SpawnBase::update( delta );
 
-	if ( itemTimer.isStopped() && itemTimer.wasStarted() )
+	if ( itemTimer.finished() )
 	{
 		parent->addUnit( getUnit( Utility::randomRange( UnitBase::utEOL + 1, UnitBase::utItemEOL - 1 ) ), false );
 		itemTimer.start( SPAWN_TIME_ITEM );
@@ -133,7 +133,7 @@ int SpawnNormal::update( Uint32 delta )
 		}
 	}
 
-	if ( !spawnTimer.isStopped() )
+	if ( !spawnTimer.stopped() )
 		return 0;
 
 	int unitType = UnitBase::utNone;

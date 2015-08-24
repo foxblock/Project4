@@ -24,11 +24,17 @@ public:
 	// -1 - off, 0 - stopwatch, 1 - countdown
 	int getMode() const { return mode; }
 
+	// returns true as soon as the timer was started and even when it has run out
 	// returns false after creation and when the timer was manually stopped
-	// returns true when a countdown ran out
-	bool wasStarted() const { return (mode != -1); }
+	bool started() const { return (mode != -1); }
 	// returns true after creation, when a count-down ran out or the Timer is manually stopped
-	bool isStopped() const { return (status == -1); }
+	// returns false while the timer is running
+	bool stopped() const { return (status == -1); }
+	// returns true when the countdown has run out after it was started
+	// (when wasStarted and isStopped return true)
+	bool finished() const { return started() && stopped(); }
+	// returns true while the timer is running
+	bool running() const { return started() && !stopped(); }
 
 protected:
 	int duration;

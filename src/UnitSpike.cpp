@@ -79,7 +79,7 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
 	// waiting for charge -> charging
-	if ( chargeTimer.isStopped() && chargeState == 1 )
+	if ( chargeTimer.stopped() && chargeState == 1 )
 	{
 		maxVel = UNIT_DEFAULT_MAX_VEL;
 		vel = diff.unit() * SPIKE_CHARGE_MAX_VEL;
@@ -90,7 +90,7 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
 	// prevent charging unit from going off screen
-	if ( !chargeTimer.isStopped() && chargeState == 2 &&
+	if ( !chargeTimer.stopped() && chargeState == 2 &&
 		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_HEIGHT)) )
 	{
 		chargeTimer.stop();
@@ -98,7 +98,7 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 		*y = Utility::clamp( *y, 0.0f, (float)APP_SCREEN_HEIGHT );
 	}
 	// charging -> idle movement
-	if ( chargeTimer.isStopped() && chargeState == 2 )
+	if ( chargeTimer.stopped() && chargeState == 2 )
 	{
 		chargeState = 0;
 		activeSprite = idle;

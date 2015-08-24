@@ -70,14 +70,14 @@ int UnitBomb::update( const Uint32 &delta )
 	else
 		activeSprite = idle;
 
-	if ( !bombTimer.isStopped() )
+	if ( !bombTimer.stopped() )
 	{
 		float radius = BOMB_EXPLOSION_RADIUS * (float)(BOMB_EXPLOSION_TIME - bombTimer.getTime()) / (float)BOMB_EXPLOSION_TIME;
 		shape.radius = radius;
 		activeSprite = NULL;
 	}
 
-	if ( bombTimer.wasStarted() && bombTimer.isStopped() )
+	if ( bombTimer.finished() )
 	{
 		LOG_MESSAGE("Removing exploded bomb");
 		toBeRemoved = true;
@@ -93,7 +93,7 @@ void UnitBomb::render( SDL_Surface *const target )
 #ifdef _DEBUG
 	debugString += Utility::numToStr( pressure ) + "\n" + Utility::numToStr( status ) + "\n";
 #endif
-	if ( !bombTimer.isStopped() )
+	if ( !bombTimer.stopped() )
 	{
 		spEllipse( *x, *y, -1, shape.radius, shape.radius, spGetFastRGB( 255, 0, 0 ) );
 	}
@@ -117,7 +117,7 @@ void UnitBomb::collisionResponse( UnitBase *const other )
 
 void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 {
-	if ( bombTimer.wasStarted() )
+	if ( bombTimer.started() )
 		return;
 
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
@@ -195,7 +195,7 @@ void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_3 )
 	{
-		if ( flashTimer.isStopped() )
+		if ( flashTimer.stopped() )
 		{
 			flashTimer.start( BOMB_PRESSURE_TIMER_3 );
 			isFlashing = !isFlashing;
@@ -203,7 +203,7 @@ void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_2 )
 	{
-		if ( flashTimer.isStopped() )
+		if ( flashTimer.stopped() )
 		{
 			flashTimer.start( BOMB_PRESSURE_TIMER_2 );
 			isFlashing = !isFlashing;
@@ -211,7 +211,7 @@ void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_1 )
 	{
-		if ( flashTimer.isStopped() )
+		if ( flashTimer.stopped() )
 		{
 			flashTimer.start( BOMB_PRESSURE_TIMER_1 );
 			isFlashing = !isFlashing;

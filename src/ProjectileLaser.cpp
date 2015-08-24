@@ -28,9 +28,9 @@ ProjectileLaser::~ProjectileLaser()
 
 int ProjectileLaser::update( const Uint32 &delta )
 {
-	if ( life.isStopped() )
+	if ( life.stopped() )
 		toBeRemoved = true;
-	if ( blink.isStopped() )
+	if ( blink.stopped() )
 	{
 		blinkStatus = !blinkStatus;
 		blink.start( PROJECTILE_LASER_BLINK_TIME );

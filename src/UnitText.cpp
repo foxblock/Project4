@@ -41,15 +41,15 @@ UnitText::~UnitText()
 
 int UnitText::update(const Uint32& delta)
 {
-	if ( lifeTimer.isStopped() && life > 0 )
+	if ( lifeTimer.stopped() && life > 0 )
 	{
-		if ( lifeTimer.wasStarted() )
+		if ( lifeTimer.started() )
 			toBeRemoved = true;
 		else
 			lifeTimer.start( life );
 	}
 
-	if ( mode == tmBlink && fadeTimer.isStopped() )
+	if ( mode == tmBlink && fadeTimer.stopped() )
 	{
 		if ( fadeMode == 0 )
 		{

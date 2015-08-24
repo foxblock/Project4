@@ -54,7 +54,7 @@ int StateHighscores::update(Uint32 delta)
 {
 	StateBase::update( delta );
 
-	if ( inputLag.isStopped() )
+	if ( inputLag.stopped() )
 	{
 		if ( spGetInput()->axis[1] > 0 && selOffset > 0 )
 		{
@@ -86,7 +86,7 @@ int StateHighscores::update(Uint32 delta)
 	}
 	else
 	{
-		if ( inputLagSwitch.isStopped() )
+		if ( inputLagSwitch.stopped() )
 			inputLagSwitch.start();
 		else
 			lagTime = std::max( HIGHS_MIN_INPUT_LAG, HIGHS_MAX_INPUT_LAG -

@@ -35,7 +35,7 @@ int StateReplayLoader::update(Uint32 delta)
 {
 	StateBase::update( delta );
 
-	if ( caretTimer.isStopped() )
+	if ( caretTimer.stopped() )
 	{
 		caret = !caret;
 		caretTimer.start( REPLAY_CARET_BLINK_TIME );

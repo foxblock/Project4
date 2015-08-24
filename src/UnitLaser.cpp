@@ -67,7 +67,7 @@ int UnitLaser::update( const Uint32 &delta )
 		else if ( angle > M_PI )
 			angle -= 2 * M_PI;
 
-	if ( !projectile && charge.isStopped() && hasCharged )
+	if ( !projectile && charge.stopped() && hasCharged )
 	{
 		if ( parent )
 		{
@@ -90,7 +90,7 @@ int UnitLaser::update( const Uint32 &delta )
 	}
 
 	// movement
-	if ( !stationary && life.isStopped() && life.wasStarted() )
+	if ( !stationary && life.stopped() && life.started() )
 	{
 		life.stop();
 		float angle = Utility::randomRange( 0, 359 ) * M_PI / 180;

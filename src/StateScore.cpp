@@ -87,7 +87,7 @@ int StateScore::update( Uint32 delta )
 {
 	StateBase::update( delta );
 
-	if ( caretTimer.isStopped() && state == 0 )
+	if ( caretTimer.stopped() && state == 0 )
 	{
 		caret = !caret;
 		caretTimer.start( SCORE_CARET_BLINK_TIME );
