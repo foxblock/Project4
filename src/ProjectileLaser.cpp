@@ -1,5 +1,7 @@
 #include "ProjectileLaser.h"
 
+#include "sparrowPrimitives.h"
+
 #define PROJECTILE_LASER_BLINK_TIME 75
 
 ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :
@@ -26,9 +28,9 @@ ProjectileLaser::~ProjectileLaser()
 
 int ProjectileLaser::update( const Uint32 &delta )
 {
-	if ( life.isStopped() )
+	if ( life.stopped() )
 		toBeRemoved = true;
-	if ( blink.isStopped() )
+	if ( blink.stopped() )
 	{
 		blinkStatus = !blinkStatus;
 		blink.start( PROJECTILE_LASER_BLINK_TIME );

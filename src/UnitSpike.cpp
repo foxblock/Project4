@@ -4,6 +4,8 @@
 #include "UtilityFunctions.h"
 #include "gameDefines.h"
 
+#include "sparrowPrimitives.h"
+
 // Pixels per millisecond
 #define SPIKE_ATTACK_ACCEL 0.008f
 #define SPIKE_CHARGE_MAX_VEL 0.75f
@@ -19,8 +21,8 @@
 #define SPIKE_WAIT_TIME 500
 #define SPIKE_CHARGE_TIME 500
 #define SPIKE_SPIKE_COUNT 16
-#define SPIKE_IDLE_RADIUS 20
-#define SPIKE_ATTACK_RADIUS 32
+#define SPIKE_IDLE_RADIUS 10
+#define SPIKE_ATTACK_RADIUS 16
 
 SDL_Surface* UnitSpike::idle = NULL;
 SDL_Surface* UnitSpike::attack = NULL;
@@ -52,15 +54,17 @@ UnitSpike::~UnitSpike()
 
 void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 {
+	// move to specific target
 	if ( !shape.pos.isInRect( Vector2d<int>(0,0), Vector2d<int>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) ) &&
 		target.x < 0 && target.y < 0 )
 	{
+		// spawn outside -> set target inside view
 		target = Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 );
 		float dist = std::sqrt( Utility::sqr( shape.pos.x - Utility::clamp( (int)shape.pos.x, 0, APP_SCREEN_WIDTH ) ) +
 								Utility::sqr( shape.pos.y - Utility::clamp( (int)shape.pos.y, 0, APP_SCREEN_HEIGHT ) ) );
 		target = shape.pos + (target - shape.pos).unit() * ( dist + shape.radius );
 	}
-	if ( target.x > 0 && target.y > 0 )
+	if ( target.x >= 0 && target.y >= 0 )
 	{
 		maxVel = SPIKE_IDLE_MAX_VEL;
 		maxAccel = SPIKE_IDLE_MAX_ACCEL;
@@ -75,7 +79,7 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 	Vector2d<float> diff( *player->x - *x, *player->y - *y );
 	float dist = diff.lengthSquared();
 	// waiting for charge -> charging
-	if ( chargeTimer.isStopped() && chargeState == 1 )
+	if ( chargeTimer.stopped() && chargeState == 1 )
 	{
 		maxVel = UNIT_DEFAULT_MAX_VEL;
 		vel = diff.unit() * SPIKE_CHARGE_MAX_VEL;
@@ -86,7 +90,7 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 		chargeTimer.start( SPIKE_CHARGE_TIME );
 	}
 	// prevent charging unit from going off screen
-	if ( !chargeTimer.isStopped() && chargeState == 2 &&
+	if ( !chargeTimer.stopped() && chargeState == 2 &&
 		!shape.pos.isInRect(Vector2d<float>(0,0),Vector2d<float>(APP_SCREEN_WIDTH,APP_SCREEN_HEIGHT)) )
 	{
 		chargeTimer.stop();
@@ -94,7 +98,7 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 		*y = Utility::clamp( *y, 0.0f, (float)APP_SCREEN_HEIGHT );
 	}
 	// charging -> idle movement
-	if ( chargeTimer.isStopped() && chargeState == 2 )
+	if ( chargeTimer.stopped() && chargeState == 2 )
 	{
 		chargeState = 0;
 		activeSprite = idle;
@@ -120,7 +124,8 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 			friction = UNIT_DEFAULT_FRICTION;
 			maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 			accel = diff.unit() * SPIKE_ATTACK_ACCEL;
-		}// idle movement
+		}
+		// idle movement
 		else
 		{
 			maxVel = SPIKE_IDLE_MAX_VEL;
@@ -143,10 +148,14 @@ void UnitSpike::render( SDL_Surface *const target )
 	UnitBase::render( target );
 	if ( chargeState == 1 )
 	{
-		spEllipse( *x, *y, -1, 20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
-				   20 * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
+		spEllipse( *x, *y, -1, SPIKE_IDLE_RADIUS * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
+				   SPIKE_IDLE_RADIUS * ( SPIKE_WAIT_TIME - chargeTimer.getTime() ) / SPIKE_WAIT_TIME,
 				   spGetFastRGB( 255, 0 , 0 ) );
 	}
+	#ifdef _DEBUG
+	if ( this->target.x >= 0 && this->target.y >= 0 )
+		spLine(*x,*y,-1,this->target.x,this->target.y,-1,spGetFastRGB( 255, 255, 0 ));
+	#endif // _DEBUG
 }
 
 ///--- PROTECTED ---------------------------------------------------------------

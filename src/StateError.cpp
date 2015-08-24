@@ -4,7 +4,8 @@
 
 #define ERROR_FONT_SIZE 32
 
-StateError::StateError( const std::string &message, const StateType &returnState )
+StateError::StateError( const std::string &message, const StateType &returnState ) :
+	StateBase()
 {
 	next = returnState;
 	msg = message;
@@ -37,9 +38,9 @@ void StateError::render(SDL_Surface* target)
 {
 	spClearTarget( COLOUR_BACKGROUND );
 	spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - 70, -1,
-					msg.c_str(), font );
+					(unsigned char*) msg.c_str(), font );
 	spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT - 50, -1,
-					"Press " SP_BUTTON_START_NAME " to continue.", font );
+					(unsigned char*) "Press " SP_BUTTON_START_NAME " to continue.", font );
 }
 
 

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "Vector2d.h"
+#include "sparrowFont.h"
 
 #define FLOAT_ACCURACY 1e-10
 #define MY_RAND_MAX 2147483647
@@ -12,7 +13,7 @@
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
-#ifdef _DEBUG
+#ifdef _DEEP_DEBUG
 #define LOG_MESSAGE(x) printf("%s:%i\t\t%s\n",__FILE__,__LINE__,(x))
 #else
 #define LOG_MESSAGE(x)
@@ -35,6 +36,23 @@ template <class T>
 inline T strToNum( const std::string &str )
 {
 	std::istringstream ss (str);
+	T out;
+	ss >> out;
+	return out;
+};
+template <class T>
+inline T strToNum( const char* &str )
+{
+	std::istringstream ss (str);
+	T out;
+	ss >> out;
+	return out;
+};
+template <class T>
+inline T strToNum( const char &str )
+{
+	std::stringstream ss;
+	ss << str;
 	T out;
 	ss >> out;
 	return out;
@@ -102,6 +120,8 @@ inline bool floatComp( const Vector2d<float> &a, const Vector2d<float> &b )
 {
 	return ( floatComp(a.x, b.x) && floatComp(a.y, b.y) );
 }
+
+void setFontAlpha( spFontPointer font, const int &alpha );
 
 // -------- STRUCTS ------------------------------------------------------------
 

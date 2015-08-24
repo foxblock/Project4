@@ -25,6 +25,7 @@ StateMenu::StateMenu() : StateBase()
 		spFontAdd( fontBright, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 255, 255 ) );
 
 	addMenuEntry( "start game", stLevel );
+	addMenuEntry( "start wave game", stWave );
 	addMenuEntry( "show scores", stHighscores );
 	addMenuEntry( "load replay", stReplayLoader );
 #ifdef _DEBUG
@@ -63,7 +64,7 @@ int StateMenu::update(Uint32 delta)
 {
 	StateBase::update( delta );
 
-	if ( inputLag.isStopped() )
+	if ( inputLag.stopped() )
 	{
 		if ( spGetInput()->axis[1] > 0 )
 			choice = std::min( --choice, entries.size()-1 );
@@ -85,6 +86,8 @@ int StateMenu::update(Uint32 delta)
 		 spGetInput()->button[SP_BUTTON_START] )
 	{
 		spResetButtonsState();
+		if ( entries[choice].targetState == stWave )
+			message = "waves/test.txt";
 		return entries[choice].targetState;
 	}
 
@@ -98,7 +101,7 @@ void StateMenu::render(SDL_Surface* target)
 	if ( textMode == -1 )
 	{
 		SDL_SetAlpha( text, SDL_SRCALPHA, (1.0f - (float)textTimer.getTime() / (float)textTimer.getDuration()) * 255.0f );
-		if ( textTimer.isStopped() )
+		if ( textTimer.stopped() )
 		{
 			textTimer.start( MENU_TEXT_SHOW_TIME );
 			textMode = 0;
@@ -107,7 +110,7 @@ void StateMenu::render(SDL_Surface* target)
 	}
 	else if ( textMode == 0 )
 	{
-		if ( textTimer.isStopped() )
+		if ( textTimer.stopped() )
 		{
 			textTimer.start( MENU_TEXT_FADE_TIME );
 			textMode = 1;
@@ -116,7 +119,7 @@ void StateMenu::render(SDL_Surface* target)
 	else if ( textMode == 1 )
 	{
 		SDL_SetAlpha( text, SDL_SRCALPHA, (float)textTimer.getTime() / (float)textTimer.getDuration() * 255.0f );
-		if ( textTimer.isStopped() )
+		if ( textTimer.stopped() )
 		{
 			++textIndex;
 			if ( textIndex >= lines.size() )
@@ -126,26 +129,28 @@ void StateMenu::render(SDL_Surface* target)
 			SDL_FillRect( text, NULL, spGetRGB( 255, 0, 255 ) );
 			SDL_SetColorKey( text, SDL_SRCCOLORKEY, spGetRGB( 255, 0, 255 ) );
 			spSelectRenderTarget( text );
-			spFontDraw( 20, 10, -1, lines[textIndex].first.c_str(), fontDark );
-			spFontDraw( 20, 10 + MENU_FONT_SIZE, -1, lines[textIndex].second.c_str(), fontDark );
+			spFontDraw( 20, 10, -1, (unsigned char*) lines[textIndex].first.c_str(), fontDark );
+			spFontDraw( 20, 10 + MENU_FONT_SIZE, -1, (unsigned char*) lines[textIndex].second.c_str(), fontDark );
 			spSelectRenderTarget( spGetWindowSurface() );
 			SDL_SetAlpha( text, SDL_SRCALPHA, SDL_ALPHA_TRANSPARENT );
 		}
 	}
 	SDL_Rect rect = { 0,0,APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT / 2 };
+	spUnlockRenderTarget();
 	SDL_BlitSurface( text, NULL, spGetWindowSurface(), &rect );
+	spLockRenderTarget();
 
 	for ( int I = entries.size()-1; I >= 0; --I )
 	{
 		if ( choice == I )
 		{
 			spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - MENU_FONT_SIZE * (I+1), -1,
-							 entries[I].name.c_str(), fontBright );
+							 (unsigned char*) entries[I].name.c_str(), fontBright );
 		}
 		else
 		{
 			spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - MENU_FONT_SIZE * (I+1), -1,
-							 entries[I].name.c_str(), fontDark );
+							 (unsigned char*) entries[I].name.c_str(), fontDark );
 		}
 	}
 }

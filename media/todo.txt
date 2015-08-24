@@ -13,6 +13,10 @@ Legend:
  + Change units to use SimpleFlags instead of boolean values
  + Add circle shape/collision class
  - new collision system, no unit overlap
+ - Fix icon of PND not showing
+ - Add combo score tracking (highest multiplier, highest score streak during combo)
+ - Fix replays not working between release targets (might be related to new nub movement code)
+ - Make the world a better place
 ---
 * Small, random stuff
   + Create player character
@@ -33,7 +37,11 @@ Legend:
   + create event system checking wave spawning criteria
   + create spawn class
   + create region class for single spawns
-  - power-ups
+  + power-ups
+  - change to wave spawns only
+    - spawn a wave after a fixes amount of time
+    - type of wave would be dependant on wave spawning criteria
+    - time between waves becomes less in agression mode and more in evasion mode
 ---
 * Scoring system
   + assign points to each unit
@@ -61,9 +69,11 @@ Legend:
 - Help screen / tutorial
 + Pause
 - Change to fit different resolutions
+  - Change pixel values to percentage of screen region
 - Draw menu elements (buttons, icons, etc.)
 ---
 * Change render pipeline for final graphics style
   + change units to be drawn with sparrow shapes
   - expose pixel matrix
   - create style class for pixel manipulation
+  - create final style of the game (effects, etc.!

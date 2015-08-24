@@ -64,7 +64,7 @@ int ScoreNormal::update( Uint32 delta )
 {
 	ScoreBase::update( delta );
 
-	if ( comboTimer.isStopped() && comboTimer.wasStarted() )
+	if ( comboTimer.finished() )
 	{
 		multiplier = 1;
 		streak = 0;
@@ -77,7 +77,7 @@ int ScoreNormal::update( Uint32 delta )
 			mode = smNone;
 		}
 	}
-	if ( peaceTimer.isStopped() && peaceTimer.wasStarted() )
+	if ( peaceTimer.finished() )
 	{
 		if ( parent->countUnits() >= SCORE_PEACE_MIN_UNITS )
 		{
@@ -101,7 +101,7 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 	{
 	case EventBase::etUnitDeath:
 	{
-		if ( peaceTimer.wasStarted() )
+		if ( peaceTimer.started() )
 		{
 			peaceTimer.stop();
 			multiplier = 1;
@@ -110,7 +110,8 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 		std::map<int,int>::iterator p = pointMatrix.find( ((EventUnitDeath*)event)->unit->type );
 		if ( p != pointMatrix.end() )
 		{
-			points += p->second * multiplier;
+			((EventUnitDeath*)event)->points = p->second * multiplier;
+			points += ((EventUnitDeath*)event)->points;
 			++kills;
 			multiplier += SCORE_MULTI_PER_KILL;
 			comboTimer.start( std::max( SCORE_COMBO_START_TIME - SCORE_COMBO_KILL_TIME * streak, SCORE_COMBO_MIN_TIME ) );
@@ -126,7 +127,7 @@ void ScoreNormal::handleEvent( EventBase const * const event )
 	}
 	case EventBase::etUnitSpawn:
 	{
-		if ( peaceTimer.isStopped() && peaceTimer.wasStarted() &&
+		if ( peaceTimer.finished() &&
 			parent->countUnits() >= SCORE_PEACE_MIN_UNITS )
 		{
 			multiplier += 1;
@@ -141,10 +142,10 @@ void ScoreNormal::render( SDL_Surface *target )
 {
 	if ( scoreText )
 	{
-		if ( !comboTimer.isStopped() )
-			spFontDraw( 0, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, Utility::numToStr( comboTimer.getTime() ).c_str(), scoreText );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (Utility::numToStr( multiplier ) + "x").c_str(), scoreText );
-		spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, Utility::numToStr( getScore() ).c_str(), scoreText );
+		if ( !comboTimer.stopped() )
+			spFontDraw( 0, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (unsigned char*) Utility::numToStr( comboTimer.getTime() ).c_str(), scoreText );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (unsigned char*) (Utility::numToStr( multiplier ) + "x").c_str(), scoreText );
+		spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (unsigned char*) Utility::numToStr( getScore() ).c_str(), scoreText );
 	}
 }
 

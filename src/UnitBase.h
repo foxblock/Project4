@@ -5,6 +5,7 @@
 #include "SimpleFlags.h"
 
 #include "sparrowSprite.h"
+#include "sparrowFont.h"
 #include <string>
 #include <vector>
 
@@ -42,7 +43,9 @@ public:
 		ufInvincible = 2,
 		ufApplySlowmo = 4,
 		ufIsPlayer = 8,
-		ufEOL = 16
+		ufFrozen = 16,
+		ufBackground = 32,
+		ufEOL = 64, // this marks the end of the unit flag list
 	};
 	enum UnitType
 	{
@@ -51,9 +54,11 @@ public:
 		utSpike,
 		utLaser,
 		utBomb,
-		utEOL,
+		utEOL, // end of unit types
 		utItemSlowmo,
-		utItemEOL
+		utItemVortex,
+		utItemEOL, // end of item types
+		utText,
 	};
 	UnitType type;
 

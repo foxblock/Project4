@@ -6,6 +6,8 @@
 #include "Events.h"
 #include "StateLevel.h"
 
+#include "sparrowPrimitives.h"
+
 #ifdef _DEBUG
 #define DEBUG_VELOCITY_LINE 200.0f
 #define DEBUG_ACCELERATION_LINE 20000.0f
@@ -67,8 +69,8 @@ int UnitBase::update( const Uint32 &delta )
 		accel = accel.unit() * maxAccel;
 	*x += vel.x * delta;
 	*y += vel.y * delta;
-	for ( std::vector< Timer* >::iterator I = timers.begin(); I != timers.end(); ++I )
-		(*I)->update( delta );
+	for ( std::vector< Timer * >::iterator I = timers.begin(); I != timers.end(); ++I )
+		( *I )->update( delta );
 	return 0;
 }
 
@@ -84,19 +86,19 @@ void UnitBase::render( SDL_Surface *const target )
 	spLine( *x, *y, -1, *x + accel.x * DEBUG_ACCELERATION_LINE,
 			*y + accel.y * DEBUG_ACCELERATION_LINE, -1, spGetFastRGB( 0, 0, 255 ) );
 	spEllipseBorder( *x, *y, -1, maxVel * DEBUG_VELOCITY_LINE,
-					maxVel * DEBUG_VELOCITY_LINE, 1, 1, spGetFastRGB( 0, 255, 0 ) );
+					 maxVel * DEBUG_VELOCITY_LINE, 1, 1, spGetFastRGB( 0, 255, 0 ) );
 	spEllipseBorder( *x, *y, -1, maxAccel * DEBUG_ACCELERATION_LINE,
-					maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 0, 255 ) );
+					 maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 0, 255 ) );
 	spEllipseBorder( *x, *y, -1, friction * DEBUG_ACCELERATION_LINE,
-					friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 255, 255 ) );
-	spFontDraw( *x, *y, -1, debugString.c_str(), debugFont );
+					 friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 255, 255 ) );
+	spFontDraw( *x, *y, -1, (unsigned char*) debugString.c_str(), debugFont );
 	debugString = "";
 #endif
 }
 
 bool UnitBase::checkCollision( UnitBase const *const other ) const
 {
-	if ( shape->checkCollision( other->shape ) )
+	if ( shape && other->shape && shape->checkCollision( other->shape ) )
 		return true;
 	return false;
 }
@@ -105,7 +107,7 @@ void UnitBase::collisionResponse( UnitBase *const other )
 {
 	if ( flags.has( ufDeadlyOnTouch ) && !other->flags.has( ufInvincible ) )
 	{
-		LOG_MESSAGE("Unit beeing killed");
+		LOG_MESSAGE( "Unit beeing killed" );
 		other->toBeRemoved = true;
 		EventUnitDeath *event = new EventUnitDeath( other, this );
 		parent->addEvent( event );

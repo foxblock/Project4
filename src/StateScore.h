@@ -26,11 +26,13 @@ protected:
 	int score;
 	spFontPointer scoreText;
 	static char name[SCORE_MAX_NAME_LENGTH];
+	char nameBkup[SCORE_MAX_NAME_LENGTH];
 	int state;
 	bool caret;
 	Timer caretTimer;
 	HighscoreFile file;
 	Replay *run;
+	bool playerDead;
 private:
 
 };

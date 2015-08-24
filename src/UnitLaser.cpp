@@ -7,7 +7,8 @@
 #include "StateLevel.h"
 #include "gameDefines.h"
 
-#define LASER_EYE_DISTANCE 15.0f
+#include "sparrowPrimitives.h"
+
 // Radians per millisecond
 #define LASER_ROTATION_SPEED 0.01f
 #define LASER_ROTATION_THESHOLD 0.05f
@@ -16,7 +17,8 @@
 #define LASER_ATTACK_RADIUS_SQR 90000.0f
 #define LASER_IDLE_SPEED 2e-6
 #define LASER_IDLE_MAX_SPEED 2e-5
-#define LASER_RADIUS 32
+#define LASER_RADIUS 16
+#define LASER_EYE_DISTANCE 7.5f
 #define LASER_TIME_MOVEMENT 2500
 #define LASER_MAX_MOVEMENT_SPEED 0.04f
 #define LASER_MOVEMENT_ACCEL 0.003f
@@ -36,7 +38,6 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	shape.radius = LASER_RADIUS;
 	projectile = NULL;
 	hasCharged = false;
-	maxAccel = 0.01f;
 	type = utLaser;
 	life.start( LASER_TIME_MOVEMENT );
 	maxVel = LASER_MAX_MOVEMENT_SPEED;
@@ -44,6 +45,7 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	friction = LASER_MOVEMENT_FRICTION;
 	timers.push_back( &charge );
 	timers.push_back( &life );
+	stationary = false;
 }
 
 UnitLaser::~UnitLaser()
@@ -65,7 +67,7 @@ int UnitLaser::update( const Uint32 &delta )
 		else if ( angle > M_PI )
 			angle -= 2 * M_PI;
 
-	if ( !projectile && charge.isStopped() && hasCharged )
+	if ( !projectile && charge.stopped() && hasCharged )
 	{
 		if ( parent )
 		{
@@ -88,7 +90,7 @@ int UnitLaser::update( const Uint32 &delta )
 	}
 
 	// movement
-	if ( life.isStopped() && life.wasStarted() )
+	if ( !stationary && life.stopped() && life.started() )
 	{
 		life.stop();
 		float angle = Utility::randomRange( 0, 359 ) * M_PI / 180;
@@ -128,7 +130,7 @@ void UnitLaser::render( SDL_Surface *const target )
 
 bool UnitLaser::checkCollision( UnitBase const *const other ) const
 {
-	if ( other != projectile && shape.checkCollision( other->shape ) )
+	if ( other != projectile && UnitBase::checkCollision( other ) )
 		return true;
 	return false;
 }

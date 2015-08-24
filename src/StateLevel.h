@@ -4,23 +4,21 @@
 #include "StateBase.h"
 #include "UnitBase.h"
 #include "Events.h"
-#include "ScoreNormal.h"
-#include "SpawnNormal.h"
 #include "Replay.h"
 #include "ShapeCircle.h"
 #include "UtilityFunctions.h"
 #include "Timer.h"
+#include "SpawnNormal.h"
+#include "ScoreNormal.h"
 #include <vector>
 #include <string>
 
-#define PLAYER_CLASS UnitPlayer
-
-class PLAYER_CLASS;
+class UnitPlayer;
 
 class StateLevel : public StateBase
 {
 public:
-	StateLevel( const std::string &filename = "" );
+	StateLevel( Replay *loadReplay = NULL );
 	virtual ~StateLevel();
 
 	int update( Uint32 delta );
@@ -28,14 +26,15 @@ public:
 	void render( SDL_Surface *target );
 	void pauseRender( SDL_Surface *target );
 
+	// This function takes ownership of the unit passed!
 	void addUnit( UnitBase *newUnit, const bool &generateEvent );
 	size_t countUnits() const { return units.size(); }
 	// This function takes ownership of the event passed!
 	void addEvent( EventBase *newEvent );
 
-	PLAYER_CLASS *player;
-	ScoreNormal scoreKeeper;
-	SpawnNormal spawnHandler;
+	UnitPlayer *player;
+	ScoreBase *scoreKeeper;
+	SpawnBase *spawnHandler;
 
 	Replay *run;
 	int timecode;
@@ -59,12 +58,15 @@ protected:
 
 	int slowmoCounter;
 	Timer slowmoTimer;
+	int deltaBkUp;
 
 #ifdef _DEBUG
 	spFontPointer debugText;
 #endif
 
 private:
+	ScoreNormal __scoreKeeper;
+	SpawnNormal __spawnHandler;
 };
 
 

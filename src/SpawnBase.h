@@ -16,11 +16,11 @@ public:
 	virtual ~SpawnBase();
 
 	virtual int update( Uint32 delta );
-	virtual void render( SDL_Surface *target )=0;
+	virtual void render( SDL_Surface *target );
 
 	virtual void handleEvent( EventBase const * const event );
 
-	virtual UnitBase * getUnit( const int &type ) const=0;
+	virtual UnitBase * getUnit( const int &type ) const;
 protected:
 	StateLevel *parent;
 	std::vector< Timer* > timers;

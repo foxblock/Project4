@@ -1,0 +1,197 @@
+DONT DELETE THIS LINE
+# This is a comment
+#
+# Units (u)
+# 1 - player
+# 2 - spike
+# 3 - laser
+# 4 - bomb
+# 6 - Item Slowmotion
+# 7 - Item Vortex
+# Patterns (p)
+# 0 - circle   ; unitType x y radius amount
+# 1 - lineH    ; unitType amount
+# 2 - lineV    ; unitType amount
+# Text (t)
+# 1 - static   ; x y align size r  g  b  a  text
+# 2 - blinking ; x y align size r1 g1 b1 a1 time1 r2 g2 b2 a2 time2 text
+# align: 0 - left, 1 - centre, 2 - right
+# Text will be shown for the duration of the wave
+#
+# Position (x,y) declarations with leading 'r' are relative to player's position
+#
+# Examples
+# u2 r50 r-50 ; will spawn a spike 50 pixels right and 50 above the player
+# p0 4 400 240 150 10 ; will spawn a circle of 10 bombs at 150 pixels distance to (400,240) aka the centre of the screen
+# t2 800 480 2 64 255 255 255 255 500 255 0 0 255 200 Hello World! ; text at the bottom right of the screen blinking white (500ms) and red (200ms)
+# 
+# General format
+# Duration of wave (in ms)
+# [tab]object in wave
+# [tab]...
+# Duration of next wave
+# ...
+# The tab is important! Whitespace is markup!
+#
+# Check stdout for errors...
+# 
+
+1500 noskip
+# INTRO
+1500
+	e5 2
+	t1 400 210 1 32 255 255 255 255 100 255 0 0 255 300 INTRUDER ALERT!
+2000
+	t1 400 210 1 32 255 255 255 255 100 255 0 0 255 300 INTRUDER ALERT!
+	t1 400 250 1 32 255 255 255 255 100 255 0 0 255 300 DEFENSIVE SYSTEM ACTIVATED!
+# SPIKES
+5000
+	u2 100 100
+1000
+	u2 700 100
+1000
+	u2 700 380
+1000
+	u2 100 380
+6000
+5000
+	p0 2 r0 r0 200 4
+7000
+	p0 2 r0 r0 200 8
+13000
+	p1 2 16
+# LASER
+3000
+	u3 400 240 stat
+500
+	u2 400 500
+500
+	u2 820 500
+500
+	u2 820 240
+500
+	u2 820 -20
+100
+	u2 400 -20
+100
+	u2 -20 -20
+2000
+6000
+	p2 2 10
+5000
+	u3 100 100 stat
+	u3 700 100 stat
+	u3 700 380 stat
+	u3 100 380 stat
+6000
+	p0 2 400 240 80 12
+10000
+	p0 2 100 100 50 4
+	p0 2 700 100 50 4
+	p0 2 700 380 50 4
+	p0 2 100 380 50 4
+3000
+	p0 3 400 240 30 4
+10000
+	p1 2 4
+	u2 r100 r100
+	u2 r-100 r-100
+	u2 280 70
+	u2 100 320
+	u2 680 220
+	u2 700 370
+	u2 580 50
+3000 noskip
+# BOMBS
+2000
+	u4 r-120 r-80
+1000
+	u4 r100 r-40
+500
+	u4 120 100
+500
+	u4 400 380
+500
+	u4 640 50
+500
+	u4 80 400
+500
+	u4 720 420
+2000
+	u4 100 100
+	u4 700 100
+	u4 700 380
+	u4 100 38
+	u2 280 70
+	u2 100 320
+	u2 680 220
+	u2 700 370
+3000
+	p0 4 r0 r0 200 6
+5000
+	u4 100 100
+	u4 700 100
+	u4 700 380
+	u4 100 38
+# Circle of bombs (explode immediately, stand still)
+500
+	t0 400 50 1 300 255 255 255 128 STOP!
+2000
+	p0 4 r0 r0 100 16
+#
+10000
+	u3 50 240 stats
+	u3 750 240 stat
+	u2 400 60
+	u2 400 120
+	u2 400 180
+	u2 400 240
+	u2 400 300
+	u2 400 360
+	u2 400 420
+# Trail of bombs BEGIN
+100
+	t0 800 -10 2 80 255 255 255 128 MOVE!
+100
+	t0 800 90 2 80 255 255 255 128 MOVE!
+100
+	t0 800 190 2 80 255 255 255 128 MOVE!
+100
+	t0 800 190 2 80 255 255 255 128 MOVE!
+100
+	t0 800 290 2 80 255 255 255 128 MOVE!
+100
+	t0 800 390 2 80 255 255 255 128 MOVE!
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+250
+	u4 r0 r0
+# Trail of Bombs END

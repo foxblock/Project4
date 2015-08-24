@@ -11,7 +11,9 @@
 #include "StateReplayLoader.h"
 #include "StateHighscores.h"
 #include "StateError.h"
+#include "StateWave.h"
 #include "UtilityFunctions.h"
+#include "Replay.h"
 
 #ifdef WIN32
 #include <direct.h>
@@ -62,13 +64,87 @@ Application::~Application()
 
 // --- PUBLIC ------------------------------------------------------------------
 
+StateBase* Application::getState( const int &type, StateBase const * const passingState )
+{
+	StateBase *result = NULL;
+	switch ( type )
+	{
+	case StateBase::stLevel:
+		result = new StateLevel();
+		break;
+	case StateBase::stCollision:
+		result = new StateCollision();
+		break;
+	case StateBase::stScore:
+		if ( !passingState )
+		{
+			errorString = "Needs passingState to construct state type: " + Utility::numToStr( type );
+			return NULL;
+		}
+		result = new StateScore( (StateLevel*)passingState );
+		break;
+	case StateBase::stReplay:
+	{
+		if ( !passingState )
+		{
+			errorString = "Needs passingState to construct state type: " + Utility::numToStr( type );
+			return NULL;
+		}
+		Replay *run = new Replay();
+		if ( !run->loadFromFile( passingState->message ) )
+		{
+			errorString = "Could not load replay file!\n" + run->errorString;
+			break;
+		}
+		switch ( run->info.levelType )
+		{
+		case StateBase::stLevel:
+			result = new StateLevel( run );
+			break;
+		case StateBase::stWave:
+			result = new StateWave( run->info.parameter, run );
+			break;
+		default:
+			errorString = "Malformed Replay header, unknown level type: " +
+					Utility::numToStr( run->info.levelType );
+		}
+		break;
+	}
+	case StateBase::stMenu:
+		result = new StateMenu();
+		break;
+	case StateBase::stReplayLoader:
+		result = new StateReplayLoader();
+		break;
+	case StateBase::stHighscores:
+		result = new StateHighscores();
+		break;
+	case StateBase::stWave:
+		if ( !passingState )
+		{
+			errorString = "Needs passingState to construct state type: " + Utility::numToStr( type );
+			return NULL;
+		}
+		result = new StateWave( passingState->message, NULL );
+		break;
+	default:
+		printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, type );
+	}
+
+	return result;
+}
+
 bool Application::showModal( void ( *spDraw )( void ), int ( *spCalc )( Uint32 steps ) )
 {
 	printf( "Starting application... Version: %s\n", VERSION_STRING );
 
 	Utility::seedRand( 987654321 );
-	printf("Random test: %i %i %i %i\n",Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100),Utility::randomRange(-100,100));
-	printf("Control group: %i %i %i %i\n",-3, -4, 37, -81);
+	int a = Utility::randomRange(-100,100);
+	int b = Utility::randomRange(-100,100);
+	int c = Utility::randomRange(-100,100);
+	int d = Utility::randomRange(-100,100);
+	printf("RNG test: %i %i %i %i\n",a,b,c,d);
+	printf("Control group: %i %i %i %i\n",-81,37,-4,-3);
 
 	if ( spLoop( spDraw, spCalc, 2, NULL, NULL ) != ERROR_CODE )
 		return true;
@@ -105,45 +181,34 @@ int Application::update( Uint32 delta )
 			return 0;
 		}
 
+		StateBase *temp = prevState;
+		prevState = activeState;
+		activeState = NULL;
 		switch ( result )
 		{
 		case ERROR_CODE: // exit with error
-			errorString = activeState->getLastError();
+			errorString = prevState->getLastError();
 			return ERROR_CODE;
 		case -1: // exit app normally
 			return -1;
 		case 0: // keep using current state
 			break;
-		case StateBase::stLevel:
-			prevState = activeState;
-			activeState = new StateLevel();
-			break;
-		case StateBase::stCollision:
-			prevState = activeState;
-			activeState = new StateCollision();
-			break;
-		case StateBase::stScore:
-			prevState = activeState;
-			activeState = new StateScore( (StateLevel*)prevState );
-			break;
-		case StateBase::stReplay:
-			prevState = activeState;
-			activeState = new StateLevel( prevState->message );
-			break;
-		case StateBase::stMenu:
-			prevState = activeState;
-			activeState = new StateMenu();
-			break;
-		case StateBase::stReplayLoader:
-			prevState = activeState;
-			activeState = new StateReplayLoader();
-			break;
-		case StateBase::stHighscores:
-			prevState = activeState;
-			activeState = new StateHighscores();
-			break;
 		default:
-			printf( "%s Ignoring undefined state switch: %i\n", WARNING_STRING, result );
+			activeState = getState( result, prevState );
+		}
+		if ( !activeState )
+		{
+			if ( errorString[0] == 0 )
+			{
+				activeState = prevState;
+				prevState = temp;
+			}
+			else
+			{
+				printf( "Error during state switch: %s\n", errorString.c_str() );
+				activeState = new StateError( errorString, StateBase::stMenu );
+				errorString = "";
+			}
 		}
 
 	}

@@ -6,7 +6,8 @@
 #include "sparrowCore.h"
 
 #define REPLAY_ENTRY_SIZE 2
-#define REPLAY_VERSION 9
+#define REPLAY_HEADER_MIN_SIZE 5
+#define REPLAY_VERSION 10
 
 class Replay
 {
@@ -22,6 +23,8 @@ public:
 		int score;
 		int timecode;
 		int version;
+		int levelType;
+		std::string parameter;
 	};
 
 public:

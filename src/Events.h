@@ -18,7 +18,9 @@ public:
 		etUnitSpawn,
 		etBombCascade,
 		etSlowMotion,
-		etScoreMode
+		etScoreMode,
+		etWaveSkip,
+		etEOL
 	};
 	EventType type;
 };
@@ -30,11 +32,13 @@ public:
 	{
 		this->unit = unit;
 		this->killer = killer;
+		points = -1;
 		type = etUnitDeath;
 	}
 
 	UnitBase *unit;
 	UnitBase *killer;
+	int points; // filled in by scoreKeeper AFTER creation
 };
 
 class EventUnitSpawn : public EventBase
@@ -81,6 +85,18 @@ public:
 	}
 
 	int newMode,prevMode;
+};
+
+class EventWaveSkip : public EventBase
+{
+public:
+	EventWaveSkip( const int &timeAmount )
+	{
+		type = etWaveSkip;
+		this->timeAmount = timeAmount;
+	}
+
+	int timeAmount;
 };
 
 #endif // EVENT_BASE_H

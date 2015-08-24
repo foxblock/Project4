@@ -20,6 +20,7 @@ public:
 	void ai( const Uint32 &delta, UnitBase *const player );
 
 	ShapeCircle shape;
+	bool stationary;
 protected:
 
 private:

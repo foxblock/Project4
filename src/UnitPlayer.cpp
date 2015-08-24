@@ -3,11 +3,13 @@
 #include "gameDefines.h"
 #include "UtilityFunctions.h"
 
+#include "sparrowPrimitives.h"
+
 // Pixels per millisecond
 #define PLAYER_MAX_VELOCITY 0.5f
 #define PLAYER_ACCEL 0.01f
-#define PLAYER_DRAW_RADIUS 20
-#define PLAYER_COLLISION_RADIUS 8
+#define PLAYER_DRAW_RADIUS 10
+#define PLAYER_COLLISION_RADIUS 4
 
 UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
@@ -30,8 +32,18 @@ UnitPlayer::~UnitPlayer()
 
 int UnitPlayer::update( const Uint32 &delta )
 {
-	Vector2d<float> dir(spGetInput()->axis[0],spGetInput()->axis[1]);
-	accel = dir.unit() * PLAYER_ACCEL;
+	if ( spGetInput()->axis[0] == 0 && spGetInput()->axis[1] == 0 )
+	{
+		Vector2d<float> dir(spGetInput()->analog_axis[0],spGetInput()->analog_axis[1]);
+		dir /= (float)SP_ANALOG_AXIS_MAX;
+		vel = dir * maxVel;
+		accel.x = accel.y = 0;
+	}
+	else
+	{
+		Vector2d<float> dir(spGetInput()->axis[0],spGetInput()->axis[1]);
+		accel = dir.unit() * maxAccel;
+	}
 
 	if ( *x < 0 )
 		*x = 0;

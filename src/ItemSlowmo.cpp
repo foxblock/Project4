@@ -4,7 +4,9 @@
 #include "gameDefines.h"
 #include "StateLevel.h"
 
-#define ITEM_SLOWMO_RADIUS 20
+#include "sparrowPrimitives.h"
+
+#define ITEM_SLOWMO_RADIUS 16
 #define ITEM_SLOWMO_LIFE 5000
 #define ITEM_SLOWMO_DURATION 2000
 
@@ -36,13 +38,13 @@ int ItemSlowmo::update( const Uint32 &delta )
 {
 	UnitBase::update( delta );
 
-	if ( life.isStopped() )
+	if ( life.stopped() )
 	{
 		toBeRemoved = true;
 	}
 }
 
-void ItemSlowmo::ai(const Uint32& delta, UnitBase* const)
+void ItemSlowmo::ai( const Uint32& delta, UnitBase* const player )
 {
 	if ( (*x < shape.radius && accel.x < 0) ||
 			(*x > APP_SCREEN_WIDTH - shape.radius && accel.x > 0 ) )
