@@ -114,7 +114,7 @@ void StateHighscores::render(SDL_Surface* target)
 {
 	spClearTarget( COLOUR_BACKGROUND );
 
-	int posOffset = spFontWidth( Utility::numToStr( file.scores.size() ).c_str(), fontB );
+	int posOffset = spFontWidth( (unsigned char*) Utility::numToStr( file.scores.size() ).c_str(), fontB );
 	int numEntries = std::min( HIGHS_ENTRIES_ON_SCREEN, (int)file.scores.size() );
 	int vertOffset = ( APP_SCREEN_HEIGHT + 40 - numEntries * HIGHS_FONT_SIZE ) / 2;
 
@@ -126,23 +126,23 @@ void StateHighscores::render(SDL_Surface* target)
 			temp = fontW;
 		int yPos = APP_SCREEN_HEIGHT - vertOffset - ( I - drawOffset + 1 ) * HIGHS_FONT_SIZE;
 		spFontDrawRight( posOffset + 16, yPos, -1,
-						 ( Utility::numToStr( I + 1 ) + "." ).c_str(), temp );
+						 (unsigned char*) (Utility::numToStr( I + 1 ) + "." ).c_str(), temp );
 		spFontDraw( posOffset + 28, yPos, -1,
-					iter->name.c_str(), temp );
+					(unsigned char*) iter->name.c_str(), temp );
 		spFontDrawRight( APP_SCREEN_WIDTH - 16, yPos, -1,
-						Utility::numToStr( iter->score ).c_str(), temp );
+						(unsigned char*) Utility::numToStr( iter->score ).c_str(), temp );
 		++I;
 	}
 
 	if ( file.scores.empty() )
 	{
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2, -1,
-						"No highscores set yet, go play the game!", fontB );
+						(unsigned char*) "No highscores set yet, go play the game!", fontB );
 	}
 	else
 	{
 		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT - HIGHS_FONT_SIZE, -1,
-						"Press \""SP_BUTTON_B_NAME"\" to load the replay for a score. Press \""SP_BUTTON_START_NAME"\" to exit.", fontHint );
+						(unsigned char*) "Press \""SP_BUTTON_B_NAME"\" to load the replay for a score. Press \""SP_BUTTON_START_NAME"\" to exit.", fontHint );
 	}
 }
 

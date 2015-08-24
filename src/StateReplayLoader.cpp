@@ -59,14 +59,14 @@ void StateReplayLoader::render(SDL_Surface* target)
 	spClearTarget( COLOUR_BACKGROUND );
 	if ( font )
 	{
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - REPLAY_FONT_SIZE, -1, "Enter the name of the replay file to load:", font );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "(no file extension, assuming position in replay folder)", font );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - REPLAY_FONT_SIZE, -1, (unsigned char*) "Enter the name of the replay file to load:", font );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, (unsigned char*) "(no file extension, assuming position in replay folder)", font );
 		char temp[strlen(filenameBuffer) + caret];
 		strcpy( temp, filenameBuffer );
 		if ( caret )
 			strcat( temp, "_\0" );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + REPLAY_FONT_SIZE, -1, temp, font);
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + REPLAY_FONT_SIZE * 3, -1, "Press \""SP_BUTTON_START_NAME"\" to load...", font );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + REPLAY_FONT_SIZE, -1, (unsigned char*) temp, font);
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + REPLAY_FONT_SIZE * 3, -1, (unsigned char*) "Press \""SP_BUTTON_START_NAME"\" to load...", font );
 	}
 }
 

@@ -91,7 +91,7 @@ void UnitBase::render( SDL_Surface *const target )
 					 maxAccel * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 0, 255 ) );
 	spEllipseBorder( *x, *y, -1, friction * DEBUG_ACCELERATION_LINE,
 					 friction * DEBUG_ACCELERATION_LINE, 1, 1, spGetFastRGB( 0, 255, 255 ) );
-	spFontDraw( *x, *y, -1, debugString.c_str(), debugFont );
+	spFontDraw( *x, *y, -1, (unsigned char*) debugString.c_str(), debugFont );
 	debugString = "";
 #endif
 }

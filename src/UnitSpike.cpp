@@ -54,6 +54,7 @@ UnitSpike::~UnitSpike()
 
 void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 {
+	// move to specific target
 	if ( !shape.pos.isInRect( Vector2d<int>(0,0), Vector2d<int>( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT ) ) &&
 		target.x < 0 && target.y < 0 )
 	{
@@ -123,7 +124,8 @@ void UnitSpike::ai( const Uint32 &delta, UnitBase *const player )
 			friction = UNIT_DEFAULT_FRICTION;
 			maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 			accel = diff.unit() * SPIKE_ATTACK_ACCEL;
-		}// idle movement
+		}
+		// idle movement
 		else
 		{
 			maxVel = SPIKE_IDLE_MAX_VEL;

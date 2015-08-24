@@ -90,13 +90,13 @@ void UnitText::render(SDL_Surface* const target)
 	switch (alignment)
 	{
 	case taLeft:
-		spFontDraw( *x, *y, -1, text.c_str(), font );
+		spFontDraw( *x, *y, -1, (unsigned char*) text.c_str(), font );
 		break;
 	case taCentre:
-		spFontDrawMiddle( *x, *y, -1, text.c_str(), font );
+		spFontDrawMiddle( *x, *y, -1, (unsigned char*) text.c_str(), font );
 		break;
 	case taRight:
-		spFontDrawRight( *x, *y, -1, text.c_str(), font );
+		spFontDrawRight( *x, *y, -1, (unsigned char*) text.c_str(), font );
 		break;
 	default:
 		break;

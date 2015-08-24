@@ -129,26 +129,28 @@ void StateMenu::render(SDL_Surface* target)
 			SDL_FillRect( text, NULL, spGetRGB( 255, 0, 255 ) );
 			SDL_SetColorKey( text, SDL_SRCCOLORKEY, spGetRGB( 255, 0, 255 ) );
 			spSelectRenderTarget( text );
-			spFontDraw( 20, 10, -1, lines[textIndex].first.c_str(), fontDark );
-			spFontDraw( 20, 10 + MENU_FONT_SIZE, -1, lines[textIndex].second.c_str(), fontDark );
+			spFontDraw( 20, 10, -1, (unsigned char*) lines[textIndex].first.c_str(), fontDark );
+			spFontDraw( 20, 10 + MENU_FONT_SIZE, -1, (unsigned char*) lines[textIndex].second.c_str(), fontDark );
 			spSelectRenderTarget( spGetWindowSurface() );
 			SDL_SetAlpha( text, SDL_SRCALPHA, SDL_ALPHA_TRANSPARENT );
 		}
 	}
 	SDL_Rect rect = { 0,0,APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT / 2 };
+	spUnlockRenderTarget();
 	SDL_BlitSurface( text, NULL, spGetWindowSurface(), &rect );
+	spLockRenderTarget();
 
 	for ( int I = entries.size()-1; I >= 0; --I )
 	{
 		if ( choice == I )
 		{
 			spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - MENU_FONT_SIZE * (I+1), -1,
-							 entries[I].name.c_str(), fontBright );
+							 (unsigned char*) entries[I].name.c_str(), fontBright );
 		}
 		else
 		{
 			spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - MENU_FONT_SIZE * (I+1), -1,
-							 entries[I].name.c_str(), fontDark );
+							 (unsigned char*) entries[I].name.c_str(), fontDark );
 		}
 	}
 }

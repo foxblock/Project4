@@ -25,8 +25,10 @@ StateScore::StateScore( StateLevel *level ) :
 	killFrame = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 	spSelectRenderTarget( temp );
 	level->render( temp );
+	spUnlockRenderTarget();
 	SDL_SetAlpha( temp, SDL_SRCALPHA, 128 );
 	SDL_BlitSurface( temp, NULL, killFrame, NULL );
+	spLockRenderTarget();
 	spSelectRenderTarget( spGetWindowSurface() );
 	spDeleteSurface( temp );
 	if ( level->player->toBeRemoved )
@@ -126,24 +128,26 @@ int StateScore::update( Uint32 delta )
 
 void StateScore::render( SDL_Surface *target )
 {
+	spUnlockRenderTarget();
 	SDL_BlitSurface( killFrame, NULL, spGetWindowSurface(), NULL );
+	spLockRenderTarget();
 	if ( scoreText )
 	{
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE * 2, -1, playerDead ? "You died!" : "You survived, somehow...", scoreText );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE, -1, ("Score:  " + Utility::numToStr( score )).c_str(), scoreText );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE * 2, -1, playerDead ? (unsigned char*) "You died!" : (unsigned char*) "You survived, somehow...", scoreText );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 - SCORE_FONT_SIZE, -1, (unsigned char*) ("Score:  " + Utility::numToStr( score )).c_str(), scoreText );
 		if ( run && run->playing )
-			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "Name of this player:", scoreText );
+			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, (unsigned char*) "Name of this player:", scoreText );
 		else
-			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, "Enter your name:", scoreText );
+			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 , -1, (unsigned char*) "Enter your name:", scoreText );
 		char temp[strlen(name) + caret];
 		strcpy( temp, name );
 		if ( caret )
 			strcat( temp, "_\0" );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE, -1, temp, scoreText);
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE, -1, (unsigned char*) temp, scoreText);
 		if ( state == 0 )
-			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE * 3, -1, "Press \""SP_BUTTON_START_NAME"\" to confirm name...", scoreText );
+			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE * 3, -1, (unsigned char*) "Press \""SP_BUTTON_START_NAME"\" to confirm name...", scoreText );
 		else
-			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE * 3, -1, "Press \""SP_BUTTON_START_NAME"\" to return to menu...", scoreText );
+			spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 + SCORE_FONT_SIZE * 3, -1, (unsigned char*) "Press \""SP_BUTTON_START_NAME"\" to return to menu...", scoreText );
 	}
 
 }

@@ -17,6 +17,7 @@
 					<Add option="-O3" />
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
+					<Add option="-DDESKTOP" />
 					<Add directory="$(#mingw.include)" />
 					<Add directory="$(#mingw.include)/SDL" />
 				</Compiler>
@@ -43,6 +44,7 @@
 					<Add option="-g" />
 					<Add option="-DX86CPU" />
 					<Add option="-DBUILDING_DLL" />
+					<Add option="-DDESKTOP" />
 					<Add option="-D_DEBUG" />
 					<Add option="-D_DEEP_DEBUG" />
 					<Add directory="$(#mingw.include)" />
@@ -242,18 +244,6 @@
 		<Unit filename="../sparrow3d/sparrowText.h">
 			<Option target="W32 Debug" />
 			<Option target="Pandora Debug" />
-		</Unit>
-		<Unit filename="../sparrow3d/testsparrow.c">
-			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="../sparrow3d/testsprite.c">
-			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="src/Application.cpp" />
 		<Unit filename="src/Application.h" />

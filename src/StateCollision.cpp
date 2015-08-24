@@ -89,7 +89,7 @@ void StateCollision::render( SDL_Surface *target )
 	unit3->render( target );
 	unit4->render( target );
 
-	spFontDraw( 10, 10, -1, debugString.c_str(), font );
+	spFontDraw( 10, 10, -1, (unsigned char*) debugString.c_str(), font );
 
 	spLine( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 0.8f, -1,
 			APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 1.2f, -1, -1 );

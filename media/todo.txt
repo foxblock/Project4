@@ -13,6 +13,10 @@ Legend:
  + Change units to use SimpleFlags instead of boolean values
  + Add circle shape/collision class
  - new collision system, no unit overlap
+ - Fix icon of PND not showing
+ - Add combo score tracking (highest multiplier, highest score streak during combo)
+ - Fix replays not working between release targets (might be related to new nub movement code)
+ - Make the world a better place
 ---
 * Small, random stuff
   + Create player character

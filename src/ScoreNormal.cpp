@@ -143,9 +143,9 @@ void ScoreNormal::render( SDL_Surface *target )
 	if ( scoreText )
 	{
 		if ( !comboTimer.isStopped() )
-			spFontDraw( 0, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, Utility::numToStr( comboTimer.getTime() ).c_str(), scoreText );
-		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (Utility::numToStr( multiplier ) + "x").c_str(), scoreText );
-		spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, Utility::numToStr( getScore() ).c_str(), scoreText );
+			spFontDraw( 0, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (unsigned char*) Utility::numToStr( comboTimer.getTime() ).c_str(), scoreText );
+		spFontDrawMiddle( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (unsigned char*) (Utility::numToStr( multiplier ) + "x").c_str(), scoreText );
+		spFontDrawRight( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT - SCORE_FONT_SIZE, -1, (unsigned char*) Utility::numToStr( getScore() ).c_str(), scoreText );
 	}
 }
 

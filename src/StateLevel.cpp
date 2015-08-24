@@ -98,9 +98,11 @@ int StateLevel::update( Uint32 delta )
 		SDL_Surface *temp = spCreateSurface( APP_SCREEN_WIDTH, APP_SCREEN_HEIGHT );
 		spSelectRenderTarget( temp );
 		render( temp );
+		spUnlockRenderTarget();
 		SDL_SetAlpha( temp, SDL_SRCALPHA, 128 );
 		SDL_FillRect( pauseScreen, NULL, 0 );
 		SDL_BlitSurface( temp, NULL, pauseScreen, NULL );
+		spLockRenderTarget();
 		spSelectRenderTarget( spGetWindowSurface() );
 		spDeleteSurface( temp );
 		paused = true;
@@ -281,17 +283,19 @@ void StateLevel::render( SDL_Surface *target )
 
 	debugString += Utility::numToStr( units.size() ) + " units\n";
 	if ( debugText )
-		spFontDraw( 5, 5, -1, debugString.c_str(), debugText );
+		spFontDraw( 5, 5, -1, (unsigned char*) debugString.c_str(), debugText );
 #endif
 	spawnHandler->render( target );
 }
 
 void StateLevel::pauseRender( SDL_Surface *target )
 {
+	spUnlockRenderTarget();
 	SDL_BlitSurface( pauseScreen, NULL, spGetWindowSurface(), NULL );
-	spFontDrawMiddle( APP_SCREEN_WIDTH / 2, 200, -1, "Game paused.", pauseText );
+	spLockRenderTarget();
+	spFontDrawMiddle( APP_SCREEN_WIDTH / 2, 200, -1, (unsigned char*) "Game paused.", pauseText );
 	spFontDrawMiddle( APP_SCREEN_WIDTH / 2, 200 + LEVEL_PAUSE_FONT_SIZE, -1,
-					"Press any key to resume or \""SP_BUTTON_START_NAME"\" to exit.", pauseText );
+					(unsigned char*) "Press any key to resume or \""SP_BUTTON_START_NAME"\" to exit.", pauseText );
 }
 
 void StateLevel::addUnit( UnitBase *newUnit, const bool &generateEvent )
