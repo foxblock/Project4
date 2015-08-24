@@ -15,21 +15,6 @@ ShapeRay::ShapeRay() :
 	//
 }
 
-ShapeRay::ShapeRay( const Vector2d<float> &start ) :
-	ShapeBase( start ),
-	infiniteLength( true )
-{
-	//
-}
-
-ShapeRay::ShapeRay( const Vector2d<float> &start, const Vector2d<float> &newTarget ) :
-	ShapeBase( start ),
-	target( newTarget ),
-	infiniteLength( false )
-{
-	//
-}
-
 ShapeRay::~ShapeRay()
 {
 	//
@@ -99,18 +84,22 @@ bool ShapeRay::checkCollision( ShapeCircle const *const other ) const
 
 bool ShapeRay::checkCollision(ShapeBase const* const other, CollisionResponse& result) const
 {
+	return false;
 }
 
 bool ShapeRay::checkCollision(ShapeRect const* const other, CollisionResponse& result) const
 {
+	return false;
 }
 
 bool ShapeRay::checkCollision(ShapeRay const* const other, CollisionResponse& result) const
 {
+	return false;
 }
 
 bool ShapeRay::checkCollision(ShapeCircle const* const other, CollisionResponse& result) const
 {
+	return false;
 }
 
 void ShapeRay::render( SDL_Surface *target, Uint32 colour )

@@ -37,6 +37,7 @@ UnitBase::UnitBase( StateLevel *newParent, ShapeBase *newShape )
 	maxAccel = UNIT_DEFAULT_MAX_ACCEL;
 	friction = UNIT_DEFAULT_FRICTION;
 	type = utNone;
+	mass = 1.0f;
 
 #ifdef _DEBUG
 	debugString = "";
@@ -98,8 +99,13 @@ void UnitBase::render( SDL_Surface *const target )
 
 bool UnitBase::checkCollision( UnitBase const *const other ) const
 {
-	if ( shape && other->shape && shape->checkCollision( other->shape ) )
+	CollisionResponse temp;
+	if ( shape && other->shape && shape->checkCollision( other->shape, temp ) )
+	{
+		*x += temp.direction.x * temp.distance / (other->mass + mass) * other->mass;
+		*y += temp.direction.y * temp.distance / (other->mass + mass) * other->mass;
 		return true;
+	}
 	return false;
 }
 

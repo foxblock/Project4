@@ -19,7 +19,6 @@ public:
 
 public:
 	ShapeRect();
-	ShapeRect( const Vector2d<float> &newPos, const Vector2d<float> &newSize );
 	virtual ~ShapeRect();
 
 	Vector2d<float> getCenter() const { return pos; }

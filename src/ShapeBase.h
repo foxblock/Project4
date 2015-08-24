@@ -11,6 +11,11 @@ class ShapeCircle;
 
 struct CollisionResponse
 {
+	CollisionResponse()
+		:colliding(false)
+		,direction(0.0f,0.0f)
+		,distance(0.0f)
+	{}
 	bool colliding;
 	Vector2d<float> direction;
 	float distance;
@@ -19,8 +24,9 @@ struct CollisionResponse
 class ShapeBase
 {
 public:
-	ShapeBase() : pos(0,0) { };
-	ShapeBase( const Vector2d<float> &newPos ) : pos(newPos) { };
+	ShapeBase()
+		:pos(0.0f,0.0f)
+		{ };
 	virtual ~ShapeBase() { };
 
 	virtual bool checkCollision( ShapeBase const * const other ) const = 0;
@@ -36,6 +42,7 @@ public:
 	virtual void render( SDL_Surface* target, Uint32 colour ) = 0;
 
 	Vector2d<float> pos;
+	CollisionResponse response;
 protected:
 
 private:

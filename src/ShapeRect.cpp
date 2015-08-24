@@ -13,13 +13,6 @@ ShapeRect::ShapeRect() :
 	//
 }
 
-ShapeRect::ShapeRect( const Vector2d<float> &newPos, const Vector2d<float> &newSize ) :
-	ShapeBase( newPos ),
-	size( newSize )
-{
-	//
-}
-
 ShapeRect::~ShapeRect()
 {
 	//

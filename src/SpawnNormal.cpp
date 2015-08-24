@@ -361,11 +361,17 @@ void SpawnRegion::render(SDL_Surface* target)
 
 void SpawnRegion::addCircle(const Vector2d<float>& pos, const float& radius)
 {
-	shapes.push_back( new ShapeCircle( pos, radius ) );
+	ShapeCircle *temp = new ShapeCircle();
+	temp->pos = pos;
+	temp->radius = radius;
+	shapes.push_back( temp );
 }
 
 void SpawnRegion::addRect(const Vector2d<float>& pos, const Vector2d<float>& size)
 {
-	shapes.push_back( new ShapeRect( pos, size ) );
+	ShapeRect *temp = new ShapeRect();
+	temp->pos = pos;
+	temp->size = size;
+	shapes.push_back( temp );
 }
 

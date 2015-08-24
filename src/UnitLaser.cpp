@@ -36,6 +36,7 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	angle = 0;
 	angleVel = 0;
 	shape.radius = LASER_RADIUS;
+	mass = 2.0f;
 	projectile = NULL;
 	hasCharged = false;
 	type = utLaser;

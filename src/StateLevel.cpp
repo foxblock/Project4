@@ -29,7 +29,7 @@ StateLevel::StateLevel( Replay *loadReplay ) :
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
 	*( player->y ) = APP_SCREEN_HEIGHT / 2;
 	addUnit( player, false );
-//	player->flags.add( UnitBase::ufInvincible );
+	player->flags.add( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
 	debugText = spFontLoad( FONT_GENERAL, 12 );
@@ -152,8 +152,10 @@ int StateLevel::update( Uint32 delta )
 		if ( player )
 			( *I )->ai( delta, player );
 		( *I )->update( (*I)->flags.has( UnitBase::ufIsPlayer ) ? deltaBkUp : delta );
-		for ( std::vector<UnitBase *>::iterator K = I + 1; K != units.end(); ++K )
+		for ( std::vector<UnitBase *>::iterator K = units.begin(); K != units.end(); ++K )
 		{
+			if ( *I == *K )
+				continue;
 			if ( ( *I )->checkCollision( *K ) )
 			{
 				( *I )->collisionResponse( *K );
@@ -338,7 +340,9 @@ void StateLevel::handleEvents( Uint32 delta )
 			break;
 		case EventBase::etScoreMode:
 		{
-			ShapeCircle temp( player->shape.pos, player->shape.radius );
+			ShapeCircle temp;
+			temp.pos = player->shape.pos;
+			temp.radius = player->shape.radius;
 			Utility::colour tempCol;
 			switch ( ((EventScoreModeChange*)*event)->newMode )
 			{

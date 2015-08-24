@@ -67,6 +67,7 @@ public:
 	Vector2d<float> vel;
 	Vector2d<float> accel;
 	ShapeBase *shape;
+	float mass;
 
 #ifdef _DEBUG
 	std::string debugString;

@@ -18,6 +18,9 @@ StateCollision::StateCollision()
 	unit2 = new UnitLaser( NULL );
 	*unit2->x = APP_SCREEN_WIDTH / 4;
 	*unit2->y = APP_SCREEN_HEIGHT /2;
+	unit22 = new UnitLaser( NULL );
+	*unit22->x = APP_SCREEN_WIDTH / 4 + unit2->shape.radius * 2;
+	*unit22->y = APP_SCREEN_HEIGHT /2;
 	unit3 = new ProjectileLaser( NULL, -1 );
 	*unit3->x = APP_SCREEN_WIDTH;
 	*unit3->y = APP_SCREEN_HEIGHT / 2;
@@ -37,7 +40,9 @@ StateCollision::~StateCollision()
 {
 	delete unit1;
 	delete unit2;
+	delete unit22;
 	delete unit3;
+	delete unit4;
 	spFontDelete( font );
 	spResetButtonsState();
 	spResetAxisState();
@@ -61,7 +66,8 @@ int StateCollision::update( Uint32 delta )
 	}
 
 	unit1->update( delta );
-	unit2->update( delta );
+	//unit2->update( delta );
+	//unit22->update( delta );
 	unit3->update( delta );
 	unit4->update( delta );
 
@@ -69,6 +75,10 @@ int StateCollision::update( Uint32 delta )
 		debugString += "Spike\n";
 	if ( player != unit2 && player->checkCollision( unit2 ) )
 		debugString += "Laser\n";
+	if ( player != unit22 && player->checkCollision( unit22 ) )
+		debugString += "Laser2\n";
+	unit2->checkCollision( player );
+	unit22->checkCollision( player );
 	if ( player != unit3 && player->checkCollision( unit3 ) )
 		debugString += "Projectile left\n";
 	if ( player != unit4 && player->checkCollision( unit4 ) )
@@ -84,10 +94,17 @@ void StateCollision::render( SDL_Surface *target )
 {
 	spClearTarget( COLOUR_BACKGROUND );
 
-	unit1->render( target );
-	unit2->render( target );
-	unit3->render( target );
-	unit4->render( target );
+	if (unit1 != player)
+		unit1->render( target );
+	if (unit2 != player)
+		unit2->render( target );
+	if (unit22 != player)
+		unit22->render( target );
+	if (unit3 != player)
+		unit3->render( target );
+	if (unit4 != player)
+		unit4->render( target );
+	player->render( target );
 
 	spFontDraw( 10, 10, -1, (unsigned char*) debugString.c_str(), font );
 

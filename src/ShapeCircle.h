@@ -10,7 +10,6 @@ class ShapeCircle : public ShapeBase
 {
 public:
 	ShapeCircle();
-	ShapeCircle( const Vector2d<float> &newPos, const float &newRadius );
 	virtual ~ShapeCircle();
 
 	bool checkCollision( ShapeBase const * const other ) const;

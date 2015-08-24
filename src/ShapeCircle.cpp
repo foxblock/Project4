@@ -14,13 +14,6 @@ ShapeCircle::ShapeCircle() :
 	//
 }
 
-ShapeCircle::ShapeCircle( const Vector2d<float> &newPos, const float &newRadius ) :
-	ShapeBase( newPos ),
-	radius( newRadius )
-{
-	//
-}
-
 ShapeCircle::~ShapeCircle()
 {
 	//
@@ -80,14 +73,13 @@ bool ShapeCircle::checkCollision( ShapeRay const *const other, CollisionResponse
 
 bool ShapeCircle::checkCollision( ShapeCircle const *const other, CollisionResponse &result ) const
 {
-	Vector2d<float> distance = pos - other->pos;
-	float distanceSquared = distance.lengthSquared();
-	float radiiSquared = Utility::sqr<float>( radius + other->radius );
-	float temp = radiiSquared - distanceSquared;
+	Vector2d<float> distanceVec = pos - other->pos;
+	float distance = distanceVec.length();
+	float temp = radius + other->radius - distance;
 	if ( temp > 0.0f )
 	{
 		result.colliding = true;
-		result.direction = distance.unit();
+		result.direction = distanceVec.unit();
 		result.distance = temp;
 	}
 	else

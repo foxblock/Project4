@@ -23,6 +23,7 @@ public:
 
 	UnitSpike* unit1;
 	UnitLaser* unit2;
+	UnitLaser* unit22;
 	ProjectileLaser* unit3;
 	ProjectileLaser* unit4;
 	UnitBase* player;
