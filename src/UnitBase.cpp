@@ -102,8 +102,11 @@ bool UnitBase::checkCollision( UnitBase const *const other ) const
 	CollisionResponse temp;
 	if ( shape && other->shape && shape->checkCollision( other->shape, temp ) )
 	{
-		*x += temp.direction.x * temp.distance / (other->mass + mass) * other->mass;
-		*y += temp.direction.y * temp.distance / (other->mass + mass) * other->mass;
+		if ( flags.has( ufSolid ) && other->flags.has( ufSolid ) )
+		{
+			*x += temp.direction.x * temp.distance / (other->mass + mass) * other->mass;
+			*y += temp.direction.y * temp.distance / (other->mass + mass) * other->mass;
+		}
 		return true;
 	}
 	return false;

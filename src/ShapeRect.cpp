@@ -52,18 +52,30 @@ bool ShapeRect::checkCollision( ShapeCircle const *const other ) const
 
 bool ShapeRect::checkCollision(ShapeBase const* const other, CollisionResponse& result) const
 {
+	bool temp = other->checkCollision( this, result );
+	result.direction *= -1;
+	return temp;
 }
 
 bool ShapeRect::checkCollision(ShapeRect const* const other, CollisionResponse& result) const
 {
+	// TODO: Real collision detection with overlap!
+	result.colliding = checkCollision( other );
+	return result.colliding;
 }
 
 bool ShapeRect::checkCollision(ShapeRay const* const other, CollisionResponse& result) const
 {
+	bool temp = other->checkCollision( this, result );
+	result.direction *= -1;
+	return temp;
 }
 
 bool ShapeRect::checkCollision(ShapeCircle const* const other, CollisionResponse& result) const
 {
+	// TODO: Real collision detection with overlap!
+	result.colliding = checkCollision( other );
+	return result.colliding;
 }
 
 

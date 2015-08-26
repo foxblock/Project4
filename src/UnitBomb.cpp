@@ -50,6 +50,7 @@ UnitBomb::UnitBomb( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	friction = BOMB_IDLE_FRICTION;
 	isFlashing = false;
 	type = utBomb;
+	flags.add( ufSolid );
 	timers.push_back( &bombTimer );
 	timers.push_back( &flashTimer );
 	timers.push_back( &evadeTimer );
@@ -191,6 +192,7 @@ void UnitBomb::ai( const Uint32 &delta, UnitBase *const player )
 		vel = Vector2d<float>(0,0);
 		flags.add( ufDeadlyOnTouch );
 		flags.add( ufInvincible );
+		flags.remove( ufSolid );
 		LOG_MESSAGE("Bomb exploding");
 	}
 	else if ( pressure > BOMB_PRESSURE_LEVEL_3 )

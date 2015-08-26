@@ -22,6 +22,7 @@ ItemSlowmo::ItemSlowmo( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 
+	flags.add( ufSolid );
 	life.start( ITEM_SLOWMO_LIFE );
 	timers.push_back( &life );
 }

@@ -26,6 +26,7 @@ ItemVortex::ItemVortex( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	x = &( shape.pos.x );
 	y = &( shape.pos.y );
 
+	flags.add( ufSolid );
 	life.start( ITEM_VORTEX_LIFE );
 	timers.push_back( &vortex );
 	timers.push_back( &life );
@@ -120,7 +121,8 @@ void ItemVortex::collisionResponse( UnitBase *const other )
 		animationSlow = 0;
 		animationOffset = 0;
 		vortex.start( ITEM_VORTEX_DURATION );
-		flags.add( UnitBase::ufInvincible );
+		flags.add( ufInvincible );
+		flags.remove( ufSolid );
 		// toBeRemoved = true; // removes the unit/item from the game
 	}
 

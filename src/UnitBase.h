@@ -45,7 +45,8 @@ public:
 		ufIsPlayer = 8,
 		ufFrozen = 16,
 		ufBackground = 32,
-		ufEOL = 64, // this marks the end of the unit flag list
+		ufSolid = 64,
+		ufEOL = 128, // this marks the end of the unit flag list
 	};
 	enum UnitType
 	{

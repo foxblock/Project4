@@ -30,6 +30,7 @@ bool ShapeRay::checkCollision( ShapeBase const *const other ) const
 
 bool ShapeRay::checkCollision( ShapeRect const *const other ) const
 {
+	// TODO: Do this properly (not with ray approximation
 	ShapeRay bltr;
 	bltr.pos = other->getCorner( diBOTTOMLEFT );
 	bltr.target = other->getCorner( diTOPRIGHT );
@@ -84,22 +85,30 @@ bool ShapeRay::checkCollision( ShapeCircle const *const other ) const
 
 bool ShapeRay::checkCollision(ShapeBase const* const other, CollisionResponse& result) const
 {
-	return false;
+	bool temp = other->checkCollision( this, result );
+	result.direction *= -1;
+	return temp;
 }
 
 bool ShapeRay::checkCollision(ShapeRect const* const other, CollisionResponse& result) const
 {
-	return false;
+	// TODO: Real collision detection with overlap!
+	result.colliding = checkCollision( other );
+	return result.colliding;
 }
 
 bool ShapeRay::checkCollision(ShapeRay const* const other, CollisionResponse& result) const
 {
-	return false;
+	// TODO: Real collision detection with overlap!
+	result.colliding = checkCollision( other );
+	return result.colliding;
 }
 
 bool ShapeRay::checkCollision(ShapeCircle const* const other, CollisionResponse& result) const
 {
-	return false;
+	// TODO: Real collision detection with overlap!
+	result.colliding = checkCollision( other );
+	return result.colliding;
 }
 
 void ShapeRay::render( SDL_Surface *target, Uint32 colour )

@@ -19,6 +19,7 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	maxAccel = PLAYER_ACCEL;
 	type = utPlayer;
 	flags.add( ufIsPlayer );
+	flags.add( ufSolid );
 	lastVel = Vector2d<float>(0,-1);
 }
 

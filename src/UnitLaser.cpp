@@ -40,6 +40,7 @@ UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	projectile = NULL;
 	hasCharged = false;
 	type = utLaser;
+	flags.add( ufSolid );
 	life.start( LASER_TIME_MOVEMENT );
 	maxVel = LASER_MAX_MOVEMENT_SPEED;
 	maxAccel = LASER_MOVEMENT_ACCEL;

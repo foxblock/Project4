@@ -40,6 +40,7 @@ UnitSpike::UnitSpike( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	maxAccel = SPIKE_IDLE_MAX_ACCEL;
 	friction = SPIKE_IDLE_FRICTION;
 	type = utSpike;
+	flags.add( ufSolid );
 	timers.push_back( &chargeTimer );
 	target = Vector2d<float>(-1,-1);
 }
