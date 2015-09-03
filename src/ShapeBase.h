@@ -17,7 +17,11 @@ struct CollisionResponse
 		,distance(0.0f)
 	{}
 	bool colliding;
+	// Direction vector is aimed from other shape to this (=direction in which this shape has to move to solve collision)
+	// Length of direction vector should be 1
 	Vector2d<float> direction;
+	// Amount of overlap (both units have to move this much in sum to fully solve collition.
+	// This amount will be split in UnitBase::checkCollision based on mass and velocity between the two units)
 	float distance;
 };
 

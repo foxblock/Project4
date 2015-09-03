@@ -85,8 +85,8 @@ bool ShapeCircle::checkCollision( ShapeCircle const *const other, CollisionRespo
 	else
 	{
 		result.colliding = false;
-		result.direction = Vector2d<float>( 0, 0 );
-		result.distance = 0;
+		result.direction = Vector2d<float>( 0.0f, 0.0f );
+		result.distance = 0.0f;
 	}
 	return result.colliding;
 }

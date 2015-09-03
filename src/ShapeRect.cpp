@@ -75,8 +75,24 @@ bool ShapeRect::checkCollision(ShapeRay const* const other, CollisionResponse& r
 
 bool ShapeRect::checkCollision(ShapeCircle const* const other, CollisionResponse& result) const
 {
-	// TODO: Real collision detection with overlap!
-	result.colliding = checkCollision( other );
+	// find point in ShapeRect closest to center of other ShapeCircle
+	Vector2d<float> closestPoint( Utility::clamp( other->pos.x, pos.x - size.x / 2.0f, pos.x + size.x / 2.0f ),
+								  Utility::clamp( other->pos.y, pos.y - size.y / 2.0f, pos.y + size.y / 2.0f ));
+	// Distance between closest point and center of circle
+	Vector2d<float> distance = closestPoint - other->pos;
+
+	if (distance.lengthSquared() < Utility::sqr(other->radius))
+	{
+		result.direction = distance.unit();
+		result.distance = (distance.unit() * other->radius - distance).length();
+		result.colliding = true;
+	}
+	else
+	{
+		result.direction = Vector2d<float>( 0.0f, 0.0f );
+		result.distance = 0.0f;
+		result.colliding = false;
+	}
 	return result.colliding;
 }
 

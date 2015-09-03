@@ -66,8 +66,9 @@ int StateCollision::update( Uint32 delta )
 	}
 
 	unit1->update( delta );
-	//unit2->update( delta );
-	//unit22->update( delta );
+	if (player == unit2)
+		unit2->update( delta );
+	unit22->update( delta );
 	unit3->update( delta );
 	unit4->update( delta );
 
