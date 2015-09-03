@@ -8,6 +8,9 @@
 
 #include "sparrowPrimitives.h"
 
+#define COLLISION_VELOCITY_DIFFERENCE 0.4f
+#define COLLISION_VELOCITY_DISCOUNT_FACTOR 2.0f
+
 #ifdef _DEBUG
 #define DEBUG_VELOCITY_LINE 200.0f
 #define DEBUG_ACCELERATION_LINE 20000.0f
@@ -104,8 +107,21 @@ bool UnitBase::checkCollision( UnitBase const *const other ) const
 	{
 		if ( flags.has( ufSolid ) && other->flags.has( ufSolid ) )
 		{
-			*x += temp.direction.x * temp.distance / (other->mass + mass) * other->mass;
-			*y += temp.direction.y * temp.distance / (other->mass + mass) * other->mass;
+			if (vel.length() - other->vel.length() > COLLISION_VELOCITY_DIFFERENCE)
+			{
+				*x += temp.direction.x * temp.distance * other->mass / (other->mass + mass) / COLLISION_VELOCITY_DISCOUNT_FACTOR;
+				*y += temp.direction.y * temp.distance * other->mass / (other->mass + mass) / COLLISION_VELOCITY_DISCOUNT_FACTOR;
+			}
+			else if (other->vel.length() - vel.length() > COLLISION_VELOCITY_DIFFERENCE)
+			{
+				*x += temp.direction.x * temp.distance * other->mass / (other->mass + mass) * COLLISION_VELOCITY_DISCOUNT_FACTOR;
+				*y += temp.direction.y * temp.distance * other->mass / (other->mass + mass) * COLLISION_VELOCITY_DISCOUNT_FACTOR;
+			}
+			else
+			{
+				*x += temp.direction.x * temp.distance * other->mass / (other->mass + mass);
+				*y += temp.direction.y * temp.distance * other->mass / (other->mass + mass);
+			}
 		}
 		return true;
 	}

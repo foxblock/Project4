@@ -43,8 +43,10 @@ bool ShapeRect::checkCollision( ShapeRay const *const other ) const
 
 bool ShapeRect::checkCollision( ShapeCircle const *const other ) const
 {
+	// find point in ShapeRect closest to center of other ShapeCircle
 	Vector2d<float> closestPoint( Utility::clamp( other->pos.x, pos.x - size.x / 2.0f, pos.x + size.x / 2.0f ),
 								  Utility::clamp( other->pos.y, pos.y - size.y / 2.0f, pos.y + size.y / 2.0f ));
+	// Distance between closest point and center of circle
 	Vector2d<float> distance = other->pos - closestPoint;
 
 	return distance.lengthSquared() < Utility::sqr( other->radius );

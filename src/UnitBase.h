@@ -70,6 +70,10 @@ public:
 	ShapeBase *shape;
 	float mass;
 
+	float maxVel;
+	float maxAccel;
+	float friction;
+
 #ifdef _DEBUG
 	std::string debugString;
 	static spFontPointer debugFont;
@@ -78,10 +82,6 @@ protected:
 	SDL_Surface *activeSprite;
 
 	StateLevel *parent;
-
-	float maxVel;
-	float maxAccel;
-	float friction;
 
 	std::vector< Timer* > timers;
 private:
