@@ -134,8 +134,11 @@ void UnitBase::collisionResponse( UnitBase *const other )
 	{
 		LOG_MESSAGE( "Unit beeing killed" );
 		other->toBeRemoved = true;
-		EventUnitDeath *event = new EventUnitDeath( other, this );
-		parent->addEvent( event );
+		if (parent)
+		{
+			EventUnitDeath *event = new EventUnitDeath( other, this );
+			parent->addEvent( event );
+		}
 	}
 }
 

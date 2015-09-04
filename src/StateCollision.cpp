@@ -12,37 +12,51 @@
 
 StateCollision::StateCollision()
 {
-	unit1 = new UnitSpike( NULL );
-	*unit1->x = APP_SCREEN_WIDTH / 2;
-	*unit1->y = APP_SCREEN_HEIGHT / 4;
-	unit2 = new UnitLaser( NULL );
-	*unit2->x = APP_SCREEN_WIDTH / 4;
-	*unit2->y = APP_SCREEN_HEIGHT /2;
-	unit22 = new UnitLaser( NULL );
-	*unit22->x = APP_SCREEN_WIDTH / 4 + unit2->shape.radius * 2;
-	*unit22->y = APP_SCREEN_HEIGHT /2;
-	unit3 = new ProjectileLaser( NULL, -1 );
-	*unit3->x = APP_SCREEN_WIDTH;
-	*unit3->y = APP_SCREEN_HEIGHT / 2;
-	unit4 = new ProjectileLaser( NULL, -1 );
-	*unit4->x = 0;
-	*unit4->y = APP_SCREEN_HEIGHT / 2;
-	unit4->shape.pos.x = APP_SCREEN_WIDTH;
-	player = unit1;
+	UnitBase *temp = new UnitSpike(NULL);
+	*temp->x = APP_SCREEN_WIDTH / 2;
+	*temp->y = APP_SCREEN_HEIGHT / 4;
+	temp->flags.add(UnitBase::ufInvincible);
+	player = temp;
+	addUnit(temp);
+	temp = new UnitLaser(NULL);
+	*temp->x = APP_SCREEN_WIDTH / 4;
+	*temp->y = APP_SCREEN_HEIGHT / 2;
+	temp->flags.add(UnitBase::ufInvincible);
+	((UnitLaser*)temp)->stationary = true;
+	addUnit(temp);
+	float tempPos = *temp->x + ((UnitLaser*)temp)->shape.radius * 2;
+	temp = new UnitLaser(NULL);
+	*temp->x = tempPos;
+	*temp->y = APP_SCREEN_HEIGHT / 2;
+	temp->flags.add(UnitBase::ufInvincible);
+	((UnitLaser*)temp)->stationary = true;
+	addUnit(temp);
+	temp = new ProjectileLaser(NULL, -1);
+	*temp->x = APP_SCREEN_WIDTH;
+	*temp->y = APP_SCREEN_HEIGHT / 2;
+	temp->flags.add(UnitBase::ufInvincible);
+	addUnit(temp);
+	temp = new ProjectileLaser(NULL, -1);
+	*temp->x = 0;
+	*temp->y = APP_SCREEN_HEIGHT / 2;
+	temp->shape->pos.x = APP_SCREEN_WIDTH;
+	temp->flags.add(UnitBase::ufInvincible);
+	addUnit(temp);
 
-	font = spFontLoad( FONT_GENERAL, 12 );
-	if ( font )
-		spFontAdd( font, SP_FONT_GROUP_ASCII, spGetFastRGB( 255, 0, 0 ) );
+	font = spFontLoad(FONT_GENERAL, 12);
+	if (font)
+		spFontAdd(font, SP_FONT_GROUP_ASCII, spGetFastRGB(255, 0, 0));
 	type = stCollision;
 }
 
 StateCollision::~StateCollision()
 {
-	delete unit1;
-	delete unit2;
-	delete unit22;
-	delete unit3;
-	delete unit4;
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
+		delete *I;
+	units.clear();
+	for ( std::vector<UnitBase *>::iterator I = unitQueue.begin(); I != unitQueue.end(); ++I )
+		delete *I;
+	unitQueue.clear();
 	spFontDelete( font );
 	spResetButtonsState();
 	spResetAxisState();
@@ -65,25 +79,42 @@ int StateCollision::update( Uint32 delta )
 		return stMenu; // switch to menu state
 	}
 
-	unit1->update( delta );
-	if (player == unit2)
-		unit2->update( delta );
-	unit22->update( delta );
-	unit3->update( delta );
-	unit4->update( delta );
+	// Unit update, collision checking (creates events)
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
+	{
+		if ( (*I)->flags.has( UnitBase::ufFrozen ) )
+			continue;
 
-	if ( player != unit1 && player->checkCollision( unit1 ) )
-		debugString += "Spike\n";
-	if ( player != unit2 && player->checkCollision( unit2 ) )
-		debugString += "Laser\n";
-	if ( player != unit22 && player->checkCollision( unit22 ) )
-		debugString += "Laser2\n";
-	unit2->checkCollision( player );
-	unit22->checkCollision( player );
-	if ( player != unit3 && player->checkCollision( unit3 ) )
-		debugString += "Projectile left\n";
-	if ( player != unit4 && player->checkCollision( unit4 ) )
-		debugString += "Projectile right\n";
+//		if ( player )
+//			( *I )->ai( delta, player );
+		( *I )->update( delta );
+		for ( std::vector<UnitBase *>::iterator K = units.begin(); K != units.end(); ++K )
+		{
+			if ( *I == *K )
+				continue;
+			if ( ( *I )->checkCollision( *K ) )
+			{
+				debugString += Utility::numToStr((*I)->type) + "->" + Utility::numToStr((*K)->type) + "\n";
+				( *I )->collisionResponse( *K );
+				( *K )->collisionResponse( *I );
+			}
+		}
+	}
+
+	units.insert( units.end(), unitQueue.begin(), unitQueue.end() );
+	unitQueue.clear();
+
+	// Unit handling (adding, removing)
+	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); )
+	{
+		if ( ( *I )->toBeRemoved )
+		{
+			delete *I;
+			I = units.erase( I );
+		}
+		else
+			++I;
+	}
 
 	float angle = (player->shape->pos - Vector2d<float>( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 )).angle();
 	debugString += "Angle: " + Utility::numToStr( angle * 180 / M_PI ) + "\n";
@@ -91,44 +122,46 @@ int StateCollision::update( Uint32 delta )
 	return 0;
 }
 
-void StateCollision::render( SDL_Surface *target )
+void StateCollision::addUnit(UnitBase *newUnit)
 {
-	spClearTarget( COLOUR_BACKGROUND );
+#ifdef _DEBUG
+	printf("%s:%i\t\t%s, type: %i\n",__FILE__,__LINE__,"New unit is being added",newUnit->type);
+#endif
+	unitQueue.push_back( newUnit );
+}
 
-	if (unit1 != player)
-		unit1->render( target );
-	if (unit2 != player)
-		unit2->render( target );
-	if (unit22 != player)
-		unit22->render( target );
-	if (unit3 != player)
-		unit3->render( target );
-	if (unit4 != player)
-		unit4->render( target );
-	player->render( target );
+void StateCollision::render(SDL_Surface *target)
+{
+	spClearTarget(COLOUR_BACKGROUND);
 
-	spFontDraw( 10, 10, -1, (unsigned char*) debugString.c_str(), font );
+	for (std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I)
+		(*I)->render(target);
 
-	spLine( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 0.8f, -1,
-			APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 1.2f, -1, -1 );
-	spLine( APP_SCREEN_WIDTH / 2 * 0.8f, APP_SCREEN_HEIGHT / 2, -1,
-			APP_SCREEN_WIDTH / 2 * 1.2f, APP_SCREEN_HEIGHT / 2, -1, -1 );
-	spLine( APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2, -1,
-			*player->x, *player->y, -1, spGetRGB( 228, 228, 288 ) );
+	if (player)
+		player->render(target);
+
+	spFontDraw(10, 10, -1, (unsigned char*) debugString.c_str(), font);
+
+	spLine(APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 0.8f, -1,
+			APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 1.2f, -1, -1);
+	spLine(APP_SCREEN_WIDTH / 2 * 0.8f, APP_SCREEN_HEIGHT / 2, -1,
+			APP_SCREEN_WIDTH / 2 * 1.2f, APP_SCREEN_HEIGHT / 2, -1, -1);
+	spLine(APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2, -1,
+			*player->x, *player->y, -1, spGetRGB(228, 228, 288));
 }
 
 void StateCollision::handleInput( Uint32 delta )
 {
 	if ( spGetInput()->button[SP_BUTTON_A] != 0 )
 	{
-		if ( player == unit1 )
-			player = unit2;
-		else if ( player == unit2 )
-			player = unit3;
-		else if ( player == unit3 )
-			player = unit4;
-		else if ( player == unit4 )
-			player = unit1;
+		for (int I = 0; I < units.size(); ++I)
+		{
+			if (units[I] == player)
+			{
+				player = (I == units.size() - 1) ? units[0] : units[I+1];
+				break;
+			}
+		}
 		spGetInput()->button[SP_BUTTON_A] = 0;
 	}
 

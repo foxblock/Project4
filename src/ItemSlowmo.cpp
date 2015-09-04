@@ -60,8 +60,11 @@ void ItemSlowmo::collisionResponse( UnitBase* const other )
 	UnitBase::collisionResponse( other );
 	if ( other->flags.has(ufIsPlayer) )
 	{
-		EventSlowMotion *event = new EventSlowMotion( ITEM_SLOWMO_DURATION );
-		parent->addEvent( event );
+		if (parent)
+		{
+			EventSlowMotion *event = new EventSlowMotion( ITEM_SLOWMO_DURATION );
+			parent->addEvent( event );
+		}
 		toBeRemoved = true;
 	}
 }

@@ -265,10 +265,11 @@ void StateLevel::render( SDL_Surface *target )
 							I->second.b * I->second.intensity ) );
 	}
 
-	// render text
+	// render text (Background units)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 		if ( ( *I )->flags.has( UnitBase::ufBackground ) )
 			( *I )->render( target );
+	// render other units (non background)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
 		if ( !( *I )->flags.has( UnitBase::ufBackground ) )
 			( *I )->render( target );

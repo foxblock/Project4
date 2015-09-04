@@ -18,18 +18,17 @@ public:
 
 	int update( Uint32 delta );
 	void render( SDL_Surface *target );
+	void addUnit( UnitBase *newUnit );
 
 	void handleInput( Uint32 delta );
 
-	UnitSpike* unit1;
-	UnitLaser* unit2;
-	UnitLaser* unit22;
-	ProjectileLaser* unit3;
-	ProjectileLaser* unit4;
 	UnitBase* player;
 
 	std::string debugString;
 	spFontPointer font;
+
+	std::vector<UnitBase *> units;
+	std::vector<UnitBase *> unitQueue;
 protected:
 
 private:
