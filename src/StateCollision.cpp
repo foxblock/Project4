@@ -5,6 +5,7 @@
 #include "UnitLaser.h"
 #include "ProjectileLaser.h"
 #include "UtilityFunctions.h"
+#include "ShapeRect.h"
 
 #include "sparrowPrimitives.h"
 
@@ -41,6 +42,13 @@ StateCollision::StateCollision()
 	*temp->y = APP_SCREEN_HEIGHT / 2;
 	temp->shape->pos.x = APP_SCREEN_WIDTH;
 	temp->flags.add(UnitBase::ufInvincible);
+	addUnit(temp);
+	temp = new UnitBase(NULL, new ShapeRect());
+	*temp->x = APP_SCREEN_WIDTH / 4 * 3;
+	*temp->y = APP_SCREEN_HEIGHT / 4 * 3;
+	((ShapeRect*)temp->shape)->size.x = 30;
+	((ShapeRect*)temp->shape)->size.y = 30;
+	temp->flags.add(UnitBase::ufSolid | UnitBase::ufInvincible);
 	addUnit(temp);
 
 	font = spFontLoad(FONT_GENERAL, 12);

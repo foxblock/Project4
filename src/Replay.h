@@ -7,7 +7,7 @@
 
 #define REPLAY_ENTRY_SIZE 2
 #define REPLAY_HEADER_MIN_SIZE 5
-#define REPLAY_VERSION 10
+#define REPLAY_VERSION 11
 
 class Replay
 {
