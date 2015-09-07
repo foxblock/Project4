@@ -13,43 +13,47 @@
 
 StateCollision::StateCollision()
 {
-	UnitBase *temp = new UnitSpike(NULL);
+	UnitBase *temp = NULL;
+//	temp = new UnitLaser(NULL);
+//	*temp->x = APP_SCREEN_WIDTH / 4;
+//	*temp->y = APP_SCREEN_HEIGHT / 2;
+//	temp->flags.add(UnitBase::ufInvincible);
+//	((UnitLaser*)temp)->stationary = true;
+//	addUnit(temp);
+//	float tempPos = *temp->x + ((UnitLaser*)temp)->shape.radius * 2;
+//	temp = new UnitLaser(NULL);
+//	*temp->x = tempPos;
+//	*temp->y = APP_SCREEN_HEIGHT / 2;
+//	temp->flags.add(UnitBase::ufInvincible);
+//	((UnitLaser*)temp)->stationary = true;
+//	addUnit(temp);
+	temp = new ProjectileLaser(NULL, -1);
+	*temp->x = APP_SCREEN_WIDTH;
+	*temp->y = APP_SCREEN_HEIGHT / 2;
+	((ProjectileLaser*)temp)->shape.pos.x = 0;
+	((ProjectileLaser*)temp)->shape.pos.y = APP_SCREEN_HEIGHT / 2;
+	addUnit(temp);
+	temp = new ProjectileLaser(NULL, -1);
+	*temp->x = APP_SCREEN_WIDTH / 2;
+	*temp->y = 0;
+	((ProjectileLaser*)temp)->shape.pos.x = APP_SCREEN_WIDTH / 2;
+	((ProjectileLaser*)temp)->shape.pos.y = APP_SCREEN_HEIGHT;
+	addUnit(temp);
+//	temp = new UnitBase(NULL, new ShapeRect());
+//	*temp->x = APP_SCREEN_WIDTH / 4 * 3;
+//	*temp->y = APP_SCREEN_HEIGHT / 4 * 3;
+//	((ShapeRect*)temp->shape)->size.x = 30;
+//	((ShapeRect*)temp->shape)->size.y = 30;
+//	temp->flags.add(UnitBase::ufSolid | UnitBase::ufInvincible);
+//	addUnit(temp);
+	temp = new UnitSpike(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 2;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
 	player = temp;
 	addUnit(temp);
-	temp = new UnitLaser(NULL);
-	*temp->x = APP_SCREEN_WIDTH / 4;
-	*temp->y = APP_SCREEN_HEIGHT / 2;
-	temp->flags.add(UnitBase::ufInvincible);
-	((UnitLaser*)temp)->stationary = true;
-	addUnit(temp);
-	float tempPos = *temp->x + ((UnitLaser*)temp)->shape.radius * 2;
-	temp = new UnitLaser(NULL);
-	*temp->x = tempPos;
-	*temp->y = APP_SCREEN_HEIGHT / 2;
-	temp->flags.add(UnitBase::ufInvincible);
-	((UnitLaser*)temp)->stationary = true;
-	addUnit(temp);
-	temp = new ProjectileLaser(NULL, -1);
-	*temp->x = APP_SCREEN_WIDTH;
-	*temp->y = APP_SCREEN_HEIGHT / 2;
-	temp->flags.add(UnitBase::ufInvincible);
-	addUnit(temp);
-	temp = new ProjectileLaser(NULL, -1);
-	*temp->x = 0;
-	*temp->y = APP_SCREEN_HEIGHT / 2;
-	temp->shape->pos.x = APP_SCREEN_WIDTH;
-	temp->flags.add(UnitBase::ufInvincible);
-	addUnit(temp);
-	temp = new UnitBase(NULL, new ShapeRect());
-	*temp->x = APP_SCREEN_WIDTH / 4 * 3;
-	*temp->y = APP_SCREEN_HEIGHT / 4 * 3;
-	((ShapeRect*)temp->shape)->size.x = 30;
-	((ShapeRect*)temp->shape)->size.y = 30;
-	temp->flags.add(UnitBase::ufSolid | UnitBase::ufInvincible);
-	addUnit(temp);
+
+	player = temp;
 
 	font = spFontLoad(FONT_GENERAL, 12);
 	if (font)
@@ -86,6 +90,8 @@ int StateCollision::update( Uint32 delta )
 		spResetButtonsState();
 		return stMenu; // switch to menu state
 	}
+
+	debugString += "Player: " + Utility::numToStr(player->type) + "\n";
 
 	// Unit update, collision checking (creates events)
 	for ( std::vector<UnitBase *>::iterator I = units.begin(); I != units.end(); ++I )
@@ -156,6 +162,19 @@ void StateCollision::render(SDL_Surface *target)
 			APP_SCREEN_WIDTH / 2 * 1.2f, APP_SCREEN_HEIGHT / 2, -1, -1);
 	spLine(APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2, -1,
 			*player->x, *player->y, -1, spGetRGB(228, 228, 288));
+
+	if (units.size() > 2)
+	{
+		CollisionResponse temp;
+		units[0]->shape->checkCollision(units[2]->shape, temp);
+		spLine(temp.direction.x - 5, temp.direction.y - 5, -1, temp.direction.x + 5, temp.direction.y + 5, -1, -1);
+		spLine(temp.direction.x + 5, temp.direction.y - 5, -1, temp.direction.x - 5, temp.direction.y + 5, -1, -1);
+		temp.direction.null();
+		units[1]->shape->checkCollision(units[2]->shape, temp);
+		debugString += Utility::vecToStr(temp.direction) + "\n";
+		spLine(temp.direction.x - 5, temp.direction.y - 5, -1, temp.direction.x + 5, temp.direction.y + 5, -1, -1);
+		spLine(temp.direction.x + 5, temp.direction.y - 5, -1, temp.direction.x - 5, temp.direction.y + 5, -1, -1);
+	}
 }
 
 void StateCollision::handleInput( Uint32 delta )

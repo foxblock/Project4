@@ -87,7 +87,7 @@ int UnitLaser::update( const Uint32 &delta )
 		{
 			Vector2d<float> rot( cos( angle ), sin( angle ) );
 			projectile->shape.pos = shape.pos + rot * LASER_EYE_DISTANCE;
-			projectile->shape.target = shape.pos + rot * 1000;
+			projectile->shape.target = shape.pos + rot * 1000; // 1000px range
 		}
 	}
 
@@ -130,7 +130,7 @@ void UnitLaser::render( SDL_Surface *const target )
 	}
 }
 
-bool UnitLaser::checkCollision( UnitBase const *const other ) const
+bool UnitLaser::checkCollision( UnitBase const *const other )
 {
 	if ( other != projectile && UnitBase::checkCollision( other ) )
 		return true;

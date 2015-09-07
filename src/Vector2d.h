@@ -16,6 +16,11 @@ public:
 	Vector2d( const Vector2d<S> &v ) : x( v.x ), y( v.y ) { }
 
 	~Vector2d() {;}
+	void null()
+	{
+		x = 0;
+		y = 0;
+	}
 
 	T dot( const Vector2d<T> &v ) const {return ( x * v.x + y * v.y );}
 	T length() const {return sqrt( lengthSquared() );}
@@ -32,8 +37,18 @@ public:
 		else
 			return M_PI + M_PI_2 + atan( x / fabs( y ) );
 	}
+	Vector2d<T> rotate(const float &atAngle) const
+	{
+		return Vector2d<T>(cos(atAngle) * x + sin(atAngle) * y, -sin(atAngle) * x + cos(atAngle) * y);
+	}
+	void rotateThis(const float &atAngle)
+	{
+		float temp = cos(atAngle) * x + sin(atAngle) * y;
+		y = -sin(atAngle) * x + cos(atAngle) * y;
+		x = temp;
+	}
 
-	Vector2d<T> unit()
+	Vector2d<T> unit() const
 	{
 		if ( x == 0 && y == 0 )
 			return Vector2d<T>( 0, 0 );
@@ -41,6 +56,17 @@ public:
 		{
 			float len = length();
 			return Vector2d<T>( x / len, y / len );
+		}
+	}
+	void makeUnit()
+	{
+		if ( x == 0 && y == 0 )
+			return;
+		else
+		{
+			float len = length();
+			x /= len;
+			y /= len;
 		}
 	}
 

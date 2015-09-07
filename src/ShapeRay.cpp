@@ -120,18 +120,34 @@ bool ShapeRay::checkCollision( ShapeRay const *const other ) const
 
 bool ShapeRay::checkCollision( ShapeCircle const *const other ) const
 {
-	ShapeRay temp;
-	temp.pos = other->pos;
-	Vector2d<float> dir = ( target - pos ).unit();
-	dir = Vector2d<float>( -dir.y, dir.x );
-	temp.target = temp.pos + dir * other->radius;
-	if ( checkCollision( &temp ) )
-		return true;
-	else
+	// TODO: Do this properly, not with ray approximation
+//	ShapeRay temp;
+//	temp.pos = other->pos;
+//	Vector2d<float> dir = ( target - pos ).unit();
+//	dir = Vector2d<float>( -dir.y, dir.x );
+//	temp.target = temp.pos + dir * other->radius;
+//	if ( checkCollision( &temp ) )
+//		return true;
+//	else
+//	{
+//		temp.target = temp.pos - dir * other->radius;
+//		return checkCollision( &temp );
+//	}
+
+	float angle = (target - pos).angle();
+	// Adjusted positions in other coordinate space
+	Vector2d<float> circlePos = other->pos.rotate(angle);
+	Vector2d<float> rayPos = pos.rotate(angle);
+	Vector2d<float> rayTarget = target.rotate(angle);
+
+	if (circlePos.x - other->radius <= rayTarget.x && circlePos.x + other->radius >= rayPos.x &&
+			circlePos.y - other->radius <= rayPos.y && circlePos.y + other->radius >= rayPos.y)
 	{
-		temp.target = temp.pos - dir * other->radius;
-		return checkCollision( &temp );
+        Vector2d<float> pos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
+        pos.rotateThis(-angle);
+        return true;
 	}
+	return false;
 }
 
 
@@ -159,7 +175,20 @@ bool ShapeRay::checkCollision(ShapeRay const* const other, CollisionResponse& re
 bool ShapeRay::checkCollision(ShapeCircle const* const other, CollisionResponse& result) const
 {
 	// TODO: Real collision detection with overlap!
-	result.colliding = checkCollision( other );
+	float angle = (target - pos).angle();
+	// Adjusted positions in other coordinate space
+	Vector2d<float> circlePos = other->pos.rotate(angle);
+	Vector2d<float> rayPos = pos.rotate(angle);
+	Vector2d<float> rayTarget = target.rotate(angle);
+
+	if (circlePos.x - other->radius <= rayTarget.x && circlePos.x + other->radius >= rayPos.x &&
+			circlePos.y - other->radius <= rayPos.y && circlePos.y + other->radius >= rayPos.y)
+	{
+        Vector2d<float> pos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
+        pos.rotateThis(-angle);
+        result.colliding = true;
+        result.direction = pos;
+	}
 	return result.colliding;
 }
 

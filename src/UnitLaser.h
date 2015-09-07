@@ -15,7 +15,7 @@ public:
 	int update( const Uint32 &delta );
 	void render( SDL_Surface *const target );
 
-	bool checkCollision( UnitBase const *const other ) const;
+	bool checkCollision( UnitBase const *const other );
 
 	void ai( const Uint32 &delta, UnitBase *const player );
 

@@ -27,7 +27,7 @@ public:
 	virtual int update( const Uint32 &delta );
 	virtual void render( SDL_Surface *const target );
 
-	virtual bool checkCollision( UnitBase const *const other ) const;
+	virtual bool checkCollision( UnitBase const *const other );
 	virtual void collisionResponse( UnitBase *const other );
 
 	virtual void ai( const Uint32 &delta, UnitBase *const player );

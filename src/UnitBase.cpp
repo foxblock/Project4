@@ -100,11 +100,12 @@ void UnitBase::render( SDL_Surface *const target )
 #endif
 }
 
-bool UnitBase::checkCollision( UnitBase const *const other ) const
+bool UnitBase::checkCollision( UnitBase const *const other )
 {
 	CollisionResponse temp;
 	if ( shape && other->shape && shape->checkCollision( other->shape, temp ) )
 	{
+		// TODO: Maybe move this to collisionResponse instead
 		if ( flags.has( ufSolid ) && other->flags.has( ufSolid ) )
 		{
 			if (vel.length() - other->vel.length() > COLLISION_VELOCITY_DIFFERENCE)
