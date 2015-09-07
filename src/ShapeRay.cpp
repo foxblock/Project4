@@ -42,24 +42,76 @@ bool ShapeRay::checkCollision( ShapeRect const *const other ) const
 	return false;
 }
 
+// These calculations solve the linear equation system
+// (1) pos.x + dir.x * m1 == other->pos,x + m2 * otherDir.x
+// (2) pos.y + dir.y * m1 == other->pos,y + m2 * otherDir.y
+// Solve (1) for m1, insert into (2) and calculate m2
+// Then insert into (1) or (2) to get m1
 bool ShapeRay::checkCollision( ShapeRay const *const other ) const
 {
 	Vector2d<float> dir = ( target - pos ).unit();
 	Vector2d<float> otherDir = ( other->target - other->pos ).unit();
 
-	if ( fabs( dir.x - otherDir.x - dir.y + otherDir.y ) < FLOAT_ACCURACY )
+	// Corner cases (where one or both rays are 1D points so the dir vector is 0-length)
+	if ((dir.x == 0 && dir.y == 0) && (otherDir.x == 0 && otherDir.y == 0))
+	{
+		// if both are points, just check for quality
+		return (fabs(pos.x - other->pos.x) < FLOAT_ACCURACY && fabs(pos.y - other->pos.y) < FLOAT_ACCURACY);
+	}
+	if (dir.x == 0 && dir.y == 0)
+	{
+		// if only one is, do simple ray - point collision check, similar to full ray-ray collision
+		// solve same linear equations wither the lhs or rhs severly simplified due to the 0-vector
+		float m1;
+		if (otherDir.y != 0)
+			m1 = (pos.y - other->pos.y) / otherDir.y;
+		else
+			m1 = (pos.x - other->pos.x) / otherDir.x;
+		// check whether point is on ray
+		if (fabs(other->pos.x + otherDir.x * m1 - pos.x) < FLOAT_ACCURACY &&
+				fabs(other->pos.y + otherDir.y * m1 - pos.y) < FLOAT_ACCURACY &&
+				(other->infiniteLength || m1 < other->length()))
+			return true;
+		return false;
+	}
+	else if (otherDir.x == 0 && otherDir.y == 0)
+	{
+		// same as above
+		float m1;
+		if (dir.y != 0)
+			m1 = (other->pos.y - pos.y) / dir.y;
+		else
+			m1 = (other->pos.x - pos.x) / dir.x;
+		if (fabs(pos.x + dir.x * m1 - other->pos.x) < FLOAT_ACCURACY &&
+				fabs(pos.y + dir.y * m1 - other->pos.y) < FLOAT_ACCURACY &&
+				(infiniteLength || m1 < length()))
+			return true;
+		return false;
+	}
+
+	// Check whether rays are parallel (never collide)
+	if (fabs(dir.x - otherDir.x) < FLOAT_ACCURACY && fabs(dir.y - otherDir.y) < FLOAT_ACCURACY)
 		return false;
 
+	// Two infinite non-parallal rays will always collide at some point eventually
 	if ( infiniteLength && other->infiniteLength )
 		return true;
 
+	// Now at this point there must be a collision if the rays were infinite
+	// We have to calculate the point of the collision and check whether it is within bounds (length of rays)
+	// Solve system of linear equations for collision point m1 on this ray and m2 on other ray
 	float m2 = ( ( other->pos.y - pos.y ) * dir.x - ( other->pos.x - pos.x ) * dir.y ) /
 			   ( otherDir.x * dir.y - otherDir.y * dir.x );
-	float m1 = ( ( other->pos.x - pos.x ) + m2 * otherDir.x ) / dir.x;
+	float m1;
+	if (dir.x != 0)
+		m1 = ((other->pos.x - pos.x) + m2 * otherDir.x) / dir.x;
+	else
+		m1 = ((other->pos.y - pos.y) + m2 * otherDir.y) / dir.y;
 
-	if ( infiniteLength || ( m1 >= 0 && fabs( m1 ) * dir.length() < length() ) )
+	// Check whether collision points are on the actual rays
+	if ( infiniteLength || ( m1 >= 0 && fabs( m1 ) < length() ) )
 	{
-		if ( other->infiniteLength || ( m2 >= 0 && fabs( m2 ) * otherDir.length() < other->length() ) )
+		if ( other->infiniteLength || ( m2 >= 0 && fabs( m2 ) < other->length() ) )
 			return true;
 	}
 
