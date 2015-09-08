@@ -27,7 +27,8 @@ public:
 	T lengthSquared() const {return ( x * x + y * y );}
 	// Returns the angle between a line drawn in the direction of the vector and
 	// the coordinate-space (range: 0 to 2*M_PI)
-	float angle() const {
+	float angle() const 
+	{
 		if ( x >= 0 && y >= 0 )
 			return atan( y / x );
 		else if ( x < 0 && y > 0 )
@@ -36,6 +37,10 @@ public:
 			return M_PI + atan( y / x );
 		else
 			return M_PI + M_PI_2 + atan( x / fabs( y ) );
+	}
+	float angle(const Vector2d<T> &v) const
+	{
+		return acos(dot(v)/length()/v.length());
 	}
 	Vector2d<T> rotate(const float &atAngle) const
 	{

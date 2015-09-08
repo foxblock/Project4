@@ -154,8 +154,6 @@ void StateCollision::render(SDL_Surface *target)
 	if (player)
 		player->render(target);
 
-	spFontDraw(10, 10, -1, (unsigned char*) debugString.c_str(), font);
-
 	spLine(APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 0.8f, -1,
 			APP_SCREEN_WIDTH / 2, APP_SCREEN_HEIGHT / 2 * 1.2f, -1, -1);
 	spLine(APP_SCREEN_WIDTH / 2 * 0.8f, APP_SCREEN_HEIGHT / 2, -1,
@@ -167,14 +165,22 @@ void StateCollision::render(SDL_Surface *target)
 	{
 		CollisionResponse temp;
 		units[0]->shape->checkCollision(units[2]->shape, temp);
-		spLine(temp.direction.x - 5, temp.direction.y - 5, -1, temp.direction.x + 5, temp.direction.y + 5, -1, -1);
-		spLine(temp.direction.x + 5, temp.direction.y - 5, -1, temp.direction.x - 5, temp.direction.y + 5, -1, -1);
+		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
+		debugString += Utility::numToStr((((ProjectileLaser*)units[0])->shape.pos - ((ProjectileLaser*)units[0])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
+		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
+		temp.position.null();
 		temp.direction.null();
 		units[1]->shape->checkCollision(units[2]->shape, temp);
-		debugString += Utility::vecToStr(temp.direction) + "\n";
-		spLine(temp.direction.x - 5, temp.direction.y - 5, -1, temp.direction.x + 5, temp.direction.y + 5, -1, -1);
-		spLine(temp.direction.x + 5, temp.direction.y - 5, -1, temp.direction.x - 5, temp.direction.y + 5, -1, -1);
+		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
+		debugString += Utility::numToStr((((ProjectileLaser*)units[1])->shape.pos - ((ProjectileLaser*)units[1])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
+		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
 	}
+
+	spFontDraw(10, 10, -1, (unsigned char*) debugString.c_str(), font);
 }
 
 void StateCollision::handleInput( Uint32 delta )

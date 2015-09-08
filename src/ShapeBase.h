@@ -13,16 +13,25 @@ struct CollisionResponse
 {
 	CollisionResponse()
 		:colliding(false)
-		,direction(0.0f,0.0f)
+		,direction(0.0f, 0.0f)
+		,position(0.0f, 0.0f)
 		,distance(0.0f)
+		,lhs(false)
 	{}
 	bool colliding;
 	// Direction vector is aimed from other shape to this (=direction in which this shape has to move to solve collision)
 	// Length of direction vector should be 1
+	// For any collision with a ray and another shape that is not a ray, this is the normal vector to the collision surface
 	Vector2d<float> direction;
+	// Position of the collision point for ray collisions (with any other object)
+	Vector2d<float> position;
 	// Amount of overlap (both units have to move this much in sum to fully solve collition.
 	// This amount will be split in UnitBase::checkCollision based on mass and velocity between the two units)
+	// Always 0 when one of the colliding objects is a ray
 	float distance;
+	// For Ray-Circle collisions. Set to true if center of circle is on the left side of ray, false otherwise
+	// Defined as looking from the pos of the ray to the target
+	bool lhs;
 };
 
 class ShapeBase

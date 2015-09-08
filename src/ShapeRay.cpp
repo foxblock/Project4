@@ -143,8 +143,6 @@ bool ShapeRay::checkCollision( ShapeCircle const *const other ) const
 	if (circlePos.x - other->radius <= rayTarget.x && circlePos.x + other->radius >= rayPos.x &&
 			circlePos.y - other->radius <= rayPos.y && circlePos.y + other->radius >= rayPos.y)
 	{
-        Vector2d<float> pos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
-        pos.rotateThis(-angle);
         return true;
 	}
 	return false;
@@ -184,10 +182,15 @@ bool ShapeRay::checkCollision(ShapeCircle const* const other, CollisionResponse&
 	if (circlePos.x - other->radius <= rayTarget.x && circlePos.x + other->radius >= rayPos.x &&
 			circlePos.y - other->radius <= rayPos.y && circlePos.y + other->radius >= rayPos.y)
 	{
-        Vector2d<float> pos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
-        pos.rotateThis(-angle);
+        Vector2d<float> collisionPos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
+        collisionPos.rotateThis(-angle);
         result.colliding = true;
-        result.direction = pos;
+        result.position = collisionPos;
+        result.direction = (collisionPos - other->pos).unit();
+        if (circlePos.y < rayPos.y)
+        	result.lhs = true;
+       	else
+       		result.lhs = false;
 	}
 	return result.colliding;
 }

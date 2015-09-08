@@ -15,11 +15,16 @@ public:
 	int update( const Uint32 &delta );
 	void render( SDL_Surface *const target );
 
+	bool checkCollision(UnitBase const * const other);
+
 	ShapeRay shape;
 	Timer life;
 protected:
 	Timer blink;
 	int blinkStatus;
+	// Used for reflections, a pointer to the next part of the ray
+	ProjectileLaser *next;
+	UnitBase *reflector;
 
 private:
 
