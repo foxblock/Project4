@@ -50,6 +50,7 @@ StateCollision::StateCollision()
 	*temp->x = APP_SCREEN_WIDTH / 2;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
+	temp->flags.add(UnitBase::ufReflective);
 	player = temp;
 	addUnit(temp);
 

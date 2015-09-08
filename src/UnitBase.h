@@ -46,7 +46,8 @@ public:
 		ufFrozen = 16,
 		ufBackground = 32,
 		ufSolid = 64,
-		ufEOL = 128, // this marks the end of the unit flag list
+		ufReflective = 128,
+		ufEOL = 256, // this marks the end of the unit flag list
 	};
 	enum UnitType
 	{

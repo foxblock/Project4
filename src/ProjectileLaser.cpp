@@ -97,7 +97,7 @@ bool ProjectileLaser::checkCollision(UnitBase const * const other)
 	CollisionResponse temp;
 	if (other->shape && shape.checkCollision(other->shape, temp))
 	{
-		if (other->type == utSpike) // TODO: Proper check here for reflective type (new unit flag probably)
+		if (other->flags.has(ufReflective))
 		{
 			*x = temp.position.x;
 			*y = temp.position.y;

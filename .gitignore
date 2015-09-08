@@ -19,3 +19,5 @@ copy_sparrow.bat
 build/libsparrow3d.so
 build/lib/*
 copy_binaries.bat
+*.sublime-project
+*.sublime-workspace
