@@ -120,20 +120,6 @@ bool ShapeRay::checkCollision( ShapeRay const *const other ) const
 
 bool ShapeRay::checkCollision( ShapeCircle const *const other ) const
 {
-	// TODO: Do this properly, not with ray approximation
-//	ShapeRay temp;
-//	temp.pos = other->pos;
-//	Vector2d<float> dir = ( target - pos ).unit();
-//	dir = Vector2d<float>( -dir.y, dir.x );
-//	temp.target = temp.pos + dir * other->radius;
-//	if ( checkCollision( &temp ) )
-//		return true;
-//	else
-//	{
-//		temp.target = temp.pos - dir * other->radius;
-//		return checkCollision( &temp );
-//	}
-
 	float angle = (target - pos).angle();
 	// Adjusted positions in other coordinate space
 	Vector2d<float> circlePos = other->pos.rotate(angle);
@@ -172,21 +158,26 @@ bool ShapeRay::checkCollision(ShapeRay const* const other, CollisionResponse& re
 
 bool ShapeRay::checkCollision(ShapeCircle const* const other, CollisionResponse& result) const
 {
-	// TODO: Real collision detection with overlap!
 	float angle = (target - pos).angle();
-	// Adjusted positions in other coordinate space
+	// Rotate all positions to a a coordinate space aligned to the ray (x-axis parallel to ray)
 	Vector2d<float> circlePos = other->pos.rotate(angle);
 	Vector2d<float> rayPos = pos.rotate(angle);
 	Vector2d<float> rayTarget = target.rotate(angle);
 
-	if (circlePos.x - other->radius <= rayTarget.x && circlePos.x + other->radius >= rayPos.x &&
+	// Now checking whether the circle overlaps is simple
+	// TODO: Not that simple though, dummy. This check assumes a square. Gotta check the distance to ray ends (if not infinite length)
+	if (circlePos.x - other->radius <= std::max(rayTarget.x, rayPos.x) && circlePos.x + other->radius >= std::min(rayTarget.x, rayPos.x) &&
 			circlePos.y - other->radius <= rayPos.y && circlePos.y + other->radius >= rayPos.y)
 	{
         Vector2d<float> collisionPos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
+        // Rotate output vectors back
         collisionPos.rotateThis(-angle);
         result.colliding = true;
         result.position = collisionPos;
+        // Normal vector of circle surface at collision point
         result.direction = (collisionPos - other->pos).unit();
+        // Is circle on the left hand side or right hand side of ray (looking from pos to target)
+        // Used for reflection calculation
         if (circlePos.y < rayPos.y)
         	result.lhs = true;
        	else

@@ -22,18 +22,7 @@ ProjectileLaser::ProjectileLaser( StateLevel *newParent, const int &duration ) :
 
 ProjectileLaser::~ProjectileLaser()
 {
-	if (next)
-	{
-		std::vector<ProjectileLaser*> temp;
-		ProjectileLaser *iter = this;
-		while (iter->next)
-		{
-			temp.push_back(iter->next);
-			iter = iter->next;
-		}
-		for (std::vector<ProjectileLaser*>::iterator I = temp.begin(); I != temp.end(); ++I)
-			delete *I;
-	}
+	delete next;
 }
 
 
@@ -51,11 +40,15 @@ int ProjectileLaser::update( const Uint32 &delta )
 
 	if (next)
 	{
+		// Reflected (child) laser parts are set to be removed on every frame
+		// If they still collide with something the variable is reset (and they
+		// are not removed on the subsequent frame).
+		// Else the child is removed and the parent laser part is reset.
 		if (next->toBeRemoved)
 		{
 			delete next;
 			next = NULL;
-			// Reset this laser
+			// Reset this laser part
 			Vector2d<float> direction = (shape.target - shape.pos).unit();
 			shape.target.x = shape.pos.x + direction.x * 1000;
 			shape.target.y = shape.pos.y + direction.y * 1000;
@@ -64,7 +57,7 @@ int ProjectileLaser::update( const Uint32 &delta )
 		else
 		{
 			next->update(delta);
-			// Mark for deletion (will be reset if same reflector is still hit)
+			// Mark for removal (will be reset if same reflector is still hit)
 			if (next->reflector)
 				next->toBeRemoved = true;
 		}
@@ -91,14 +84,12 @@ void ProjectileLaser::render( SDL_Surface *const target )
 
 bool ProjectileLaser::checkCollision(UnitBase const * const other)
 {
-	// TODO: Falsche Kollision wenn Ray direkt auf Circle zeigt. dann geht erster Abschnitt durch den Circle und zeigt auf die gegenüberliegende Seite.
-	//       der zweite Abschnitt ist dann die korrekte Kollision, allerdings vom hinteren Rand des Kreises aus.
-	//       Aber nur beim Spawn im StateCollision??? Nach Bewegung (auch 100% vertikal) verschwunden???
 	CollisionResponse temp;
 	if (other->shape && shape.checkCollision(other->shape, temp))
 	{
 		if (other->flags.has(ufReflective))
 		{
+			// New target = Reflection point
 			*x = temp.position.x;
 			*y = temp.position.y;
 			if (next && next->reflector != other)
@@ -108,15 +99,32 @@ bool ProjectileLaser::checkCollision(UnitBase const * const other)
 			}
 			if (!next)
 				next = new ProjectileLaser(parent, -1);
+			// Adjust reflection
 			next->shape.pos.x = temp.position.x;
 			next->shape.pos.y = temp.position.y;
+			// Calculate reflection angle
 			float angle = (shape.pos - shape.target).angle(temp.direction);
-			Vector2d<float> tempVec = temp.direction.rotate(angle * (temp.lhs ? 1 : -1));
-			next->shape.target.x = temp.position.x + tempVec.x * 1000;
-			next->shape.target.y = temp.position.y + tempVec.y * 1000;
+			// Since the angle() function uses vector-dot-product and since that only
+			// returns positive values we have to use lhs to determine in which direction
+			// to reflect
+			Vector2d<float> tempVec = temp.direction.rotate(angle * (temp.lhs ? 1.0f : -1.0f));
+			// Make reflected part "long enough"(tm)
+			next->shape.target.x = temp.position.x + tempVec.x * 1000.0f;
+			next->shape.target.y = temp.position.y + tempVec.y * 1000.0f;
 			next->reflector = const_cast<UnitBase*>(other);
 			next->toBeRemoved = false;
 		}
+		// TODO: Multiple collisions with the same unit.
+		//       The current approach only works because units units move very few
+		//       pixels at a time. Part-updates are handled one at a time and dependent
+		//       on the collision check of the original laser (position in units-vector).
+		//       Because of this long reflection chains and multiple reflections
+		//       lead to problems. (uncommenting the two lines below will show)
+		//       Ideally upon adding a new part a full collision-check-pass
+		//       should be done for the new part. Also any change to any part should
+		//       invalidate all following parts. (This leads to many memory operations)
+//		if (next && next->next)
+//			next->next->checkCollision(other);
 		return true;
 	}
 	if (next)
