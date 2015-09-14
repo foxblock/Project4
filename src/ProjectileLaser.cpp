@@ -1,6 +1,7 @@
 #include "ProjectileLaser.h"
 
 #include "sparrowPrimitives.h"
+#include "UnitLaser.h"
 
 #define PROJECTILE_LASER_BLINK_TIME 75
 
@@ -85,7 +86,9 @@ void ProjectileLaser::render( SDL_Surface *const target )
 bool ProjectileLaser::checkCollision(UnitBase const * const other)
 {
 	CollisionResponse temp;
-	if (other->shape && shape.checkCollision(other->shape, temp))
+	// No collision check if other unit is the Laser shooting this projectile (and this is the original, non-reflected laser)
+	if ((other->type != utLaser || ((UnitLaser*)other)->projectile != this || reflector != NULL) &&
+			other->shape && shape.checkCollision(other->shape, temp))
 	{
 		if (other->flags.has(ufReflective))
 		{

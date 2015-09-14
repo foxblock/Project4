@@ -59,8 +59,10 @@ public:
 		utEOL, // end of unit types
 		utItemSlowmo,
 		utItemVortex,
+		utItemShield,
 		utItemEOL, // end of item types
 		utText,
+		utBackgroundEOL // end of background types
 	};
 	UnitType type;
 

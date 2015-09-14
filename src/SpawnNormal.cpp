@@ -191,6 +191,7 @@ UnitBase * SpawnNormal::getUnit( const int& type ) const
 
 	case UnitBase::utItemSlowmo:
 	case UnitBase::utItemVortex:
+	case UnitBase::utItemShield:
 		unit->shape->pos = getItemPosition();
 		break;
 	default:

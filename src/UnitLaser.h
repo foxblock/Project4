@@ -21,13 +21,13 @@ public:
 
 	ShapeCircle shape;
 	bool stationary;
+	ProjectileLaser *projectile;
 protected:
 
 private:
 	static void generateIdleImage();
 
 	static SDL_Surface *idle;
-	ProjectileLaser *projectile;
 
 	float angle;
 	float angleVel;

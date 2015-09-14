@@ -21,7 +21,7 @@
 #define SPIKE_WAIT_TIME 500
 #define SPIKE_CHARGE_TIME 500
 #define SPIKE_SPIKE_COUNT 16
-#define SPIKE_IDLE_RADIUS 30
+#define SPIKE_IDLE_RADIUS 10
 #define SPIKE_ATTACK_RADIUS 16
 
 SDL_Surface* UnitSpike::idle = NULL;

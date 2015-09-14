@@ -3,6 +3,7 @@
 
 #include "UnitBase.h"
 #include "ShapeCircle.h"
+#include "Timer.h"
 
 class UnitPlayer : public UnitBase
 {
@@ -13,11 +14,18 @@ public:
 	int update( const Uint32 &delta );
 	void render( SDL_Surface *const target );
 
+	void activeShield(int duration);
+	void deactiveShield();
+
 	ShapeCircle shape;
 protected:
 
 private:
 	Vector2d<float> lastVel;
+
+	static void generateShieldImage();
+	static SDL_Surface *shield;
+	Timer shieldTimer;
 };
 
 

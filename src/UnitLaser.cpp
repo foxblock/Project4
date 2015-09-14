@@ -24,7 +24,6 @@
 #define LASER_MOVEMENT_ACCEL 0.003f
 #define LASER_MOVEMENT_FRICTION 0.001f
 
-
 SDL_Surface* UnitLaser::idle = NULL;
 
 UnitLaser::UnitLaser( StateLevel *newParent ) : UnitBase( newParent, &shape )

@@ -250,6 +250,8 @@
 		<Unit filename="src/Events.h" />
 		<Unit filename="src/HighscoreFile.cpp" />
 		<Unit filename="src/HighscoreFile.h" />
+		<Unit filename="src/ItemShield.cpp" />
+		<Unit filename="src/ItemShield.h" />
 		<Unit filename="src/ItemSlowmo.cpp" />
 		<Unit filename="src/ItemSlowmo.h" />
 		<Unit filename="src/ItemVortex.cpp" />

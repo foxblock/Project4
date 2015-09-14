@@ -3,6 +3,8 @@
 #include "gameDefines.h"
 #include "UnitSpike.h"
 #include "UnitLaser.h"
+#include "UnitPlayer.h"
+#include "ItemShield.h"
 #include "ProjectileLaser.h"
 #include "UtilityFunctions.h"
 #include "ShapeRect.h"
@@ -14,19 +16,19 @@
 StateCollision::StateCollision()
 {
 	UnitBase *temp = NULL;
-//	temp = new UnitLaser(NULL);
-//	*temp->x = APP_SCREEN_WIDTH / 4;
-//	*temp->y = APP_SCREEN_HEIGHT / 2;
-//	temp->flags.add(UnitBase::ufInvincible);
-//	((UnitLaser*)temp)->stationary = true;
-//	addUnit(temp);
-//	float tempPos = *temp->x + ((UnitLaser*)temp)->shape.radius * 2;
-//	temp = new UnitLaser(NULL);
-//	*temp->x = tempPos;
-//	*temp->y = APP_SCREEN_HEIGHT / 2;
-//	temp->flags.add(UnitBase::ufInvincible);
-//	((UnitLaser*)temp)->stationary = true;
-//	addUnit(temp);
+	temp = new UnitLaser(NULL);
+	*temp->x = APP_SCREEN_WIDTH / 4;
+	*temp->y = APP_SCREEN_HEIGHT / 2;
+	temp->flags.add(UnitBase::ufInvincible);
+	((UnitLaser*)temp)->stationary = true;
+	addUnit(temp);
+	float tempPos = *temp->x + ((UnitLaser*)temp)->shape.radius * 2;
+	temp = new UnitLaser(NULL);
+	*temp->x = tempPos;
+	*temp->y = APP_SCREEN_HEIGHT / 2;
+	temp->flags.add(UnitBase::ufInvincible);
+	((UnitLaser*)temp)->stationary = true;
+	addUnit(temp);
 	temp = new ProjectileLaser(NULL, -1);
 	*temp->x = APP_SCREEN_WIDTH;
 	*temp->y = APP_SCREEN_HEIGHT / 2;
@@ -39,21 +41,32 @@ StateCollision::StateCollision()
 	((ProjectileLaser*)temp)->shape.pos.x = APP_SCREEN_WIDTH / 2;
 	((ProjectileLaser*)temp)->shape.pos.y = APP_SCREEN_HEIGHT;
 	addUnit(temp);
-//	temp = new UnitBase(NULL, new ShapeRect());
-//	*temp->x = APP_SCREEN_WIDTH / 4 * 3;
-//	*temp->y = APP_SCREEN_HEIGHT / 4 * 3;
-//	((ShapeRect*)temp->shape)->size.x = 30;
-//	((ShapeRect*)temp->shape)->size.y = 30;
-//	temp->flags.add(UnitBase::ufSolid | UnitBase::ufInvincible);
-//	addUnit(temp);
+	temp = new UnitBase(NULL, new ShapeRect());
+	*temp->x = APP_SCREEN_WIDTH / 4 * 3;
+	*temp->y = APP_SCREEN_HEIGHT / 4 * 3;
+	((ShapeRect*)temp->shape)->size.x = 30;
+	((ShapeRect*)temp->shape)->size.y = 30;
+	temp->flags.add(UnitBase::ufSolid | UnitBase::ufInvincible);
+	addUnit(temp);
 	temp = new UnitSpike(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 2;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
-	temp->flags.add(UnitBase::ufReflective);
 	addUnit(temp);
 	temp = new UnitSpike(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 2+80;
+	*temp->y = APP_SCREEN_HEIGHT / 4;
+	temp->flags.add(UnitBase::ufInvincible);
+	addUnit(temp);
+
+	temp = new ItemShield(NULL);
+	*temp->x = APP_SCREEN_WIDTH / 2-160;
+	*temp->y = APP_SCREEN_HEIGHT / 4;
+	temp->flags.add(UnitBase::ufInvincible);
+	addUnit(temp);
+
+	temp = new UnitPlayer(NULL);
+	*temp->x = APP_SCREEN_WIDTH / 2-80;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
 	temp->flags.add(UnitBase::ufReflective);

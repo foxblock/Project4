@@ -8,6 +8,7 @@
 #include "UnitText.h"
 #include "ItemSlowmo.h"
 #include "ItemVortex.h"
+#include "ItemShield.h"
 
 #include "gameDefines.h"
 
@@ -64,6 +65,9 @@ UnitBase* SpawnBase::getUnit(const int& type) const
 		break;
 	case UnitBase::utItemVortex:
 		unit = new ItemVortex( parent );
+		break;
+	case UnitBase::utItemShield:
+		unit = new ItemShield(parent);
 		break;
 	default:
 		printf( "%s Passed type to SpawnBase::getUnit is invalid: %i\n", ERROR_STRING, type );

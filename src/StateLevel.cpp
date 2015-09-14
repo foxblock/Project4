@@ -29,7 +29,6 @@ StateLevel::StateLevel( Replay *loadReplay ) :
 	*( player->x ) = APP_SCREEN_WIDTH / 2;
 	*( player->y ) = APP_SCREEN_HEIGHT / 2;
 	addUnit( player, false );
-	player->flags.add( UnitBase::ufInvincible );
 
 #ifdef _DEBUG
 	debugText = spFontLoad( FONT_GENERAL, 12 );

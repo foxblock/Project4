@@ -11,8 +11,14 @@
 #define PLAYER_DRAW_RADIUS 10
 #define PLAYER_COLLISION_RADIUS 4
 
+#define PLAYER_SHIELD_RADIUS 18
+
+SDL_Surface* UnitPlayer::shield = NULL;
+
 UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 {
+	if (!shield)
+		generateShieldImage();
 	activeSprite = NULL;
 	shape.radius = PLAYER_COLLISION_RADIUS;
 	maxVel = PLAYER_MAX_VELOCITY;
@@ -21,6 +27,7 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	flags.add( ufIsPlayer );
 	flags.add( ufSolid );
 	lastVel = Vector2d<float>(0,-1);
+	timers.push_back(&shieldTimer);
 }
 
 UnitPlayer::~UnitPlayer()
@@ -55,6 +62,11 @@ int UnitPlayer::update( const Uint32 &delta )
 	else if ( *y > APP_SCREEN_HEIGHT )
 		*y = APP_SCREEN_HEIGHT;
 
+	if (shieldTimer.finished())
+	{
+		deactiveShield();
+	}
+
 	UnitBase::update( delta );
 
 	if ( vel.x != 0 || vel.y != 0 )
@@ -77,9 +89,41 @@ void UnitPlayer::render( SDL_Surface *const target )
 				-1,
 				-1 );
 
+	if (shieldTimer.running())
+		spEllipseBorder(*x, *y, -1, PLAYER_SHIELD_RADIUS, PLAYER_SHIELD_RADIUS, 2, 2, -1);
+
 	UnitBase::render( target );
+}
+
+void UnitPlayer::activeShield(int duration)
+{
+	flags.add(ufReflective);
+	flags.add(ufInvincible);
+	activeSprite = shield;
+	shape.radius = PLAYER_SHIELD_RADIUS;
+	shieldTimer.start(duration);
+}
+
+void UnitPlayer::deactiveShield()
+{
+	flags.remove(ufReflective);
+	flags.remove(ufInvincible);
+	activeSprite = NULL;
+	shape.radius = PLAYER_COLLISION_RADIUS;
 }
 
 ///--- PROTECTED ---------------------------------------------------------------
 
 ///--- PRIVATE -----------------------------------------------------------------
+
+void UnitPlayer::generateShieldImage()
+{
+	shield = spCreateSurface(PLAYER_SHIELD_RADIUS * 2, PLAYER_SHIELD_RADIUS * 2);
+	SDL_FillRect(shield, NULL, SP_ALPHA_COLOR);
+	spSelectRenderTarget(shield);
+	spEllipse(PLAYER_SHIELD_RADIUS, PLAYER_SHIELD_RADIUS, -1, PLAYER_SHIELD_RADIUS - 2, PLAYER_SHIELD_RADIUS - 2, spGetRGB(0,255,0));
+	spUnlockRenderTarget();
+	SDL_SetAlpha(shield, SDL_SRCALPHA, 64);
+	spLockRenderTarget();
+	spSelectRenderTarget(spGetWindowSurface());
+}
