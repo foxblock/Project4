@@ -163,27 +163,33 @@ bool ShapeRay::checkCollision(ShapeCircle const* const other, CollisionResponse&
 	Vector2d<float> circlePos = other->pos.rotate(angle);
 	Vector2d<float> rayPos = pos.rotate(angle);
 	Vector2d<float> rayTarget = target.rotate(angle);
+	float rayLeftPos = std::min(rayPos.x, rayTarget.x);
+	float rayRightPos = std::max(rayPos.x, rayTarget.x);
 
 	// Now checking whether the circle overlaps is simple
-	// TODO: Not that simple though, dummy. This check assumes a square. Gotta check the distance to ray ends (if not infinite length)
-	if (circlePos.x - other->radius <= std::max(rayTarget.x, rayPos.x) && circlePos.x + other->radius >= std::min(rayTarget.x, rayPos.x) &&
-			circlePos.y - other->radius <= rayPos.y && circlePos.y + other->radius >= rayPos.y)
-	{
-        Vector2d<float> collisionPos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
-        // Rotate output vectors back
-        collisionPos.rotateThis(-angle);
-        result.colliding = true;
-        result.position = collisionPos;
-        // Normal vector of circle surface at collision point
-        result.direction = (collisionPos - other->pos).unit();
-        // Is circle on the left hand side or right hand side of ray (looking from pos to target)
-        // Used for reflection calculation
-        if (circlePos.y < rayPos.y)
-        	result.lhs = true;
-       	else
-       		result.lhs = false;
-	}
-	return result.colliding;
+	if (circlePos.y < rayPos.y - other->radius || circlePos.y > rayPos.y + other->radius)
+		return false;
+	if (circlePos.x < rayLeftPos - other->radius || circlePos.x > rayRightPos + other->radius)
+		return false;
+	if ((circlePos.x < rayLeftPos && (circlePos - Vector2d<float>(rayLeftPos, rayPos.y)).length() > other->radius) ||
+			(circlePos.x > rayRightPos && (circlePos - Vector2d<float>(rayRightPos, rayPos.y)).length() > other->radius))
+		return false;
+
+	Vector2d<float> collisionPos(circlePos.x - sqrt(Utility::sqr(other->radius) - Utility::sqr(circlePos.y - rayPos.y)), rayPos.y);
+	// Rotate output vectors back
+	collisionPos.rotateThis(-angle);
+	result.colliding = true;
+	result.position = collisionPos;
+	// Normal vector of circle surface at collision point
+	result.direction = (collisionPos - other->pos).unit();
+	// Is circle on the left hand side or right hand side of ray (looking from pos to target)
+	// Used for reflection calculation
+	if (circlePos.y < rayPos.y)
+		result.lhs = true;
+	else
+		result.lhs = false;
+
+	return true;
 }
 
 void ShapeRay::render( SDL_Surface *target, Uint32 colour )
