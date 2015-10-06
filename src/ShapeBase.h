@@ -22,15 +22,19 @@ struct CollisionResponse
 	// Direction vector is aimed from other shape to this (=direction in which this shape has to move to solve collision)
 	// Length of direction vector should be 1
 	// For any collision with a ray and another shape that is not a ray, this is the normal vector to the collision surface
+	// For two rays this is a 0-vector
 	Vector2d<float> direction;
 	// Position of the collision point for ray collisions (with any other object)
+	// For a collision where no ray shape is involved (i.e. two circles) this is a 0-vector
 	Vector2d<float> position;
 	// Amount of overlap (both units have to move this much in sum to fully solve collition.
 	// This amount will be split in UnitBase::checkCollision based on mass and velocity between the two units)
-	// Always 0 when one of the colliding objects is a ray
+	// Always 0 when one or both of the colliding objects is a ray
 	float distance;
-	// For Ray-Circle collisions. Set to true if center of circle is on the left side of ray, false otherwise
+	// For Ray-Circle or Ray-Rect collisions.
+	// Set to true if the circle or rect is on the left side of ray, false otherwise
 	// Defined as looking from the pos of the ray to the target
+	// Used to determine in what direction to reflect
 	bool lhs;
 };
 

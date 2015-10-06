@@ -16,62 +16,66 @@
 StateCollision::StateCollision()
 {
 	UnitBase *temp = NULL;
+	// 0
 	temp = new UnitLaser(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 4;
 	*temp->y = APP_SCREEN_HEIGHT / 2;
-	temp->flags.add(UnitBase::ufInvincible);
-	temp->flags.add(UnitBase::ufReflective);
+	temp->flags.add(UnitBase::ufInvincible | UnitBase::ufReflective);
 	((UnitLaser*)temp)->stationary = true;
 	addUnit(temp);
+	// 1
 	float tempPos = *temp->x + ((UnitLaser*)temp)->shape.radius * 2;
 	temp = new UnitLaser(NULL);
 	*temp->x = tempPos;
 	*temp->y = APP_SCREEN_HEIGHT / 2;
-	temp->flags.add(UnitBase::ufInvincible);
-	temp->flags.add(UnitBase::ufReflective);
+	temp->flags.add(UnitBase::ufInvincible | UnitBase::ufReflective);
 	((UnitLaser*)temp)->stationary = true;
 	addUnit(temp);
+	// 2
 	temp = new ProjectileLaser(NULL, -1);
 	*temp->x = APP_SCREEN_WIDTH;
 	*temp->y = APP_SCREEN_HEIGHT / 2;
 	((ProjectileLaser*)temp)->shape.pos.x = 0;
 	((ProjectileLaser*)temp)->shape.pos.y = APP_SCREEN_HEIGHT / 2;
 	addUnit(temp);
+	// 3
 	temp = new ProjectileLaser(NULL, -1);
 	*temp->x = APP_SCREEN_WIDTH / 2;
 	*temp->y = 0;
 	((ProjectileLaser*)temp)->shape.pos.x = APP_SCREEN_WIDTH / 2;
 	((ProjectileLaser*)temp)->shape.pos.y = APP_SCREEN_HEIGHT;
 	addUnit(temp);
+	// 4
 	temp = new UnitBase(NULL, new ShapeRect());
 	*temp->x = APP_SCREEN_WIDTH / 4 * 3;
 	*temp->y = APP_SCREEN_HEIGHT / 4 * 3;
 	((ShapeRect*)temp->shape)->size.x = 30;
 	((ShapeRect*)temp->shape)->size.y = 30;
-	temp->flags.add(UnitBase::ufSolid | UnitBase::ufInvincible);
+	temp->flags.add(UnitBase::ufSolid | UnitBase::ufInvincible | UnitBase::ufReflective);
 	addUnit(temp);
+	// 5
 	temp = new UnitSpike(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 2;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
 	addUnit(temp);
+	// 6
 	temp = new UnitSpike(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 2+80;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
 	addUnit(temp);
-
+	// 7
 	temp = new ItemShield(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 2-160;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
 	addUnit(temp);
-
+	// 8
 	temp = new UnitPlayer(NULL);
 	*temp->x = APP_SCREEN_WIDTH / 2-80;
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
-	temp->flags.add(UnitBase::ufReflective);
 	addUnit(temp);
 
 	player = temp;
@@ -184,27 +188,27 @@ void StateCollision::render(SDL_Surface *target)
 			*player->x, *player->y, -1, spGetRGB(228, 228, 288));
 
 	// Render reflection debug (angles, collision points, etc.)
-//	if (units.size() > 2)
-//	{
-//		const int shapeLaser1 = 2;
-//		const int shapeLaser2 = 3;
-//		const int shapeReflector = 0;
-//		CollisionResponse temp;
-//		units[shapeLaser1]->shape->checkCollision(units[shapeReflector]->shape, temp);
-//		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
-//		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
-//		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
-//		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser1])->shape.pos - ((ProjectileLaser*)units[shapeLaser1])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
-//		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
-//		temp.position.null();
-//		temp.direction.null();
-//		units[shapeLaser2]->shape->checkCollision(units[shapeReflector]->shape, temp);
-//		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
-//		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
-//		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
-//		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser2])->shape.pos - ((ProjectileLaser*)units[shapeLaser2])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
-//		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
-//	}
+	if (units.size() > 2)
+	{
+		const int shapeLaser1 = 2;
+		const int shapeLaser2 = 3;
+		const int shapeReflector = 4;
+		CollisionResponse temp;
+		units[shapeLaser1]->shape->checkCollision(units[shapeReflector]->shape, temp);
+		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
+		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser1])->shape.pos - ((ProjectileLaser*)units[shapeLaser1])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
+		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
+		temp.position.null();
+		temp.direction.null();
+		units[shapeLaser2]->shape->checkCollision(units[shapeReflector]->shape, temp);
+		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
+		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
+		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser2])->shape.pos - ((ProjectileLaser*)units[shapeLaser2])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
+		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
+	}
 
 	spFontDraw(10, 10, -1, (unsigned char*) debugString.c_str(), font);
 }
