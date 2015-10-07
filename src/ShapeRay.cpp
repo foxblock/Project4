@@ -272,7 +272,7 @@ bool ShapeRay::checkCollision(ShapeRect const* const other, CollisionResponse& r
 		if (quadPos.y == 0)
 		{
 			// Ray is inside of rect
-			// TODO: This (check all four sides maybe
+			// TODO: This (check sides depending on target, basically the same code, just with quadPos and quadTarget swapped, also result.direction and always go for smaller m)
 		}
 		else // quadPos.y == 1
 		{

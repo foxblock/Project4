@@ -65,18 +65,18 @@ StateCollision::StateCollision()
 	*temp->y = APP_SCREEN_HEIGHT / 4;
 	temp->flags.add(UnitBase::ufInvincible);
 	addUnit(temp);
-	// 7
-	temp = new ItemShield(NULL);
-	*temp->x = APP_SCREEN_WIDTH / 2-160;
-	*temp->y = APP_SCREEN_HEIGHT / 4;
-	temp->flags.add(UnitBase::ufInvincible);
-	addUnit(temp);
-	// 8
-	temp = new UnitPlayer(NULL);
-	*temp->x = APP_SCREEN_WIDTH / 2-80;
-	*temp->y = APP_SCREEN_HEIGHT / 4;
-	temp->flags.add(UnitBase::ufInvincible);
-	addUnit(temp);
+//	// 7
+//	temp = new ItemShield(NULL);
+//	*temp->x = APP_SCREEN_WIDTH / 2-160;
+//	*temp->y = APP_SCREEN_HEIGHT / 4;
+//	temp->flags.add(UnitBase::ufInvincible);
+//	addUnit(temp);
+//	// 8
+//	temp = new UnitPlayer(NULL);
+//	*temp->x = APP_SCREEN_WIDTH / 2-80;
+//	*temp->y = APP_SCREEN_HEIGHT / 4;
+//	temp->flags.add(UnitBase::ufInvincible);
+//	addUnit(temp);
 
 	player = temp;
 
@@ -188,27 +188,27 @@ void StateCollision::render(SDL_Surface *target)
 			*player->x, *player->y, -1, spGetRGB(228, 228, 288));
 
 	// Render reflection debug (angles, collision points, etc.)
-	if (units.size() > 2)
-	{
-		const int shapeLaser1 = 2;
-		const int shapeLaser2 = 3;
-		const int shapeReflector = 4;
-		CollisionResponse temp;
-		units[shapeLaser1]->shape->checkCollision(units[shapeReflector]->shape, temp);
-		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
-		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
-		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
-		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser1])->shape.pos - ((ProjectileLaser*)units[shapeLaser1])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
-		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
-		temp.position.null();
-		temp.direction.null();
-		units[shapeLaser2]->shape->checkCollision(units[shapeReflector]->shape, temp);
-		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
-		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
-		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
-		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser2])->shape.pos - ((ProjectileLaser*)units[shapeLaser2])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
-		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
-	}
+//	if (units.size() > 2)
+//	{
+//		const int shapeLaser1 = 2;
+//		const int shapeLaser2 = 3;
+//		const int shapeReflector = 4;
+//		CollisionResponse temp;
+//		units[shapeLaser1]->shape->checkCollision(units[shapeReflector]->shape, temp);
+//		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
+//		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
+//		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
+//		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser1])->shape.pos - ((ProjectileLaser*)units[shapeLaser1])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
+//		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
+//		temp.position.null();
+//		temp.direction.null();
+//		units[shapeLaser2]->shape->checkCollision(units[shapeReflector]->shape, temp);
+//		spLine(temp.position.x - 2, temp.position.y - 2, -1, temp.position.x + 2, temp.position.y + 2, -1, -1);
+//		spLine(temp.position.x + 2, temp.position.y - 2, -1, temp.position.x - 2, temp.position.y + 2, -1, -1);
+//		spLine(temp.position.x, temp.position.y, -1, temp.position.x + temp.direction.x * 15, temp.position.y + temp.direction.y * 15, -1, -1);
+//		debugString += Utility::numToStr((((ProjectileLaser*)units[shapeLaser2])->shape.pos - ((ProjectileLaser*)units[shapeLaser2])->shape.target).angle(temp.direction) * 180 / M_PI) + "\n";
+//		debugString += Utility::numToStr(temp.direction.angle() * 180 / M_PI) + "\n";
+//	}
 
 	spFontDraw(10, 10, -1, (unsigned char*) debugString.c_str(), font);
 }
