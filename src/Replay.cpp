@@ -179,24 +179,35 @@ void Replay::getReplayButtons(SspInput& buttons)
 {
 	buttons.axis[0] = spGetInput()->axis[0];
 	buttons.axis[1] = spGetInput()->axis[1];
+	buttons.analog_axis[0] = spGetInput()->analog_axis[0];
+	buttons.analog_axis[1] = spGetInput()->analog_axis[1];
+	buttons.button[SP_BUTTON_A] = spGetInput()->button[SP_BUTTON_A];
 }
 
 void Replay::setReplayButtons(const SspInput& buttons)
 {
 	spGetInput()->axis[0] = buttons.axis[0];
 	spGetInput()->axis[1] = buttons.axis[1];
+	spGetInput()->analog_axis[0] = buttons.analog_axis[0];
+	spGetInput()->analog_axis[1] = buttons.analog_axis[1];
+	spGetInput()->button[SP_BUTTON_A] = buttons.button[SP_BUTTON_A];
 }
 
 bool Replay::compareReplayButtons( const SspInput &a, const SspInput &b )
 {
-	return ( ( a.axis[0] == b.axis[0] ) && ( a.axis[1] == b.axis[1] ) );
+	return (a.axis[0] == b.axis[0] && a.axis[1] == b.axis[1] &&
+			a.analog_axis[0] == b.analog_axis[0] && a.analog_axis[1] == b.analog_axis[1] &&
+			a.button[SP_BUTTON_A] == b.button[SP_BUTTON_A]);
 }
 
 std::string Replay::buttonsToString(const SspInput& buttons)
 {
 	std::stringstream result;
 	result << (int)buttons.axis[0] << FILE_REPLAY_SUB_DELIMITER <<
-			(int)buttons.axis[1];
+			(int)buttons.axis[1] << FILE_REPLAY_SUB_DELIMITER <<
+			(int)buttons.analog_axis[0] << FILE_REPLAY_SUB_DELIMITER <<
+			(int)buttons.analog_axis[1] << FILE_REPLAY_SUB_DELIMITER <<
+			(int)buttons.button[SP_BUTTON_A];
 	return result.str();
 }
 
@@ -204,10 +215,13 @@ void Replay::stringToButtons(const std::string& str, SspInput& buttons)
 {
 	std::vector< std::string > tokens;
 	Utility::tokenize( str, tokens, FILE_REPLAY_SUB_DELIMITER );
-	if ( tokens.size() < 2 )
+	if ( tokens.size() < 5 )
 		return;
 	buttons.axis[0] = Utility::strToNum<int>( tokens[0] );
 	buttons.axis[1] = Utility::strToNum<int>( tokens[1] );
+	buttons.analog_axis[0] = Utility::strToNum<int>( tokens[2] );
+	buttons.analog_axis[1] = Utility::strToNum<int>( tokens[3] );
+	buttons.button[SP_BUTTON_A] = Utility::strToNum<int>(tokens[4]);
 }
 
 

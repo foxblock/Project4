@@ -106,6 +106,8 @@ int StateScore::update( Uint32 delta )
 			spStopKeyboardInput();
 			state = 1;
 			caret = false;
+			if (name[strlen(name)-1] == '\n')
+				name[strlen(name)-1] = '\0';
 			file.addScore( name, score, run->info.timecode );
 			if ( run )
 			{

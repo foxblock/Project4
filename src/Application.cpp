@@ -163,6 +163,7 @@ int Application::update( Uint32 delta )
 	else
 	{
 		int result = 0;
+		// Ziz' advice: Split delta into chunks of 1 (works better for some reason...)
 		for ( int I = 0; I < delta; ++I )
 		{
 			if ( activeState->paused )

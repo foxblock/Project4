@@ -5,9 +5,11 @@
 #include <list>
 #include "sparrowCore.h"
 
+// tick, button-string
 #define REPLAY_ENTRY_SIZE 2
+// name, score, timecode, version, levelType, [parameter - optional]
 #define REPLAY_HEADER_MIN_SIZE 5
-#define REPLAY_VERSION 11
+#define REPLAY_VERSION 12
 
 class Replay
 {

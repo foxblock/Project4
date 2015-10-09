@@ -4,6 +4,7 @@
 #include "UtilityFunctions.h"
 
 #include "sparrowPrimitives.h"
+#include "StateLevel.h"
 
 // Pixels per millisecond
 #define PLAYER_MAX_VELOCITY 0.5f
@@ -12,6 +13,7 @@
 #define PLAYER_COLLISION_RADIUS 4
 
 #define PLAYER_SHIELD_RADIUS 18
+#define PLAYER_ABILITY_MAX 2500
 
 SDL_Surface* UnitPlayer::shield = NULL;
 
@@ -28,6 +30,7 @@ UnitPlayer::UnitPlayer( StateLevel *newParent ) : UnitBase( newParent, &shape )
 	flags.add( ufSolid );
 	lastVel = Vector2d<float>(0,-1);
 	timers.push_back(&shieldTimer);
+	abilityPoints = 0;
 }
 
 UnitPlayer::~UnitPlayer()
@@ -67,6 +70,22 @@ int UnitPlayer::update( const Uint32 &delta )
 		deactiveShield();
 	}
 
+	if (spGetInput()->button[SP_BUTTON_A] && abilityPoints > 0)
+	{
+		parent->slowmo = true;
+		--abilityPoints;
+	}
+	else
+	{
+		parent->slowmo = false;
+		// LOL OOP...
+		if (((ScoreNormal*)parent->scoreKeeper)->getMode() == ScoreNormal::smPeace && abilityPoints < PLAYER_ABILITY_MAX)
+		{
+			++abilityPoints;
+		}
+	}
+
+
 	UnitBase::update( delta );
 
 	if ( vel.x != 0 || vel.y != 0 )
@@ -91,6 +110,10 @@ void UnitPlayer::render( SDL_Surface *const target )
 
 	if (shieldTimer.running())
 		spEllipseBorder(*x, *y, -1, PLAYER_SHIELD_RADIUS, PLAYER_SHIELD_RADIUS, 2, 2, -1);
+
+	spSetBlending(SP_ONE / 2);
+	spRectangle(APP_SCREEN_WIDTH * 0.5f, APP_SCREEN_HEIGHT * 0.99f, -1, APP_SCREEN_WIDTH * abilityPoints / (float)PLAYER_ABILITY_MAX, APP_SCREEN_HEIGHT * 0.02f, -1);
+	spSetBlending(SP_ONE);
 
 	UnitBase::render( target );
 }

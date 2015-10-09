@@ -57,12 +57,12 @@ public:
 		utLaser,
 		utBomb,
 		utEOL, // end of unit types
-		utItemSlowmo,
 		utItemVortex,
 		utItemShield,
 		utItemEOL, // end of item types
 		utText,
-		utBackgroundEOL // end of background types
+		utBackgroundEOL, // end of background types
+		utItemSlowmo, // Moved here to disable, since introduction of slowdown as an ability
 	};
 	UnitType type;
 

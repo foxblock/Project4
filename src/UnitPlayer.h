@@ -18,6 +18,7 @@ public:
 	void deactiveShield();
 
 	ShapeCircle shape;
+	int abilityPoints;
 protected:
 
 private:

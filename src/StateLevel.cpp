@@ -16,6 +16,8 @@
 #define LEVEL_BG_FADE_TIME 2500
 #define LEVEL_PAUSE_FONT_SIZE 32
 
+// Positive values: Skip n frames in every n+1 frames (0=100%, 1=50%, 2=33% speed, etc.)
+// Negative values: Skip 1 in every (-n)+1 frames (-1=50%, -2=67%, -3=75% speed, etc.)
 #define LEVEL_SLOWMO_LEVEL 1
 
 StateLevel::StateLevel( Replay *loadReplay ) :
@@ -121,9 +123,10 @@ int StateLevel::update( Uint32 delta )
 		return stMenu;
 	}
 
-	delta = std::min( ( int )delta, MAX_DELTA );
+	// Not needed, since Application::update serves constant delta=1 only
+	//delta = std::min( ( int )delta, MAX_DELTA );
 
-	deltaBkUp = delta;
+	deltaBkUp = delta; // used to make player go at normal speed, while units are slowed
 	if ( slowmo )
 	{
 		if ( slowmoCounter > 0 || ( Utility::sign( LEVEL_SLOWMO_LEVEL ) < 0 && slowmoCounter == 0 ) )
@@ -374,17 +377,18 @@ void StateLevel::handleEvents( Uint32 delta )
 			EventUnitDeath *temp = (EventUnitDeath*)*event;
 			if ( temp->points < 0 )
 				break;
-			UnitText *text = new UnitText( this );
-			*(text->x) = *(temp->unit->x);
-			*(text->y) = *(temp->unit->y);
-			text->alignment = UnitText::taCentre;
-			text->fontSize = 24;
-			text->colour1 = -1;
-			text->alpha1 = 128;
-			text->text = "kill +" + Utility::numToStr( temp->points );
-			text->life = 500;
-			text->mode = UnitText::tmStatic;
-			addUnit( text, false );
+// Disabled for now, since it causes some render lag on the Pandora
+//			UnitText *text = new UnitText( this );
+//			*(text->x) = *(temp->unit->x);
+//			*(text->y) = *(temp->unit->y);
+//			text->alignment = UnitText::taCentre;
+//			text->fontSize = 24;
+//			text->colour1 = -1;
+//			text->alpha1 = 128;
+//			text->text = "kill +" + Utility::numToStr( temp->points );
+//			text->life = 500;
+//			text->mode = UnitText::tmStatic;
+//			addUnit( text, false );
 			break;
 		}
 		case EventBase::etWaveSkip:
