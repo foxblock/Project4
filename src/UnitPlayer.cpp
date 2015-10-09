@@ -13,7 +13,11 @@
 #define PLAYER_COLLISION_RADIUS 4
 
 #define PLAYER_SHIELD_RADIUS 18
-#define PLAYER_ABILITY_MAX 2500
+// Total duration of continuous ability in ms = ABILITY_MAX / ABILITY_DRAIN
+#define PLAYER_ABILITY_MAX 5000
+// Points per milli-second
+#define PLAYER_ABILITY_DRAIN 2
+#define PLAYER_ABILITY_GAIN 1
 
 SDL_Surface* UnitPlayer::shield = NULL;
 
@@ -73,7 +77,7 @@ int UnitPlayer::update( const Uint32 &delta )
 	if (spGetInput()->button[SP_BUTTON_A] && abilityPoints > 0)
 	{
 		parent->slowmo = true;
-		--abilityPoints;
+		abilityPoints -= PLAYER_ABILITY_DRAIN;
 	}
 	else
 	{
@@ -81,7 +85,7 @@ int UnitPlayer::update( const Uint32 &delta )
 		// LOL OOP...
 		if (((ScoreNormal*)parent->scoreKeeper)->getMode() == ScoreNormal::smPeace && abilityPoints < PLAYER_ABILITY_MAX)
 		{
-			++abilityPoints;
+			abilityPoints += PLAYER_ABILITY_GAIN;
 		}
 	}
 
