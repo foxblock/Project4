@@ -39,9 +39,10 @@ StateMenu::StateMenu() : StateBase()
 	textIndex = -1;
 	timers.push_back( &textTimer );
 	lines.push_back( std::make_pair( "A game by", "Janek Schäfer" ) );
-	lines.push_back( std::make_pair( "Press \""SP_BUTTON_B_NAME"\" or \""SP_BUTTON_START_NAME"\"", "to select an item" ) );
+	lines.push_back( std::make_pair( "Press ["SP_BUTTON_B_NAME"] or ["SP_BUTTON_START_NAME"]", "to select an item" ) );
 	lines.push_back( std::make_pair( "This is a WIP", "A lot left to do" ) );
 	lines.push_back( std::make_pair( "Use the arrow keys", "to navigate" ) );
+	lines.push_back( std::make_pair( "Press ["SP_BUTTON_A_NAME"] to activate", "your ability in-game." ) );
 	lines.push_back( std::make_pair( "Hint: Bombs explode,", "Spikes and Lasers don't" ) );
 	lines.push_back( std::make_pair( "Hint: Not entering a name,", "will not add a highscore or replay" ) );
 	lines.push_back( std::make_pair( "Hint: Waves may exceed,", "the max unit limit" ) );

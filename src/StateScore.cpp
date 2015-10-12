@@ -98,6 +98,7 @@ int StateScore::update( Uint32 delta )
 		|| spGetInput()->button[SP_BUTTON_B]
 		|| spGetInput()->button[SP_BUTTON_Y]
 #endif
+		|| name[strlen(name)-1] == '\n' // Enter key was pressed
 		)
 	{
 		if ( state == 0 && name[0] != 0 )
